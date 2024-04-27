@@ -1,0 +1,279 @@
+@extends('admin.layout.app')
+@section('title', 'Sản phẩm')
+
+@section('main')
+    <div class="card card-statistics">
+        <div class="card-header">
+            <div class="card-heading">
+                <h4 class="card-title">Thêm sản phẩm</h4>
+            </div>
+        </div>
+        <div class="card-body">
+            <form action="{{ route('product.store') }}" method="post" class="form-horizontal" enctype="multipart/form-data">
+                @csrf
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="control-label" for="name">Tên</label>
+                            <div class="mb-2">
+                                <input type="text" class="form-control @error('title') is-invalid @enderror"
+                                    oninput="ChangeToSlug()" id="name" name="title" value ="{{ old('title') }}"
+                                    placeholder="Điền ..." />
+                                @error('title')
+                                    <em class="text-danger" style="">{{ $message }}</em>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="control-label" for="convert_slug">Slug</label>
+                            <div class="mb-2">
+                                <input type="text" id="convert_slug" class="form-control" name="slug"
+                                    placeholder="Điền ..." value ="{{ old('slug') }}" readonly />
+                                @error('slug')
+                                    <em class="text-danger" style="">{{ $message }}</em>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label class="control-label" for="">Danh mục</label>
+                            <div class="mb-2">
+                                <select name="category_id" id="ChangeCategory"
+                                    class="form-control @error('sub_category_id') is-invalid @enderror">
+                                    <option value="" selected disabled>Chọn danh mục</option>
+                                    @foreach ($category as $item)
+                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('sub_category_id')
+                                    <em class="text-danger" style="">{{ $message }}</em>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label class="control-label" for="">Danh mục phụ</label>
+                            <div class="mb-2">
+                                <select name="sub_category_id" id="getSubCategory" class="form-control">
+                                    <option value="" selected disabled>Chọn danh mục phụ</option>
+                                    <option value="0">Ẩn</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label class="control-label" for="">Thương hiệu</label>
+                            <div class="mb-2">
+                                <select name="brand_id" class="form-control">
+                                    <option value="" selected disabled>Chọn thương hiện</option>
+                                    @foreach ($brand as $item)
+                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="">Màu sắc</label>
+                    <div class="d-flex">
+                        @foreach ($color as $item)
+                            <div class="form-check pr-3">
+                                <input class="form-check-input" value="{{ $item->id }}" name="color_id[]"
+                                    type="checkbox" id="check-{{ $item->id }}">
+                                <label class="form-check-label" for="check-{{ $item->id }}">
+                                    {{ $item->name }}
+                                </label>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="control-label" for="">Giá cũ</label>
+                            <div class="mb-2">
+                                <input type="text" id="" class="form-control" name="old_price"
+                                    placeholder="Điền ..." value ="{{ old('old_price') }}" />
+                                @error('old_price')
+                                    <em class="text-danger" style="">{{ $message }}</em>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label class="control-label" for="">Giá</label>
+                            <div class="mb-2">
+                                <input type="text" id="" class="form-control" name="price"
+                                    placeholder="Điền ..." value ="{{ old('price') }}" />
+                                @error('price')
+                                    <em class="text-danger" style="">{{ $message }}</em>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class=" mb-3">
+                    <label class="control-label" for="">Hình ảnh</label>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="customFile" name="image[]" multiple accept="image/*">
+                        <label class="custom-file-label" for="customFile">Choose file</label>
+                    </div>
+                </div>
+
+
+                <label for="">Size</label>
+                <table class="table table-hover ">
+                    <thead>
+                        <tr>
+                            <th>Tên size</th>
+                            <th>Giá</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="AppendSize">
+                        <tr>
+                            <td> <input type="text" class="form-control" name="name"></td>
+                            <td> <input type="text" class="form-control" name="name"></td>
+                            <td>
+                                <button type="button" class="btn btn-success AddSize">Thêm</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+                <div class="form-group">
+                    <label class="control-label" for="">Mô tả ngắn</label>
+                    <div class="mb-2">
+                        <textarea type="text" class="form-control" name="short_description">
+                        </textarea>
+                        @error('short_description')
+                            <em class="text-danger" style="">{{ $message }}</em>
+                        @enderror
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="">Mô tả</label>
+                    <div class="mb-2">
+                        <textarea type="text" id="description" class="form-control " name="description" placeholder="Điền ...">
+                        </textarea>
+                        @error('description')
+                            <em class="text-danger" style="">{{ $message }}</em>
+                        @enderror
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="">Vận chuyển trả lại</label>
+                    <div class="mb-2">
+                        <textarea id="shipping_returns" class="form-control" name="shipping_returns" placeholder="Điền ...">
+                        </textarea>
+                        @error('shipping_returns')
+                            <em class="text-danger" style="">{{ $message }}</em>
+                        @enderror
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="">Thông tin thêm</label>
+                    <div class="mb-2">
+                        <textarea id="additional_information" class="form-control" name="additional_information" placeholder="Điền ...">
+                        </textarea>
+                        @error('additional_information')
+                            <em class="text-danger" style="">{{ $message }}</em>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label" for="">Trạng thái</label>
+                    <div class="mb-2">
+                        <select name="status" class="form-control">
+                            <option value="1">Hiện</option>
+                            <option value="0">Ẩn</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Thêm mới</button>
+                    <a href="{{ route('product.index') }}" class="btn btn-info ">Quay lại</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        $('#additional_information').summernote({
+            tabsize: 2,
+            height: 100
+        });
+
+        $('#description').summernote({
+            tabsize: 2,
+            height: 200
+        });
+
+        $('#shipping_returns').summernote({
+            tabsize: 2,
+            height: 100
+        });
+
+
+        // add size
+        // $('.AddSize').on('click', function() {
+        var i = 1000;
+        $('body').delegate('.AddSize', 'click', function() {
+            var html = `
+             <tr id="DeleteSize${i}">
+                <td> <input type="text" placeholder="Điền..." class="form-control" name="name"></td>
+                <td> <input type="text" placeholder="Điền..." class="form-control" name="name"></td>
+                <td>
+                    <button type="button" id="${i}" class="btn btn-danger DeleteSize">Xóa</button>
+                </td>
+            </tr>
+            `;
+            i++;
+            $('#AppendSize').append(html);
+        })
+        // xóa
+        $('body').delegate('.DeleteSize', 'click', function() {
+            var id = $(this).attr('id');
+            $('#DeleteSize' + id).remove();
+        })
+
+
+        $(document).ready(function() {
+            $('#ChangeCategory').on('change', function() {
+                var id = $(this).val();
+                $.ajax({
+                    type: "POST",
+                    url: "{{ url('admin/get_sub_category') }}",
+                    data: {
+                        id: id,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    dataType: "json",
+                    success: function(data) {
+                        $('#getSubCategory').html(data);
+                    },
+                    error: function(data) {
+
+                    }
+
+                })
+            })
+        })
+    </script>
+@endsection
