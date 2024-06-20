@@ -8,22 +8,27 @@
     <meta name="description" content="Admin template that can be used to build dashboards for CRM, CMS, etc." />
     <meta name="author" content="Potenza Global Solutions" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Scripts -->
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+
     <!-- app favicon -->
-    <link rel="shortcut icon" href="{{ asset('/') }}assets/img/favicon.ico">
+    <link rel="shortcut icon" href="{{ asset('/') }}assets_ad/img/favicon.ico">
     <!-- google fonts -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
     <!-- plugin stylesheets -->
-    <link rel="stylesheet" type="text/css" href="{{ asset('/') }}assets/css/vendors.css" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('/') }}assets_ad/css/vendors.css" />
     <!-- app style -->
-    <link rel="stylesheet" type="text/css" href="{{ asset('/') }}assets/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('/') }}assets_ad/css/style.css" />
 
     {{-- cdn jquery --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
         integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
     <!-- plugins -->
-    <script src="{{ asset('/') }}assets/js/vendors.js"></script>
+    <script src="{{ asset('/') }}assets_ad/js/vendors.js"></script>
+    <script src="{{ asset('/') }}assets_ad/sortable/jquery-ui.js"></script>
+
     {{-- sweetalert2 --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
@@ -37,7 +42,7 @@
             <div class="loader">
                 <div class="h-100 d-flex justify-content-center">
                     <div class="align-self-center">
-                        <img src="{{ asset('/') }}assets/img/loader/loader.svg" alt="loader">
+                        <img src="{{ asset('/') }}assets_ad/img/loader/loader.svg" alt="loader">
                     </div>
                 </div>
             </div>
@@ -72,11 +77,20 @@
     <!-- end app -->
 
 
-
-
     <!-- custom app -->
-    <script src="{{ asset('/') }}assets/js/app.js"></script>
+    <script src="{{ asset('/') }}assets_ad/js/app.js"></script>
+    {{-- sort table --}}
 
+
+   
+
+    <script>
+        $(function() {
+            $("#product_table").sortable();
+        });
+    </script>
+
+    {{-- slug --}}
     <script type="text/javascript">
         function ChangeToSlug() {
             var slug;
@@ -109,6 +123,31 @@
         }
     </script>
 
+    {{-- add image  --}}
+    <script>
+        function previewImages(input) {
+            var preview = document.getElementById('image-preview');
+            preview.innerHTML = '';
+
+            if (input.files) {
+                var filesAmount = input.files.length;
+                for (i = 0; i < filesAmount; i++) {
+                    var reader = new FileReader();
+
+                    reader.onload = function(event) {
+                        var imgElement = document.createElement('div');
+                        imgElement.className = 'col-2 m-3 border';
+                        imgElement.innerHTML = '<img class="w-100" style="height: 200px;" src="' + event.target.result +
+                            '" alt="">';
+
+                        preview.appendChild(imgElement);
+                    }
+
+                    reader.readAsDataURL(input.files[i]);
+                }
+            }
+        }
+    </script>
 </body>
 
 

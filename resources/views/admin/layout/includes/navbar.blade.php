@@ -46,7 +46,12 @@
                      <span class="nav-title">Sản phẩm</span>
                  </a>
              </li>
-
+             <li class="{{ request()->segment(2) == 'discount_code' ? 'active' : '' }}">
+                 <a href="{{ route('discount_code.index') }}" aria-expanded="false">
+                     <i class="nav-icon fa fa-product-hunt"></i>
+                     <span class="nav-title">Mã giảm giá</span>
+                 </a>
+             </li>
 
          </ul>
      </div>

@@ -1,13 +1,12 @@
  <header class="app-header top-bar">
      <!-- begin navbar -->
      <nav class="navbar navbar-expand-md">
-
          <!-- begin navbar-header -->
          <div class="navbar-header d-flex align-items-center">
              <a href="#" class="mobile-toggle"><i class="ti ti-align-right"></i></a>
-             <a class="navbar-brand" href="index.html">
-                 <img src="{{ asset('/') }}assets/img/logo.png" class="img-fluid logo-desktop" alt="logo" />
-                 <img src="{{ asset('/') }}assets/img/logo-icon.png" class="img-fluid logo-mobile" alt="logo" />
+             <a class="navbar-brand" href="{{ url('admin/dashboard') }}">
+                 <img src="{{ asset('/') }}assets_ad/img/logo.png" class="img-fluid logo-desktop" alt="logo" />
+                 <img src="{{ asset('/') }}assets_ad/img/logo-icon.png" class="img-fluid logo-mobile" alt="logo" />
              </a>
          </div>
          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -51,7 +50,7 @@
                                                  <div class="notification d-flex flex-row align-items-center">
                                                      <div class="notify-icon bg-img align-self-center">
                                                          <img class="img-fluid"
-                                                             src="{{ asset('/') }}assets/img/avtar/03.jpg"
+                                                             src="{{ asset('/') }}assets_ad/img/avtar/03.jpg"
                                                              alt="user3">
                                                      </div>
                                                      <div class="notify-message">
@@ -66,7 +65,7 @@
                                                  <div class="notification d-flex flex-row align-items-center">
                                                      <div class="notify-icon bg-img align-self-center">
                                                          <img class="img-fluid"
-                                                             src="{{ asset('/') }}assets/img/avtar/01.jpg"
+                                                             src="{{ asset('/') }}assets_ad/img/avtar/01.jpg"
                                                              alt="user">
                                                      </div>
                                                      <div class="notify-message">
@@ -81,7 +80,7 @@
                                                  <div class="notification d-flex flex-row align-items-center">
                                                      <div class="notify-icon bg-img align-self-center">
                                                          <img class="img-fluid"
-                                                             src="{{ asset('/') }}assets/img/avtar/02.jpg"
+                                                             src="{{ asset('/') }}assets_ad/img/avtar/02.jpg"
                                                              alt="user2">
                                                      </div>
                                                      <div class="notify-message">
@@ -96,7 +95,7 @@
                                                  <div class="notification d-flex flex-row align-items-center">
                                                      <div class="notify-icon bg-img align-self-center">
                                                          <img class="img-fluid"
-                                                             src="{{ asset('/') }}assets/img/avtar/04.jpg"
+                                                             src="{{ asset('/') }}assets_ad/img/avtar/04.jpg"
                                                              alt="user4">
                                                      </div>
                                                      <div class="notify-message">
@@ -111,7 +110,7 @@
                                                  <div class="notification d-flex flex-row align-items-center">
                                                      <div class="notify-icon bg-img align-self-center">
                                                          <img class="img-fluid"
-                                                             src="{{ asset('/') }}assets/img/avtar/05.jpg"
+                                                             src="{{ asset('/') }}assets_ad/img/avtar/05.jpg"
                                                              alt="user5">
                                                      </div>
                                                      <div class="notify-message">
@@ -126,7 +125,7 @@
                                                  <div class="notification d-flex flex-row align-items-center">
                                                      <div class="notify-icon bg-img align-self-center">
                                                          <img class="img-fluid"
-                                                             src="{{ asset('/') }}assets/img/avtar/06.jpg"
+                                                             src="{{ asset('/') }}assets_ad/img/avtar/06.jpg"
                                                              alt="user6">
                                                      </div>
                                                      <div class="notify-message">
@@ -270,7 +269,7 @@
                      <li class="nav-item dropdown user-profile">
                          <a href="javascript:void(0)" class="nav-link dropdown-toggle " id="navbarDropdown4"
                              role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                             <img src="{{ asset('/') }}assets/img/avtar/02.jpg" alt="avtar-img">
+                             <img src="{{ asset('/') }}assets_ad/img/avtar/02.jpg" alt="avtar-img">
                              <span class="bg-success user-status"></span>
                          </a>
                          <div class="dropdown-menu animated fadeIn" aria-labelledby="navbarDropdown">
@@ -278,18 +277,16 @@
                                  <div class="d-flex align-items-center justify-content-between">
                                      <div class="mr-1">
                                          <h4 class="text-white mb-0">Admin</h4>
-                                         <small class="text-white">{{ Auth::user()->email  }}</small>
+                                         <small class="text-white">{{ Auth::user()->email }}</small>
                                      </div>
                                      <form action="{{ route('logout') }}" method="post">
                                          @csrf
-                                         <button type="submit" class="btn btn-primary  text-white font-20 tooltip-wrapper"
+                                         <button type="submit"
+                                             class="btn btn-primary  text-white font-20 tooltip-wrapper"
                                              data-toggle="tooltip" data-placement="top" title=""
                                              data-original-title="Đăng xuất"> <i class="zmdi zmdi-power"></i>
                                          </button>
                                      </form>
-                                     {{-- <a href="{{ route('admin/logout') }}" class="text-white font-20 tooltip-wrapper"
-                                         data-toggle="tooltip" data-placement="top" title=""
-                                         data-original-title="Đăng xuất"> <i class="zmdi zmdi-power"></i></a> --}}
                                  </div>
                              </div>
                              <div class="p-4">
@@ -302,8 +299,12 @@
                                  <a class="dropdown-item d-flex nav-link" href="javascript:void(0)">
                                      <i class=" ti ti-settings pr-2 text-info"></i> Settings
                                  </a>
-                                 <a class="dropdown-item d-flex nav-link" href="javascript:void(0)">
-                                     <i class="fa fa-compass pr-2 text-warning"></i> Need help?</a>
+                                 <a class="dropdown-item d-flex nav-link" href="{{ url('/') }}">
+                                     <i class=" zmdi zmdi-airplane pr-2 text-info"></i> Chuyển trang người dùng
+                                 </a>
+                                 {{-- <a class="dropdown-item d-flex nav-link" href="javascript:void(0)">
+                                     <i class="fa fa-compass pr-2 text-warning"></i> Need help?
+                                 </a> --}}
                                  <div class="row mt-2">
                                      <div class="col">
                                          <a class="bg-light p-3 text-center d-block" href="#">

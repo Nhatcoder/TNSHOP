@@ -19,4 +19,9 @@ class ProductImage extends Model
             return "";
         }
     }
+
+    static public function deleteImage($product_id)
+    {
+        return self::where('product_id', $product_id)->delete();
+    }
 }

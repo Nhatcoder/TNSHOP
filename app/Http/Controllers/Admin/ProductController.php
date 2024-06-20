@@ -13,6 +13,7 @@ use App\Models\ProductColor;
 use App\Models\SubCategory;
 use App\Models\ProductSize;
 use App\Models\ProductImage;
+use App\Events\DeleteImageProduct;
 
 class ProductController extends Controller
 {
@@ -23,6 +24,7 @@ class ProductController extends Controller
     {
         $product = Product::getProduct();
         // dd($product);
+        // return response()->json($product);
         return view('admin.product.list', compact('product'));
     }
 
@@ -44,24 +46,33 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        // $request->validate([
-        //     'title' => 'required',
-        //     'slug' => 'required',
-        //     'category_id' => 'required',
-        //     'sub_category_id' => 'required',
-        //     'brand_id' => 'required',
+        $request->validate([
+            'title' => 'required',
+            'slug' => 'required|unique:product',
+            'category_id' => 'required',
+            'sub_category_id' => 'nullable',
+            'brand_id' => 'required',
+            'color_id' => 'required',
+            'old_price' => 'nullable',
+            'price' => 'required',
+            'image' => 'required',
+            'short_description' => 'nullable',
+            'description' => 'nullable',
+            'additional_information' => 'nullable',
+            'shipping_returns' => 'nullable',
+            'status' => 'nullable'
+        ], [
+            'title.required' => 'Vui lòng nhập tên sản phẩm',
+            'slug.required' => 'Vui lòng nhập slug',
+            'slug.unique' => 'Slug đã tồn tại',
+            'category_id' => 'Vui lòng chọn danh mục',
+            'brand_id' => 'Vui lòng nhà cung cấp',
+            'old_price' => 'Vui lòng nhập giá mới',
+            'price' => 'Vui lòng nhập giá cũ',
+            'image' => 'Vui lòng chọn ảnh',
+        ]);
 
 
-        //     'old_price' => 'required',
-        //     'price' => 'required',
-        //     'additional_information' => 'required',
-
-        //     'short_description' => 'required',
-        //     'description' => 'required',
-        //     'shipping_returns' => 'required',
-        //     'status' => 'nullable'
-        //     // 'image' => 'required',
-        // ]);
 
         $product = new Product();
         $product->title = $request->title;
@@ -77,8 +88,7 @@ class ProductController extends Controller
         $product->shipping_returns = $request->shipping_returns;
 
         $product->save();
-
-        // $product->colors()->attach($request->color_id);
+        $productFind = Product::find($product->id);
 
         if (!empty($request->color_id)) {
             foreach ($request->color_id as $color_id) {
@@ -100,9 +110,22 @@ class ProductController extends Controller
                 }
             }
         }
-        return redirect('admin/product')->with('success', 'Thêm sản phẩm thành công');
 
-        // return response()->json($request->all());
+        if ($request->file('image')) {
+            foreach ($request->file('image') as $image) {
+                $image_ex = $image->getClientOriginalExtension();
+                $filename = $image->getClientOriginalName();
+                $replaceName = date('dmY') . '_' . rand(0, 999999999) . '_' . $filename;
+                $image->move(public_path('uploads/product'), $replaceName);
+
+                $imageUpload = new ProductImage();
+                $imageUpload->product_id = $productFind->id;
+                $imageUpload->image_name = $replaceName;
+                $imageUpload->image_extension = $image_ex;
+                $imageUpload->save();
+            }
+        }
+        return redirect('admin/product')->with('success', 'Thêm sản phẩm thành công');
     }
 
     /**
@@ -133,7 +156,29 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // dd($request->all());
+        $request->validate([
+            'title' => 'required',
+            'slug' => 'required',
+            'category_id' => 'required',
+            'sub_category_id' => 'nullable',
+            'brand_id' => 'required',
+            'color_id' => 'nullable',
+            'old_price' => 'required',
+            'price' => 'required',
+            'image' => 'nullable',
+            'short_description' => 'nullable',
+            'description' => 'nullable',
+            'additional_information' => 'nullable',
+            'shipping_returns' => 'nullable',
+            'status' => 'nullable'
+        ], [
+            'title.required' => 'Vui lòng nhập tên sản phẩm',
+            'slug.required' => 'Vui lòng nhập slug',
+            'category_id' => 'Vui lòng chọn danh mục',
+            'brand_id' => 'Vui lòng nhà cung cấp',
+            'old_price' => 'Vui lòng nhập giá mới',
+            'price' => 'Vui lòng nhập giá cũ',
+        ]);
 
         $product = Product::find($id);
         $product->title = $request->title;
@@ -166,7 +211,6 @@ class ProductController extends Controller
         ProductSize::DeleteRecord($product->id);
         if (!empty($request->size)) {
             foreach ($request->size as $size) {
-                // dd($size['price']);
                 if (!empty($size['name'] && $size['price'])) {
                     $produc_size = new ProductSize();
                     $produc_size->name = $size['name'];
@@ -178,7 +222,7 @@ class ProductController extends Controller
         }
 
         if ($request->file('image')) {
-            foreach ($request->file('image') as $key => $image) {
+            foreach ($request->file('image') as $image) {
                 $image_ex = $image->getClientOriginalExtension();
                 $filename = $image->getClientOriginalName();
                 $replaceName = date('dmY') . '_' . rand(0, 999999999) . '_' . $filename;
@@ -192,26 +236,52 @@ class ProductController extends Controller
             }
         }
 
-        // die;
         return redirect('admin/product')->with('success', 'Cập nhật sản phẩm thành công');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(string $id)
     {
-        //
+        $product = Product::find($id);
+        $imageId =  ProductImage::where('product_id', $product->id)->get();
+
+        foreach ($imageId as $image) {
+            if (!empty($image->image_name) && file_exists('uploads/product/' . $image->image_name)) {
+                unlink('uploads/product/' . $image->image_name);
+            }
+        }
+        ProductImage::deleteImage($product->id);
+        $product->delete();
+
+        echo "Xóa sản phẩm thành công";
+        // return response()->json($imageId);
+        // return redirect('admin/product')->with('success', 'Xóa sản phẩm thành công');
     }
 
     // Xóa ảnh
-    public function deleteImage($id){
+    public function deleteImage($id)
+    {
         $image = ProductImage::find($id);
-        if(!empty($image->image_name) && file_exists('uploads/product/'.$image->image_name)){
-            unlink('uploads/product/'.$image->image_name);
+        if (!empty($image->image_name) && file_exists('uploads/product/' . $image->image_name)) {
+            unlink('uploads/product/' . $image->image_name);
         }
-        $image->delete();
 
-        
+        broadcast(new DeleteImageProduct($image));
+        $image->delete();
+        return response()->json("Xóa thanh cong");
+    }
+
+    // sắp xếp ảnh
+    public function oderByImage(Request $request)
+    {
+        if (!empty($request->photo_id)) {
+            $i = 1;
+            foreach ($request->photo_id as $photo_id) {
+                $image = ProductImage::find($photo_id);
+                $image->order_by = $i;
+                $image->save();
+                $i++;
+            }
+        }
     }
 }

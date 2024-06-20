@@ -7,6 +7,15 @@ use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
 
+use App\Events\RegisterMaillSuccess;
+use App\Listeners\SendRegisterMaillNotication;
+
+use App\Events\RessetPassWordSuccess;
+use App\Listeners\SendMailRessetPassWordNotication;
+
+use App\Events\OrderUserSuccess;
+use App\Listeners\SendMailOrderUser;
+
 class EventServiceProvider extends ServiceProvider
 {
     /**
@@ -18,6 +27,20 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+
+        RegisterMaillSuccess::class => [
+            SendRegisterMaillNotication::class,
+        ],
+
+        RessetPassWordSuccess::class => [
+            SendMailRessetPassWordNotication::class,
+        ],
+
+        OrderUserSuccess::class => [
+            SendMailOrderUser::class,
+        ],
+
+
     ];
 
     /**

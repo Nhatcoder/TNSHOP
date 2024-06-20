@@ -12,6 +12,18 @@ class Color extends Model
 
     static function getColor()
     {
-        return self::select('color.*')->orderBy('id', 'desc')->get();
+        return self::select('color.*')->where('status', 1)->orderBy('id', 'desc')->get();
     }
+
+
+    static function getColorActive()
+    {
+        return self::select('color.*')->where('status', 1)->orderBy('id', 'desc')->get();
+    }
+
+    public function getColorProductCart($color_id)
+    {
+        return self::select('color.*')->where('color_id', $color_id)->where('status', 1)->first();
+    }
+
 }

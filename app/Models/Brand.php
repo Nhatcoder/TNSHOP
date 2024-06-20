@@ -14,6 +14,6 @@ class Brand extends Model
 
     static function getbrand()
     {
-        return self::select('brand.*')->get();
+        return self::select('brand.*')->where('status', 1)->orderBy('id', 'desc')->get();
     }
 }

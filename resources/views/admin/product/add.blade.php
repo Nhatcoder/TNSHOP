@@ -44,13 +44,13 @@
                             <label class="control-label" for="">Danh mục</label>
                             <div class="mb-2">
                                 <select name="category_id" id="ChangeCategory"
-                                    class="form-control @error('sub_category_id') is-invalid @enderror">
+                                    class="form-control @error('category_id') is-invalid @enderror">
                                     <option value="" selected disabled>Chọn danh mục</option>
                                     @foreach ($category as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach
                                 </select>
-                                @error('sub_category_id')
+                                @error('category_id')
                                     <em class="text-danger" style="">{{ $message }}</em>
                                 @enderror
                             </div>
@@ -71,12 +71,15 @@
                         <div class="form-group">
                             <label class="control-label" for="">Thương hiệu</label>
                             <div class="mb-2">
-                                <select name="brand_id" class="form-control">
+                                <select name="brand_id" class="form-control @error('brand_id') is-invalid @enderror">
                                     <option value="" selected disabled>Chọn thương hiện</option>
                                     @foreach ($brand as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach
                                 </select>
+                                @error('brand_id')
+                                    <em class="text-danger" style="">{{ $message }}</em>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -87,14 +90,19 @@
                     <div class="d-flex">
                         @foreach ($color as $item)
                             <div class="form-check pr-3">
-                                <input class="form-check-input" value="{{ $item->id }}" name="color_id[]"
-                                    type="checkbox" id="check-{{ $item->id }}">
+                                <input class="form-check-input"
+                                    {{ is_array(old('color_id')) && in_array($item->id, old('color_id')) ? 'checked' : '' }}
+                                    value="{{ $item->id }}" name="color_id[]" type="checkbox"
+                                    id="check-{{ $item->id }}">
                                 <label class="form-check-label" for="check-{{ $item->id }}">
                                     {{ $item->name }}
                                 </label>
                             </div>
                         @endforeach
                     </div>
+                    @error('color_id')
+                        <em class="text-danger" style="">{{ $message }}</em>
+                    @enderror
                 </div>
 
                 <div class="row">
@@ -102,7 +110,8 @@
                         <div class="form-group">
                             <label class="control-label" for="">Giá cũ</label>
                             <div class="mb-2">
-                                <input type="text" id="" class="form-control" name="old_price"
+                                <input type="text" id=""
+                                    class="form-control @error('old_price') is-invalid @enderror" name="old_price"
                                     placeholder="Điền ..." value ="{{ old('old_price') }}" />
                                 @error('old_price')
                                     <em class="text-danger" style="">{{ $message }}</em>
@@ -114,7 +123,8 @@
                         <div class="form-group">
                             <label class="control-label" for="">Giá</label>
                             <div class="mb-2">
-                                <input type="text" id="" class="form-control" name="price"
+                                <input type="text" id=""
+                                    class="form-control @error('price') is-invalid @enderror" name="price"
                                     placeholder="Điền ..." value ="{{ old('price') }}" />
                                 @error('price')
                                     <em class="text-danger" style="">{{ $message }}</em>
@@ -124,14 +134,35 @@
                     </div>
                 </div>
 
-                <div class=" mb-3">
+                <style>
+                    .delete_image__product {
+                        position: absolute;
+                        top: 24px;
+                        right: 30px;
+                    }
+
+                    .close_image {
+                        font-size: 16px;
+                        color: #f00;
+                        font-weight: 700;
+                        cursor: pointer;
+                    }
+                </style>
+
+                <div class="mb-3">
                     <label class="control-label" for="">Hình ảnh</label>
-                    <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="customFile" name="image[]" multiple accept="image/*">
-                        <label class="custom-file-label" for="customFile">Choose file</label>
-                    </div>
+                    <input type="file" class="form-control @error('image') is-invalid @enderror"
+                        onchange="previewImages(this)" id="image" name="image[]" value="{{ old('image') }}"
+                        multiple accept="image/*">
+                    @error('image')
+                        <em class="text-danger" style="">{{ $message }}</em>
+                    @enderror
+                </div>
+                <div class="row" id="image-preview">
+                    <!-- Placeholder for preview images -->
                 </div>
 
+            
 
                 <label for="">Size</label>
                 <table class="table table-hover ">
@@ -189,9 +220,6 @@
                     <div class="mb-2">
                         <textarea id="additional_information" class="form-control" name="additional_information" placeholder="Điền ...">
                         </textarea>
-                        @error('additional_information')
-                            <em class="text-danger" style="">{{ $message }}</em>
-                        @enderror
                     </div>
                 </div>
 

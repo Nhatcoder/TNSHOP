@@ -13,52 +13,6 @@
         </script>
     @endif
 
-    @foreach ($product as $find_id)
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                var btn_delete = document.getElementById('btn_delete-{{ $find_id->id }}');
-                btn_delete.addEventListener('click', function(e) {
-                    e.preventDefault()
-                    const swalWithBootstrapButtons = Swal.mixin({
-                        customClass: {
-                            confirmButton: "btn btn-success",
-                            cancelButton: "btn btn-danger"
-                        },
-                        buttonsStyling: false
-                    });
-                    swalWithBootstrapButtons.fire({
-                        title: "Bạn có muốn xóa không ?",
-                        text: "Bạn sẽ không thể hoàn nguyên điều này!!",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonText: "Vâng, Chắc chắn !",
-                        cancelButtonText: "Hủy!",
-                        reverseButtons: true
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            var form = document.getElementById('form_delete');
-                            if (form) {
-                                form.action = "{{ route('product.destroy', $find_id->id) }}";
-                                form.submit();
-                            }
-                        } else if (
-                            /* Read more about handling dismissals below */
-                            result.dismiss === Swal.DismissReason.cancel
-                        ) {
-                            swalWithBootstrapButtons.fire({
-                                title: "Đã hủy",
-                                text: "Xóa không thành công !",
-                                icon: "error",
-                                showConfirmButton: false,
-                                timer: 1400
-                            });
-                        }
-                    });
-                });
-            });
-        </script>
-    @endforeach
-
     <!-- begin row -->
     <div class="row">
         <div class="col-md-12 m-b-30">
@@ -118,8 +72,8 @@
                                 @foreach ($product as $key => $item)
                                     <tr>
                                         <td>{{ $key + 1 }}</td>
-                                        <td>{{ $item->title }}</td>
-                                        <td>{{ $item->slug }}</td>
+                                        <td>{{ Illuminate\Support\Str::limit($item->title, 20, '...') }}</td>
+                                        <td>{{ Illuminate\Support\Str::limit($item->slug, 20, '...') }}</td>
                                         <td>{{ $item->category_name }}</td>
                                         <td>{{ $item->sub_category_name }}</td>
                                         <td>{{ $item->brand_name }}</td>
@@ -130,7 +84,8 @@
                                             {{ strlen($item->short_description) >= 50 ? substr($item->short_description, 0, 50) . '...' : $item->short_description }}
                                         </td>
                                         <td>{{ Illuminate\Support\Str::limit($item->description, 50, '...') }}</td>
-                                        <td>{{ Illuminate\Support\Str::limit($item->additional_information, 50, '...') }}</td>
+                                        <td>{{ Illuminate\Support\Str::limit($item->additional_information, 50, '...') }}
+                                        </td>
                                         <td>
                                             {{ strlen($item->shipping_returns) >= 50 ? substr($item->shipping_returns, 0, 50) . '...' : $item->shipping_returns }}
                                         </td>
@@ -146,13 +101,8 @@
                                             <div class="d-flex">
                                                 <a href="{{ route('product.edit', ['product' => $item->id]) }}"
                                                     class="btn btn-info  ">Sửa</a>
-
-                                                <form id="form_delete" method="post">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="button" id="btn_delete-{{ $item->id }}"
-                                                        class="btn btn-danger">Xóa</button>
-                                                </form>
+                                                <button type="button" data-id="{{ $item->id }}"
+                                                    class="btn btn-danger delete-product">Xóa</button>
                                             </div>
                                         </td>
                                     </tr>
@@ -167,32 +117,99 @@
     <!-- end row -->
 
     <script>
-        const container = document.querySelector('.list-products');
-        let isDragging = false;
-        let startX;
-        let scrollLeft;
+        (function() {
+            const container = document.querySelector('.list-products');
+            let isDragging = false;
+            let startX;
+            let scrollLeft;
 
-        container.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            startX = e.pageX - container.offsetLeft;
-            scrollLeft = container.scrollLeft;
-        });
+            container.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                startX = e.pageX - container.offsetLeft;
+                scrollLeft = container.scrollLeft;
+            });
 
-        container.addEventListener('mouseleave', () => {
-            isDragging = false;
-        });
+            container.addEventListener('mouseleave', () => {
+                isDragging = false;
+            });
 
-        container.addEventListener('mouseup', () => {
-            isDragging = false;
-        });
+            container.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
 
-        container.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            e.preventDefault();
-            const x = e.pageX - container.offsetLeft;
-            const walk = (x - startX) * 2;
-            container.scrollLeft = scrollLeft - walk;
-        });
+            container.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+                const x = e.pageX - container.offsetLeft;
+                const walk = (x - startX) * 2;
+                container.scrollLeft = scrollLeft - walk;
+            });
+        }())
+
+        // delete product
+        $(document).ready(function() {
+            $(".delete-product").each(function() {
+                $(this).click(function() {
+                    var id = $(this).attr('data-id');
+
+                    var row = $(this).closest('tr');
+
+                    const swalWithBootstrapButtons = Swal.mixin({
+                        customClass: {
+                            confirmButton: "btn btn-success",
+                            cancelButton: "btn btn-danger"
+                        },
+                        buttonsStyling: false
+                    });
+                    swalWithBootstrapButtons.fire({
+                        title: "Bạn có muốn xóa không ?",
+                        text: "Bạn sẽ không thể hoàn nguyên điều này!!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonText: "Xóa",
+                        cancelButtonText: "Hủy",
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            row.fadeOut();
+
+                            $.ajax({
+                                url: "{{ route('product.destroy', ':id') }}"
+                                    .replace(':id', id),
+                                type: 'DELETE',
+                                data: {
+                                    _token: "{{ csrf_token() }}",
+                                },
+                                success: function(response) {
+                                    swalWithBootstrapButtons.fire({
+                                        title: "Đã xóa",
+                                        text: "Xóa không thành công !",
+                                        icon: "success",
+                                        showConfirmButton: false,
+                                        timer: 1400
+                                    });
+                                }
+                            })
+
+
+                        } else if (
+                            /* Read more about handling dismissals below */
+                            result.dismiss === Swal.DismissReason.cancel
+                        ) {
+                            swalWithBootstrapButtons.fire({
+                                title: "Đã hủy",
+                                text: "Xóa không thành công !",
+                                icon: "error",
+                                showConfirmButton: false,
+                                timer: 1400
+                            });
+                        }
+                    });
+
+
+                })
+            })
+        })
     </script>
 
 @endsection

@@ -77,13 +77,16 @@
                         <div class="form-group">
                             <label class="control-label" for="">Thương hiệu</label>
                             <div class="mb-2">
-                                <select name="brand_id" class="form-control">
+                                <select name="brand_id" class="form-control  @error('brand_id') is-invalid @enderror">
                                     <option value="" selected disabled>Chọn thương hiện</option>
                                     @foreach ($brand as $item)
                                         <option {{ $product->brand_id == $item->id ? 'selected' : '' }}
                                             value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach
                                 </select>
+                                @error('brand_id')
+                                    <em class="text-danger" style="">{{ $message }}</em>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -103,14 +106,19 @@
                                 }
                             @endphp
                             <div class="form-check pr-3">
-                                <input {{ $check }} class="form-check-input" value="{{ $item->id }}"
-                                    name="color_id[]" type="checkbox" id="check-{{ $item->id }}">
+                                <input {{ $check }}
+                                    class="@error('color_id') is-invalid @enderror form-check-input "
+                                    value="{{ $item->id }}" name="color_id[]" type="checkbox"
+                                    id="check-{{ $item->id }}">
                                 <label class="form-check-label" for="check-{{ $item->id }}">
                                     {{ $item->name }}
                                 </label>
                             </div>
                         @endforeach
                     </div>
+                    @error('color_id')
+                        <em class="text-danger" style="">{{ $message }}</em>
+                    @enderror
                 </div>
 
                 <div class="row">
@@ -118,7 +126,8 @@
                         <div class="form-group">
                             <label class="control-label" for="">Giá cũ</label>
                             <div class="mb-2">
-                                <input type="text" id="" class="form-control" name="old_price"
+                                <input type="text" id=""
+                                    class="form-control @error('old_price') is-invalid @enderror" name="old_price"
                                     placeholder="Điền ..." value ="{{ old('old_price', $product->old_price) }}" />
                                 @error('old_price')
                                     <em class="text-danger" style="">{{ $message }}</em>
@@ -130,7 +139,8 @@
                         <div class="form-group">
                             <label class="control-label" for="">Giá</label>
                             <div class="mb-2">
-                                <input type="text" id="" class="form-control" name="price"
+                                <input type="text" id=""
+                                    class="form-control @error('price') is-invalid @enderror" name="price"
                                     placeholder="Điền ..." value ="{{ old('price', $product->price) }}" />
                                 @error('price')
                                     <em class="text-danger" style="">{{ $message }}</em>
@@ -142,21 +152,47 @@
 
                 <div class=" mb-3">
                     <label class="control-label" for="">Hình ảnh</label>
-                    <input type="file" class="form-control " name="image[]" multiple accept="image/*">
+                    <input type="file" class="form-control " onchange="previewImages(this)" id="image"
+                        name="image[]" value="{{ old('image') }}" multiple accept="image/*">
                 </div>
 
-                @php
-                    // dd();
-                @endphp
+                <style>
+                    .delete_image__product {
+                        position: absolute;
+                        top: 0px;
+                        padding: 25px;
+                        right: 0px;
+                        cursor: pointer;
+                    }
+
+                    .close_image {
+                        font-size: 16px;
+                        color: #f00;
+                        font-weight: 700;
+                    }
+
+                    .sort_image {
+                        cursor: move;
+                    }
+                </style>
+
+                <div class="row" id="image-preview">
+
+                </div>
+
                 @if (!empty($product->productImage->count()))
-                    <div class="row">
+                    <div class="row" id="sort_image">
                         @foreach ($product->productImage as $image)
                             @if (!empty($image->checkImage()))
-                                <div class="col-2 py-3">
-                                    <img class="w-100 h-100" src="{{ $image->checkImage() }}" alt="">
-                                    {{-- <a href="{{ url('admin/product/delete-image/'. $image->id) }}" data-id="{{ $image->id }}" class="btn-sm btn-danger delete_img-{{ $image->id }}">Xóa</a> --}}
-                                    <button type="button" route="{{ url('admin/product/delete-image/' . $image->id) }}"
-                                        data-id="{{ $image->id }}" class="btn-sm btn-danger delete_img">Xóa</button>
+                                <div class="col-2 m-3 border sort_image" id="image_preview_{{ $image->id }}"
+                                    data-id="{{ $image->id }}">
+                                    <img class="w-100" style="height: 200px;" src="{{ $image->checkImage() }}"
+                                        alt="{{ $image->name }}">
+                                    <div class="delete_image__product delete_img"
+                                        route="{{ url('admin/product/delete-image/' . $image->id) }}"
+                                        data-id="{{ $image->id }}">
+                                        <i class="close_image ti ti-close"></i>
+                                    </div>
                                 </div>
                             @endif
                         @endforeach
@@ -257,13 +293,13 @@
                     <button type="submit" class="btn btn-primary">Cập nhật</button>
                     <a href="{{ route('product.index') }}" class="btn btn-info ">Quay lại</a>
                 </div>
-
             </form>
         </div>
     </div>
 
 
     <script>
+        // editer
         $('#additional_information').summernote({
             tabsize: 2,
             height: 100
@@ -271,12 +307,12 @@
 
         $('#description').summernote({
             tabsize: 2,
-            height: 200
+            height: 100
         });
 
         $('#shipping_returns').summernote({
-            tabsize: 2,
-            height: 100
+            tabsize: 1,
+            height: 200
         });
 
 
@@ -303,37 +339,58 @@
         })
 
 
+
+
+        // Sắp xếp ảnh
+        $(document).ready(function() {
+            $("#sort_image").sortable({
+
+                update: function() {
+                    var photo_id = [];
+                    $("#sort_image .sort_image").each(function() {
+                        var id = $(this).data("id");
+                        // console.log(id);
+                        photo_id.push(id);
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timer: 1500,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.onmouseenter = Swal.stopTimer;
+                                toast.onmouseleave = Swal.resumeTimer;
+                            }
+                        });
+                        Toast.fire({
+                            icon: "success",
+                            title: "Ảnh đã sắp xếp thành công"
+                        });
+                    });
+
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('oderByImage') }}",
+                        data: {
+                            "photo_id": photo_id,
+                            "_token": "{{ csrf_token() }}"
+                        },
+                        dataType: "json",
+                        success: function(data) {
+                            console.log(data);
+                        },
+                        error: function(data) {
+                            console.log(data);
+                        }
+
+                    })
+                    console.log(photo_id);
+                }
+            });
+
+        })
+
         // get sub category
-        // $(document).ready(function() {
-        //     var change = function() {
-        //         $('#ChangeCategory').on('change', function() {
-        //             var id = $(this).val();
-        //             $.ajax({
-        //                 type: "POST",
-        //                 url: "{{ url('admin/get_sub_category') }}",
-        //                 data: {
-        //                     id: id,
-        //                     _token: '{{ csrf_token() }}'
-        //                 },
-        //                 dataType: "json",
-        //                 success: function(data) {
-        //                     $('#getSubCategory').html(data);
-        //                 },
-        //                 error: function(data) {
-        //                     // Xử lý lỗi nếu có
-        //                 }
-        //             });
-        //         });
-
-        //         // Lấy giá trị của option đã được chọn mặc định
-        //         var defaultId = $('#ChangeCategory').val();
-
-        //         // Kích hoạt sự kiện change khi trang được tải lần đầu
-        //         $('#ChangeCategory').val(defaultId).trigger('change');
-        //     };
-
-        //     change();
-        // });
         $(document).ready(function() {
             $('#ChangeCategory').on('change', function() {
                 var id = $(this).val();
@@ -356,73 +413,134 @@
             })
         })
 
+
         // Xóa ảnh ajax
-        $(document).ready(function() {
-            var btn_delete = $('.delete_img');
-            btn_delete.each(function() {
-                var id = $(this).attr('data-id');
-                var route = $(this).attr('route');
-                // console.log(route);
-                $(this).on('click', function(e) {
-                    e.preventDefault();
+        // $(document).ready(function() {
+        //     var btn_delete = $('.delete_img');
+        //     btn_delete.each(function() {
+        //         var id = $(this).attr('data-id');
+        //         var route = $(this).attr('route');
+        //         // console.log(route);
+        //         $(this).on('click', function(e) {
+        //             e.preventDefault();
 
-                    const swalWithBootstrapButtons = Swal.mixin({
-                        customClass: {
-                            confirmButton: "btn btn-success",
-                            cancelButton: "btn btn-danger"
-                        },
-                        buttonsStyling: false
-                    });
-                    swalWithBootstrapButtons.fire({
-                        title: "Bạn có muốn xóa không ?",
-                        text: "Bạn sẽ không thể hoàn nguyên điều này!!",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonText: "Xóa",
-                        cancelButtonText: "Hủy",
-                        reverseButtons: true
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $.ajax({
-                                type: "GET",
-                                url: route,
-                                data: {
-                                    id: id,
-                                },
-                                success: function() {
-                                    Swal.fire({
-                                        icon: "success",
-                                        title: "Xóa ảnh thành công",
-                                        showConfirmButton: false,
-                                        timer: 1000
-                                    }).then(function() {
-                                        setTimeout(function() {
-                                            location.reload();
-                                        }, 1);
-                                    });
-                                },
-                                error: function(data) {
+        //             const swalWithBootstrapButtons = Swal.mixin({
+        //                 customClass: {
+        //                     confirmButton: "btn btn-success",
+        //                     cancelButton: "btn btn-danger"
+        //                 },
+        //                 buttonsStyling: false
+        //             });
+        //             swalWithBootstrapButtons.fire({
+        //                 title: "Bạn có muốn xóa không ?",
+        //                 text: "Bạn sẽ không thể hoàn nguyên điều này!!",
+        //                 icon: "warning",
+        //                 showCancelButton: true,
+        //                 confirmButtonText: "Xóa",
+        //                 cancelButtonText: "Hủy",
+        //                 reverseButtons: true
+        //             }).then((result) => {
+        //                 if (result.isConfirmed) {
+        //                     $.ajax({
+        //                         type: "GET",
+        //                         url: route,
+        //                         data: {
+        //                             id: id,
+        //                         },
+        //                         success: function() {
+        //                             Swal.fire({
+        //                                 icon: "success",
+        //                                 title: "Xóa ảnh thành công",
+        //                                 showConfirmButton: false,
+        //                                 timer: 1000
+        //                             }).then(function() {
+        //                                 setTimeout(function() {
+        //                                     location.reload();
+        //                                 }, 1);
+        //                             });
+        //                         },
+        //                         error: function(data) {
 
-                                }
+        //                         }
 
+        //                     })
+
+        //                 } else if (
+        //                     /* Read more about handling dismissals below */
+        //                     result.dismiss === Swal.DismissReason.cancel
+        //                 ) {
+        //                     swalWithBootstrapButtons.fire({
+        //                         title: "Đã hủy",
+        //                         text: "Xóa không thành công !",
+        //                         icon: "error",
+        //                         showConfirmButton: false,
+        //                         timer: 1400
+        //                     });
+        //                 }
+        //             });
+
+        //         });
+        //     });
+        // });
+    </script>
+
+    <script type="module">
+        var btn_delete = $('.delete_img');
+        btn_delete.each(function() {
+            var id = $(this).attr('data-id');
+            var route = $(this).attr('route');
+            $(this).on('click', function(e) {
+                const swalWithBootstrapButtons = Swal.mixin({
+                    customClass: {
+                        confirmButton: "btn btn-success",
+                        cancelButton: "btn btn-danger"
+                    },
+                    buttonsStyling: false
+                });
+                swalWithBootstrapButtons.fire({
+                    title: "Bạn có muốn xóa không ?",
+                    text: "Xóa không thể hoàn nguyên điều này!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Xóa",
+                    cancelButtonText: "Hủy",
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        axios.post(route)
+                            .then(function() {
+                                swalWithBootstrapButtons.fire({
+                                    title: "Xóa thành công !",
+                                    text: "Đã xóa ảnh",
+                                    icon: "success",
+                                    showConfirmButton: false,
+                                    timer: 1400
+                                });
                             })
 
-                        } else if (
-                            /* Read more about handling dismissals below */
-                            result.dismiss === Swal.DismissReason.cancel
-                        ) {
-                            swalWithBootstrapButtons.fire({
-                                title: "Đã hủy",
-                                text: "Xóa không thành công !",
-                                icon: "error",
-                                showConfirmButton: false,
-                                timer: 1400
-                            });
-                        }
-                    });
-
+                    } else if (
+                        /* Read more about handling dismissals below */
+                        result.dismiss === Swal.DismissReason.cancel
+                    ) {
+                        swalWithBootstrapButtons.fire({
+                            title: "Đã hủy thành công !",
+                            text: "Hủy thành công",
+                            icon: "error",
+                            showConfirmButton: false,
+                            timer: 1400
+                        });
+                    }
                 });
+
             });
-        });
+
+        })
+
+        Echo.channel('delete-image-product')
+            .listen('DeleteImageProduct', (e) => {
+                console.log(e);
+                let product = $('#image_preview_' + e.image.id);
+                product.remove();
+            })
     </script>
 @endsection
