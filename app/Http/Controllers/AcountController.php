@@ -80,7 +80,7 @@ class AcountController extends Controller
     public function acountDeleteAddress()
     {
         Address::where('id', $_POST['id'])->delete();
-        $getAddress = Address::where("user_id", auth()->user()->id)->OrderBy("type", "1")->OrderBy('id', 'desc')->get();
+        $getAddress = Address::where("user_id", auth()->user()->id)->OrderBy("type", "desc")->OrderBy('id', 'desc')->get();
 
         $view = view("user.acount.address.list", [
             "address" => $getAddress

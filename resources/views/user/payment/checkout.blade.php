@@ -45,7 +45,7 @@
                         @csrf
                         <div class="row">
                             <div class="col-lg-8">
-                                <h2 class="checkout-title">Địa chỉ giao hàng</h2>
+                                <h2 class="checkout-title">Địa chỉ nhận hàng</h2>
                                 <div class="render_address_default">
                                     @include('user.payment.address_default')
                                 </div>
@@ -138,8 +138,8 @@
 
                                     <div class="accordion-summary" id="accordion-payment">
                                         <div class="custome-control custom-radio payment_item">
-                                            <input type="radio" name="payment_method" value="cash" @checked(true) class="type_payment"
-                                                id="payment_cash">
+                                            <input type="radio" name="payment_method" value="cash"
+                                                @checked(true) class="type_payment" id="payment_cash">
                                             <label class="custome-control-label label_payment" for="payment_cash">Tiền
                                                 mặt</label>
                                         </div>
@@ -159,19 +159,21 @@
                                     </div>
 
                                     <!-- End .accordion -->
-                                    @if (Auth::check())
-                                        <button type="submit" name="redirect"
-                                            class="btn btn-outline-primary-2 btn-order btn-block">
-                                            <span class="btn-text">Đặt hàng</span>
-                                            <span class="btn-hover-text">Đặt hàng</span>
-                                        </button>
-                                    @else
-                                        <a id="btnLoginCheckout" href="#signin-modal" data-toggle="modal"
-                                            class="btn btn-outline-primary-2 btn-order btn-block">
-                                            <span class="btn-text">Đặt hàng</span>
-                                            <span class="btn-hover-text">Đặt hàng</span>
-                                        </a>
-                                    @endif
+                                    <div class="render_btn_place_order">
+                                        @if ($addressDefault)
+                                            <button type="submit" name="redirect"
+                                                class="btn btn-outline-primary-2 btn-order btn-block">
+                                                <span class="btn-text">Đặt hàng</span>
+                                                <span class="btn-hover-text">Đặt hàng</span>
+                                            </button>
+                                        @else
+                                            <a href="#add-address" id="auto_new_address" data-toggle="modal"
+                                                class="btn btn-outline-primary-2 btn-order btn-block">
+                                                <span class="btn-text">Đặt hàng</span>
+                                                <span class="btn-hover-text">Đặt hàng</span>
+                                            </a>
+                                        @endif
+                                    </div>
                                 </div>
                                 <!-- End .summary -->
                             </aside>
@@ -198,7 +200,7 @@
                     </button>
                     <div class="form-box">
                         <div class="modal-header">
-                            <h5 class="modal-title">Địa chỉ của tôi</h5>
+                            <h5 class="modal-title">Địa chỉ nhận hàng</h5>
                             <a href="#add-address" data-toggle="modal" class="pr-5 mr-5 text-info"><b>Thêm mới</b></a>
                         </div>
                         <div class="render_address_checkout">
@@ -210,6 +212,7 @@
             </div>
         </div>
     </div>
+
 
     {{-- add address --}}
     <div class="modal fade" id="add-address" tabindex="-1" role="dialog" aria-hidden="true">
@@ -312,6 +315,10 @@
 @section('script')
     <script>
         $(document).ready(function() {
+            // auto complete newaddress
+            $("#auto_new_address").click();
+
+
             // address checkout
             let data = {};
             $.ajax({
@@ -513,11 +520,25 @@
                                 title: "Thêm địa chỉ thành công",
                                 icon: "success",
                                 showConfirmButton: false,
-                                timer: 1800
+                                timer: 1600
                             });
+
+
 
                             $(".btn-outline-info").click();
                             $(".render_address_checkout").html(response.view);
+                            $(".render_address_default").html(response.viewAddressDefault);
+
+                            var btn_html = `
+                                <button type="submit" name="redirect"
+                                    class="btn btn-outline-primary-2 btn-order btn-block">
+                                    <span class="btn-text">Đặt hàng</span>
+                                    <span class="btn-hover-text">Đặt hàng</span>
+                                </button>
+                            `
+                            $(".render_btn_place_order").html(btn_html);
+
+
                         },
                         error: function(xhr, status, error) {
                             console.error('There was a problem with the AJAX request:', status,
@@ -673,13 +694,14 @@
                                 $("#edit_phone_address").removeClass("is-invalid");
                             }
 
-                            if(edit_district == null){
+                            if (edit_district == null) {
                                 $("#district_edit").addClass("is-invalid");
-                                $("#error_edit_district").text("Vui lòng chọn quận huyện!");
+                                $("#error_edit_district").text(
+                                    "Vui lòng chọn quận huyện!");
                                 $("#edit_district").focus();
                                 isValidEdit = false;
                             }
-                            if(edit_ward == null){
+                            if (edit_ward == null) {
                                 $("#ward_edit").addClass("is-invalid");
                                 $("#error_edit_ward").text("Vui lòng chọn phường xã!");
                                 $("#ward_edit").focus();

@@ -23,6 +23,7 @@
                 <a href="#edit-address" data-toggle="modal" data-id="{{ $ad->id }}"
                     class="btn_edit_address"><b>Sửa</b> <i class="icon-edit"></i>
                 </a>
+                
                 <b class="text-danger btn_delete_address ps-2" style="cursor: pointer"
                     data-id="{{ $ad->id }}">Xóa<i class="fa-solid fa-trash"
                         style="font-size: 11px;position: relative;top: -1px; padding-left: 2px;"></i>

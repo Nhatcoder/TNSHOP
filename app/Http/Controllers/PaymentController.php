@@ -164,7 +164,7 @@ class PaymentController extends Controller
         return view('user.payment.checkout', compact('addressDefault', 'address'));
     }
 
-    // add new address
+    // address default
     public function checkOutAddressDefault(Request $request)
     {
         if (!empty($request->id)) {
@@ -246,25 +246,52 @@ class PaymentController extends Controller
         }
     }
 
+    // new address
     public function checkOutNewAddress(Request $request)
     {
-        $address = new Address();
-        $address->user_id = auth()->user()->id;
-        $address->name = $request->name_address;
-        $address->phone = $request->phone_address;
-        $address->city = $request->city;
-        $address->district = $request->district;
-        $address->ward = $request->ward;
-        $address->home_address = $request->home_address;
-        $address->save();
+        $addressCount = Address::where('user_id', Auth::user()->id)->get();
+        if (count($addressCount) > 0) {
+            $address = new Address();
+            $address->user_id = auth()->user()->id;
+            $address->name = $request->name_address;
+            $address->phone = $request->phone_address;
+            $address->city = $request->city;
+            $address->district = $request->district;
+            $address->ward = $request->ward;
+            $address->home_address = $request->home_address;
+            $address->save();
+        } else {
+            $address = new Address();
+            $address->user_id = auth()->user()->id;
+            $address->name = $request->name_address;
+            $address->phone = $request->phone_address;
+            $address->city = $request->city;
+            $address->district = $request->district;
+            $address->ward = $request->ward;
+            $address->home_address = $request->home_address;
+            $address->type = 1;
+            $address->save();
+        }
 
-        $getAddress = Address::where('user_id', Auth::user()->id,)->orderBy('type', 'desc')->orderBy('id', 'desc')->get();
+
+        $getAddress = Address::where('user_id', Auth::user()->id)->orderBy('type', 'desc')->orderBy('id', 'desc')->get();
 
         $view = view("user.payment.list_address_checkout", [
             "address" => $getAddress
         ])->render();
 
-        $countAddress = count($getAddress);
+        $addressDefault = Address::where('user_id', Auth::user()->id)->where('type', 1)->first();
+        $viewAddressDefault = view("user.payment.address_default", [
+            "addressDefault" => $addressDefault
+        ])->render();
+
+        if ($addressDefault) {
+            return response()->json([
+                'view' => $view,
+                'viewAddressDefault' => $viewAddressDefault,
+                'status' => 'success'
+            ], 200);
+        }
 
         return response()->json([
             'view' => $view,
@@ -314,17 +341,19 @@ class PaymentController extends Controller
         }
 
         $findAddress = Address::find($request->address_id);
-        // dd($findAddress);
+        $merge_info_order = array_merge($request->all(), $findAddress->toArray());
 
-        Session::put('info_order', $request->all());
+        Session::put('info_order', $merge_info_order);
         Session::save();
 
         if ($request->payment_method == 'cash') {
             $total = Cart::getTotal();
 
             $newTotal = 0;
-            if (!empty($findAddress)) {
-                $check_discountCosde = DiscountCode::checkDiscount($findAddress->discount_code);
+            $deducted_amount = 0;
+
+            if (!empty($request->discount_code)) {
+                $check_discountCosde = DiscountCode::checkDiscount($request->discount_code);
                 if (!empty($check_discountCosde)) {
                     if ($check_discountCosde->type == 'percent') {
                         $deducted_amount = ($check_discountCosde->percent_amount / 100) * $total;
@@ -334,6 +363,8 @@ class PaymentController extends Controller
                         $deducted_amount = $total - $newTotal;
                     }
                 }
+            } else {
+                $newTotal = $total;
             }
 
             $order = new Order();
@@ -347,10 +378,11 @@ class PaymentController extends Controller
             $order->home_address = $findAddress->home_address;
             $order->payment = $request->payment_method;
             $order->discount_code = $request->discount_code;
-            $order->total_amount = $newTotal;
+            $order->total_price = $newTotal;
+            $order->total_amount = $deducted_amount;;
             $order->note = $request->note;
 
-            // $order->save();
+            $order->save();
             $order_id = $order->id;
 
             foreach (Cart::getContent() as $item) {
@@ -370,21 +402,15 @@ class PaymentController extends Controller
                 }
 
                 $order_item->total_price = $item->price;
-                // $order_item->save();
+                $order_item->save();
             }
+
             $user = auth()->user();
+            $dataOrder = Cart::getContent();
 
-            // return response()->json($user->email);
-            OrderUserSuccess::dispatch($user);
-            // $email = new OrderUser($user);
+            OrderUserSuccess::dispatch($user, $dataOrder, $order);
 
-            // Mail::to('nhatcaca2004@gmail.com')->send(new OrderUser($user));
-
-
-            // Mail::to('nhatcaca2004@gmail.com')->send(new MailOrder($user));
-
-
-            // Cart::clear();
+            Cart::clear();
             return view('user.thank.payment_success');
         } elseif ($request->payment_method == 'vnpay') {
 
@@ -455,7 +481,6 @@ class PaymentController extends Controller
                 echo json_encode($returnData);
             }
         } elseif ($request->payment_method == 'momo') {
-            echo "Thanh toán bằng momo";
 
             header('Content-type: text/html; charset=utf-8');
             function execPostRequest($url, $data)
@@ -534,6 +559,7 @@ class PaymentController extends Controller
             $total = Cart::getTotal();
 
             $newTotal = 0;
+            $deducted_amount = 0;
             if (!empty($info_order['discount_code'])) {
                 $check_discountCosde = DiscountCode::checkDiscount($info_order['discount_code']);
                 if (!empty($check_discountCosde)) {
@@ -545,6 +571,8 @@ class PaymentController extends Controller
                         $deducted_amount = $total - $newTotal;
                     }
                 }
+            } else {
+                $newTotal = $total;
             }
 
             $order = new Order();
@@ -558,7 +586,8 @@ class PaymentController extends Controller
             $order->home_address = $info_order['home_address'];
             $order->payment = $info_order['payment_method'];
             $order->discount_code = $info_order['discount_code'];
-            $order->total_amount = $newTotal;
+            $order->total_price = $newTotal;
+            $order->total_amount = $deducted_amount;;
             $order->note = $info_order['note'];
 
             $order->save();
@@ -585,7 +614,10 @@ class PaymentController extends Controller
             }
 
             $user = auth()->user();
-            OrderUserSuccess::dispatch($user);
+            $dataOrder = Cart::getContent();
+
+            OrderUserSuccess::dispatch($user, $dataOrder, $order);
+
             Cart::clear();
             return view('user.thank.payment_success');
         } else {
@@ -600,6 +632,8 @@ class PaymentController extends Controller
             $total = Cart::getTotal();
 
             $newTotal = 0;
+            $deducted_amount = 0;
+
             if (!empty($info_order['discount_code'])) {
                 $check_discountCosde = DiscountCode::checkDiscount($info_order['discount_code']);
                 if (!empty($check_discountCosde)) {
@@ -611,6 +645,8 @@ class PaymentController extends Controller
                         $deducted_amount = $total - $newTotal;
                     }
                 }
+            } else {
+                $newTotal = $total;
             }
 
             $order = new Order();
@@ -624,7 +660,8 @@ class PaymentController extends Controller
             $order->home_address = $info_order['home_address'];
             $order->payment = $info_order['payment_method'];
             $order->discount_code = $info_order['discount_code'];
-            $order->total_amount = $newTotal;
+            $order->total_price = $newTotal;
+            $order->total_amount = $deducted_amount;;
             $order->note = $info_order['note'];
 
             $order->save();
@@ -651,7 +688,10 @@ class PaymentController extends Controller
             }
 
             $user = auth()->user();
-            OrderUserSuccess::dispatch($user);
+            $dataOrder = Cart::getContent();
+
+            OrderUserSuccess::dispatch($user, $dataOrder, $order);
+            
             Cart::clear();
             return view('user.thank.payment_success');
         } else {

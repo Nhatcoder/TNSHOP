@@ -12,6 +12,7 @@ use Laravel\Ui\Presets\React;
 
 class IndexController extends Controller
 {
+
     public function index()
     {
         $category = Category::with('sub_category')->get();

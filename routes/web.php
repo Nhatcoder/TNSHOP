@@ -77,22 +77,24 @@ Route::middleware('check.auth')->group(function () {
     Route::post('account/edit_address', [AcountController::class, 'acountEditAddress'])->name("acountEditAddress");
     Route::post('account/update_address', [AcountController::class, 'acountUpdateAddress'])->name("acountUpdateAddress");
     Route::post('account/address_default', [AcountController::class, 'acountAddressDefault'])->name("acountAddressDefault");
-    
+
     Route::post('check-out/address_new', [PaymentController::class, 'checkOutNewAddress'])->name("checkOutNewAddress");
     Route::post('check-out/address_default', [PaymentController::class, 'checkOutAddressDefault'])->name("checkOutAddressDefault");
     Route::post('check-out/address_edit', [PaymentController::class, 'checkOutEditAddress'])->name("checkOutEditAddress");
     Route::post('check-out/address_update', [PaymentController::class, 'checkOutUpdateAddress'])->name("checkOutUpdateAddress");
+
+
+    Route::get('gio-hang', [PaymentController::class, 'cart'])->name("cart");
+    Route::get('thanh-toan', [PaymentController::class, 'checkOut'])->name("checkOut");
+    Route::post('thanh-toan/apply-voucher', [PaymentController::class, 'checkOutApplyVoucher'])->name("checkOutApplyVoucher");
+    Route::post('place-order', [PaymentController::class, 'placeOder'])->name("place_order");
+
+    Route::get('payment-vnpay-success', [PaymentController::class, 'paymentVnpaySuccess'])->name("paymentVnpaySuccess");
+    Route::get('payment-momo-success', [PaymentController::class, 'paymentMomoSuccess'])->name("paymentMomoSuccess");
 });
 
 
 
-Route::get('gio-hang', [PaymentController::class, 'cart'])->name("cart");
-Route::get('thanh-toan', [PaymentController::class, 'checkOut'])->name("checkOut");
-Route::post('thanh-toan/apply-voucher', [PaymentController::class, 'checkOutApplyVoucher'])->name("checkOutApplyVoucher");
-Route::post('place-order', [PaymentController::class, 'placeOder'])->name("place_order");
-
-Route::get('payment-vnpay-success', [PaymentController::class, 'paymentVnpaySuccess'])->name("paymentVnpaySuccess");
-Route::get('payment-momo-success', [PaymentController::class, 'paymentMomoSuccess'])->name("paymentMomoSuccess");
 
 
 Route::post('update-cart', [PaymentController::class, 'updateCart'])->name("updateCart");

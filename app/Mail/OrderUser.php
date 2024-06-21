@@ -19,9 +19,13 @@ class OrderUser extends Mailable
      * Create a new message instance.
      */
     public $user;
-    public function __construct($user)
+    public $dataOrder;
+    public $order;
+    public function __construct($user, $dataOrder, $order)
     {
         $this->user = $user;
+        $this->dataOrder = $dataOrder;
+        $this->order = $order;
     }
 
     /**
@@ -39,7 +43,9 @@ class OrderUser extends Mailable
         return new Content(
             markdown: 'email.order_user',
             with: [
-                'user' => $this->user
+                'user' => $this->user,
+                'dataOrder' => $this->dataOrder,
+                'order' => $this->order,
             ]
         );
     }
@@ -49,9 +55,10 @@ class OrderUser extends Mailable
      *
      * @return array<int, \Illuminate\Mail\Mailables\Attachment>
      */
+    
     public function attachments(): array
     {
-        Log::debug("Đã gửi mail cho người dùng: ". $this->user->email);
+        Log::debug("Đã gửi mail cho người dùng");
         return [];
     }
 }

@@ -25,8 +25,16 @@ class SendMailOrderUser implements ShouldQueue
      */
     public function handle(OrderUserSuccess $event): void
     {
+        Log::debug("MÃ code là: " . $event->order);
+
         $user = $event->user;
-        $email = new OrderUser($user);
-        $user = Mail::to($user->email)->send($email);
+        $dataOrder = $event->dataOrder;
+        $order = $event->order;
+
+        // $email = new OrderUser($user, $dataOrder);
+        // $user = Mail::to($user->email)->send($email);
+
+        Mail::to($user->email)->send(new OrderUser($user, $dataOrder, $order));
+
     }
 }

@@ -21,9 +21,13 @@ class OrderUserSuccess
      */
 
     public $user;
-    public function __construct($user)
+    public $dataOrder;
+    public $order;
+    public function __construct($user, $dataOrder, $order)
     {
         $this->user = $user;
+        $this->dataOrder = $dataOrder;
+        $this->order = $order;
     }
 
     /**
@@ -33,7 +37,7 @@ class OrderUserSuccess
      */
     public function broadcastOn(): array
     {
-        Log::debug("Đã gửi mail cho người dùng: ". $this->user->email);
+        Log::debug("Đã gửi mail cho người dùng: ". $this->order);
         return [
             new PrivateChannel('channel-name'),
         ];

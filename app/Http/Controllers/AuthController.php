@@ -305,8 +305,11 @@ class AuthController extends Controller
                 Auth::login($newUser);
             }
 
-            // return redirect()->route('index');
             // return redirect()->back();
+
+            if ($previousUrl == route('user_auth')) {
+                return redirect()->route('home');
+            }
 
             return redirect()->intended($previousUrl);
         } catch (Exception $e) {
