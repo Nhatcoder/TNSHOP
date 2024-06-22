@@ -30,7 +30,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-9">
-                            <table class="table table-cart table-mobile ">
+                            <table class="table table-cart table-mobile">
                                 <thead>
                                     <tr>
                                         <th>Sản phẩm</th>

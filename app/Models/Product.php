@@ -11,7 +11,17 @@ class Product extends Model
     use HasFactory;
     protected $table = 'product';
 
-    static function getProduct()
+    public static function getProduct()
+    {
+        return self::select('product.*', 'category.name as category_name', 'brand.name as brand_name', 'sub_category.name as sub_category_name')
+            ->join('category', 'product.category_id', '=', 'category.id')
+            ->join('brand', 'product.brand_id', '=', 'brand.id')
+            ->leftJoin('sub_category', 'product.sub_category_id', '=', 'sub_category.id')
+            ->where('product.status', 1)
+            ->orDerBy('id', 'desc')
+            ->paginate(8);
+    }
+    public static function productAll()
     {
         return self::select('product.*', 'category.name as category_name', 'brand.name as brand_name', 'sub_category.name as sub_category_name')
             ->join('category', 'product.category_id', '=', 'category.id')
@@ -20,7 +30,17 @@ class Product extends Model
             ->where('product.status', 1)
             ->orDerBy('id', 'desc')
             ->get();
-        // ->paginate(30);
+    }
+    public static function seeMoreProductHome($limit)
+    {
+        return self::select('product.*', 'category.name as category_name', 'brand.name as brand_name', 'sub_category.name as sub_category_name')
+            ->join('category', 'product.category_id', '=', 'category.id')
+            ->join('brand', 'product.brand_id', '=', 'brand.id')
+            ->leftJoin('sub_category', 'product.sub_category_id', '=', 'sub_category.id')
+            ->where('product.status', 1)
+            ->orDerBy('id', 'desc')
+            ->limit($limit)
+            ->get();
     }
 
     public static  function getProductSingle($id)
@@ -32,6 +52,46 @@ class Product extends Model
     {
         return self::where('slug', $slug)->where("status", "1")->where('is_delete', 1)->first();
     }
+
+    public static function getAllProductByCategoryId($category_id = "")
+    {
+        $return = Product::select('product.*', 'category.name as category_name', 'category.slug as category_slug', 'brand.name as brand_name', 'sub_category.name as sub_category_name', 'sub_category.slug as sub_category_slug')
+            ->join('category', 'product.category_id', '=', 'category.id')
+            ->join('brand', 'product.brand_id', '=', 'brand.id')
+            ->leftJoin('sub_category', 'product.sub_category_id', '=', 'sub_category.id');
+        if (!empty($category_id)) {
+            $return = $return->where('product.category_id', $category_id);
+        }
+
+        $return = $return->where('product.status', 1)
+            ->groupBy('product.id')
+            ->orderBy('product.id', 'desc')
+            ->get();
+        return $return;
+    }
+
+    static function getProductCategoryById($category_id = "", $limit = "")
+    {
+        $return = Product::select('product.*', 'category.name as category_name', 'category.slug as category_slug', 'brand.name as brand_name', 'sub_category.name as sub_category_name', 'sub_category.slug as sub_category_slug')
+            ->join('category', 'product.category_id', '=', 'category.id')
+            ->join('brand', 'product.brand_id', '=', 'brand.id')
+            ->leftJoin('sub_category', 'product.sub_category_id', '=', 'sub_category.id');
+        if (!empty($category_id)) {
+            $return = $return->where('product.category_id', $category_id);
+        }
+
+        $return = $return->where('product.status', 1)
+            ->groupBy('product.id')
+            ->orderBy('product.id', 'desc');
+
+        if (!empty($limit)) {
+            $return = $return->limit($limit)
+                ->get();
+        }
+        return $return;
+    }
+
+
 
     static function getProductBySlug($category_id = "", $subcategory_id = "")
     {
@@ -111,6 +171,10 @@ class Product extends Model
     static function singleImage($product_id)
     {
         return ProductImage::where('product_id', $product_id)->orderBy("order_by", "ASC")->first();
+    }
+    static function limitImage($product_id)
+    {
+        return ProductImage::where('product_id', $product_id)->orderBy("order_by", "ASC")->limit(2)->get();
     }
 
     public function productImage()

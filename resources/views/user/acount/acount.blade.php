@@ -25,16 +25,15 @@
             <div class="dashboard">
                 <div class="container">
                     <div class="row">
-                        <aside class="col-md-4 col-lg-3">
+                        <aside class="col-md-4 col-lg-2">
                             <ul class="nav nav-dashboard flex-column mb-3 mb-md-0" role="tablist">
                                 <li class="nav-item">
-                                    <a class="nav-link active" id="tab-dashboard-link" data-toggle="tab"
-                                        href="#tab-dashboard" role="tab" aria-controls="tab-dashboard"
-                                        aria-selected="true">Hồ sơ</a>
+                                    <a class="nav-link " id="tab-dashboard-link" data-toggle="tab" href="#tab-dashboard"
+                                        role="tab" aria-controls="tab-dashboard" aria-selected="true">Hồ sơ</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="tab-orders-link" data-toggle="tab" href="#tab-orders"
-                                        role="tab" aria-controls="tab-orders" aria-selected="false">Đơn hàng</a>
+                                    <a class="nav-link active" id="tab-orders-link" data-toggle="tab" href="#tab-orders"
+                                        role="tab" aria-controls="tab-orders" aria-selected="false">Đơn mua</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" id="tab-downloads-link" data-toggle="tab" href="#tab-downloads"
@@ -56,7 +55,7 @@
                             </ul>
                         </aside>
 
-                        <div class="col-md-8 col-lg-9">
+                        <div class="col-md-8 col-lg-10">
                             <div class="tab-content">
                                 <div class="tab-pane fade " id="tab-dashboard" role="tabpanel"
                                     aria-labelledby="tab-dashboard-link">
@@ -140,12 +139,150 @@
                                     </form>
                                 </div><!-- .End .tab-pane -->
 
-                                <div class="tab-pane fade" id="tab-orders" role="tabpanel"
+                                <div class="tab-pane fade active show" id="tab-orders" role="tabpanel"
                                     aria-labelledby="tab-orders-link">
-                                    <p>No order has been made yet.</p>
-                                    <a href="category.html" class="btn btn-outline-primary-2"><span>GO SHOP</span><i
-                                            class="icon-long-arrow-right"></i></a>
-                                </div><!-- .End .tab-pane -->
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <ul class="nav nav-pills" id="tabs-5" role="tablist">
+                                                <li class="nav-item">
+                                                    <a class="nav-link active" id="tab-16-tab" data-toggle="tab"
+                                                        href="#tab-16" role="tab" aria-controls="tab-16"
+                                                        aria-selected="true">Tất cả</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" id="tab-17-tab" data-toggle="tab" href="#tab-17"
+                                                        role="tab" aria-controls="tab-17" aria-selected="true">Chờ
+                                                        xác nhận</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" id="tab-18-tab" data-toggle="tab" href="#tab-18"
+                                                        role="tab" aria-controls="tab-18" aria-selected="false">Vận
+                                                        chuyển</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" id="tab-19-tab" data-toggle="tab" href="#tab-19"
+                                                        role="tab" aria-controls="tab-19" aria-selected="false">Chờ
+                                                        giao hàng</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" id="tab-20-tab" data-toggle="tab" href="#tab-20"
+                                                        role="tab" aria-controls="tab-20" aria-selected="false">Hoàn
+                                                        thành</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" id="tab-21-tab" data-toggle="tab" href="#tab-21"
+                                                        role="tab" aria-controls="tab-21" aria-selected="false">Đã hủy</a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a class="nav-link" id="tab-22-tab" data-toggle="tab" href="#tab-22"
+                                                        role="tab" aria-controls="tab-22" aria-selected="false">Trả hàng và hoàn tiền</a>
+                                                </li>
+                                            </ul>
+                                            <div class="tab-content" id="tab-content-5">
+                                                <div class="tab-pane fade" id="tab-16" role="tabpanel"
+                                                    aria-labelledby="tab-16-tab">
+                                                    <p>Tab 16 Tấ cả</p>
+                                                </div>
+
+                                                <div class="tab-pane fade show active" id="tab-17" role="tabpanel"
+                                                    aria-labelledby="tab-17-tab">
+                                                    <form action="#">
+                                                        <div class="input-group">
+                                                            <input type="email" class="form-control"
+                                                                placeholder="Bạn có thể tìm kiếm theo Mã đơn hàng hoặc Tên sản phẩm "
+                                                                aria-label="Email Adress" required>
+                                                            <div class="input-group-append">
+                                                                <button class="btn btn-primary btn-rounded"
+                                                                    type="submit"><span>Tìm kiếm</span><i
+                                                                        class="icon-long-arrow-right"></i></button>
+                                                            </div><!-- .End .input-group-append -->
+                                                        </div><!-- .End .input-group -->
+                                                    </form>
+
+                                                    <div class="render_confirmation">
+                                                        <table
+                                                            class="table text-center table-mobile table-striped table-hover">
+                                                            <thead class="table-light">
+                                                                <tr>
+                                                                    <th>Mã đơn hàng</th>
+                                                                    <th>Số điện thoại</th>
+                                                                    <th>Tổng giá</th>
+                                                                    <th>Trạng thái</th>
+                                                                    <th>Ngày mua</th>
+                                                                    <th>Thao tác</th>
+                                                                </tr>
+                                                            </thead>
+
+                                                            <tbody>
+                                                                @foreach ($orders as $order)
+                                                                    <tr>
+                                                                        <td>{{ $order->code_order }}</td>
+                                                                        <td>{{ $order->phone }}</td>
+                                                                        <td>{{ number_format($order->total_price, 0, '', '.') }}₫
+                                                                        </td>
+                                                                        <td>
+                                                                            @if ($order->status == 1)
+                                                                                <b class="badge badge-success p-2">Chờ xác
+                                                                                    nhận</b>
+                                                                            @else
+                                                                                <b class="badge badge-danger">Đã thanh
+                                                                                    toán</b>
+                                                                            @endif
+                                                                        </td>
+                                                                        <td>{{ $order->created_at }}</td>
+
+                                                                        <td>
+                                                                            <a href="#order-detail-modal"
+                                                                                data-toggle="modal"
+                                                                                data-id="{{ $order->id }}"
+                                                                                class="btn btn-primary btn-order-detail">Xem
+                                                                                thêm</a>
+                                                                            <button class="btn btn-danger">Hủy đơn</button>
+                                                                        </td>
+                                                                    </tr>
+                                                                @endforeach
+
+                                                            </tbody>
+                                                        </table>
+
+                                                    </div>
+
+
+                                                </div><!-- .End .tab-pane -->
+                                                <div class="tab-pane fade" id="tab-18" role="tabpanel"
+                                                    aria-labelledby="tab-18-tab">
+                                                    <p>Nobis perspiciatis natus cum, sint dolore earum rerum tempora
+                                                        aspernatur numquam velit tempore omnis, delectus repellat facere
+                                                        voluptatibus nemo non fugiat consequatur repellendus! Enim, commodi,
+                                                        veniam ipsa voluptates quis amet.</p>
+                                                </div><!-- .End .tab-pane -->
+                                                <div class="tab-pane fade" id="tab-19" role="tabpanel"
+                                                    aria-labelledby="tab-19-tab">
+                                                    <p>Perspiciatis quis nobis, adipisci quae aspernatur, nulla suscipit
+                                                        eum. Dolorum, earum. Consectetur pariatur repellat distinctio atque
+                                                        alias excepturi aspernatur nisi accusamus sed molestias ipsa numquam
+                                                        eius, iusto, aliquid, quis aut.</p>
+                                                </div><!-- .End .tab-pane -->
+                                                <div class="tab-pane fade" id="tab-20" role="tabpanel"
+                                                    aria-labelledby="tab-20-tab">
+                                                    <p>Quis nobis, adipisci quae aspernatur, nulla suscipit eum. Dolorum,
+                                                        earum. Consectetur pariatur repellat distinctio atque alias
+                                                        excepturi aspernatur nisi accusamus sed molestias ipsa numquam eius,
+                                                        iusto, aliquid, quis aut.</p>
+                                                </div><!-- .End .tab-pane -->
+                                            </div>
+                                        </div><!-- End .col-md-6 -->
+
+
+                                    </div>
+
+
+
+
+
+
+
+                                </div>
 
                                 <div class="tab-pane fade" id="tab-downloads" role="tabpanel"
                                     aria-labelledby="tab-downloads-link">
@@ -154,7 +291,7 @@
                                             class="icon-long-arrow-right"></i></a>
                                 </div><!-- .End .tab-pane -->
 
-                                <div class="tab-pane fade active show" id="tab-address" role="tabpanel"
+                                <div class="tab-pane fade" id="tab-address" role="tabpanel"
                                     aria-labelledby="tab-address-link">
                                     <div class="d-flex justify-content-between">
                                         <h3>Địa chỉ của tôi.</h3>
@@ -171,7 +308,7 @@
 
                             <div class="tab-pane fade" id="tab-account" role="tabpanel"
                                 aria-labelledby="tab-account-link">
-                                <form action="#">
+                                {{-- <form action="#">
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <label>First Name *</label>
@@ -205,13 +342,32 @@
                                         <span>SAVE CHANGES</span>
                                         <i class="icon-long-arrow-right"></i>
                                     </button>
-                                </form>
+                                </form> --}}
                             </div><!-- .End .tab-pane -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        {{-- modal order detail --}}
+        <div class="modal fade" id="order-detail-modal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-open-width modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true"><i class="icon-close"></i></span>
+                        </button>
+
+                        <div class="p-5" id="render_order_detail">
+                           
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         {{-- modal create address --}}
         <div class="modal fade" id="add-address" tabindex="-1" role="dialog" aria-hidden="true">
@@ -318,6 +474,25 @@
 @section('script')
     <script>
         $(document).ready(function() {
+            // Load modal order detail
+            $(document).on('click', '.btn-order-detail', function() {
+                var id = $(this).data('id');
+
+                $.ajax({
+                    url: "{{ route('orderDetail') }}",
+                    type: 'Post',
+                    data: {
+                        id: id,
+                        _token: '{{ csrf_token() }}',
+                    },
+                    success: function(response) {
+                        $('#render_order_detail').html(response.view);
+                    },
+                })
+            })
+
+
+            // Load city select
             let data = {};
             $.ajax({
                 url: "{{ asset('assets_fe/address/db_country.json') }}",
@@ -740,7 +915,7 @@
             $(document).on('click', '.btn_address_default', function() {
                 var id = $(this).data('id');
                 // alert("Địa chỉ mặc định: " + id);
-                
+
                 $.ajax({
                     url: "{{ route('acountAddressDefault') }}",
                     type: 'POST',
@@ -750,7 +925,7 @@
                     },
                     success: function(response) {
                         // alert(response);
-                        
+
                         $(".render_list_address").html(response.view);
                     },
                     error: function(xhr, status, error) {

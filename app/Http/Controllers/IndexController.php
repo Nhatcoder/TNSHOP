@@ -8,15 +8,17 @@ use App\Models\Subcategory;
 use App\Models\Product;
 use App\Models\Brand;
 use App\Models\Color;
-use Laravel\Ui\Presets\React;
 
 class IndexController extends Controller
 {
 
     public function index()
     {
+        $productHot = Product::where("hot", 1)->where("status", 1)->get();
         $category = Category::with('sub_category')->get();
-        return view('user.index', compact('category'));
+        $product = Product::getProduct();
+        $productAll = Product::productAll();
+        return view('user.index', compact('category', 'productHot', 'product', 'productAll'));
     }
 
     public function getProductBySearch(Request $request)
@@ -31,6 +33,64 @@ class IndexController extends Controller
         // $product = Product::getProductBySearch($request->q);
         // return response()->json($request->all());
         return view('user.product.list', compact('category'), $data);
+    }
+
+    public function getProductCategoryById(Request $request)
+    {
+        if (!empty($request->category_id)) {
+            $productByCategoryId = Product::getProductCategoryById($request->category_id, 8);
+            $countProductByCategoryId = Product::getAllProductByCategoryId($request->category_id);
+            $categoryId = $request->category_id;
+
+            $view = view("user.product.product_by_category", [
+                "countProductByCategoryId" => $countProductByCategoryId,
+                "productByCategoryId" => $productByCategoryId,
+                "categoryId" => $categoryId
+            ])->render();
+
+            return response()->json([
+                'view' => $view,
+                'status' => 'success'
+            ], 200);
+        }
+    }
+
+
+    public function getSeeMoreProductCategoryById(Request $request)
+    {
+        if (!empty($request->category_id) && !empty($request->limit)) {
+            $productByCategoryId = Product::getProductCategoryById($request->category_id, $request->limit);
+            $countProductByCategoryId = Product::getAllProductByCategoryId($request->category_id);
+            $categoryId = $request->category_id;
+
+            $view = view("user.product.see_more_product_by_category", [
+                "countProductByCategoryId" => $countProductByCategoryId,
+                "productByCategoryId" => $productByCategoryId,
+                "categoryId" => $categoryId
+            ])->render();
+
+            return response()->json([
+                'view' => $view,
+                'status' => 'success'
+            ], 200);
+        }
+    }
+
+    public function seeMoreProductHome(Request $request)
+    {
+        if (!empty($request->limit)) {
+
+            $productSeeMoreHome = Product::seeMoreProductHome($request->limit);
+
+            $view = view("user.product.see_more_product_home", [
+                "productSeeMoreHome" => $productSeeMoreHome,
+            ])->render();
+
+            return response()->json([
+                'view' => $view,
+                'status' => 'success'
+            ], 200);
+        }
     }
     public function getProducts()
     {
@@ -114,10 +174,5 @@ class IndexController extends Controller
                 ])->render(),
             ], 200);
         }
-    }
-
-    public function getQuickView()
-    {
-        return view('user.product.quick_view');
     }
 }

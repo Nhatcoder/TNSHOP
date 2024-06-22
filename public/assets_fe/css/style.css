@@ -9008,16 +9008,16 @@ p {
 }
 
 .product.product-11 .product-price {
-    color: #333
+    color: #cc9966
 }
 
 .product.product-11 .old-price {
     text-decoration: none
 }
 
-.product.product-11 .product-body {
+/* .product.product-11 .product-body {
     padding-bottom: 7rem
-}
+} */
 
 .product.product-11 .product-action {
     bottom: 2rem
@@ -10879,6 +10879,12 @@ small.form-text {
     .modal-dialog {
         max-width: 575px
     }
+
+    .modal-open-width {
+        max-width: 1400px;
+    }
+
+
 }
 
 .alert {
@@ -16109,6 +16115,10 @@ button:focus {
     }
 }
 
+.table {
+    background-color: #fff !important;
+}
+
 .table td {
     padding-top: 3rem;
     padding-bottom: 3rem
@@ -16579,6 +16589,11 @@ button:focus {
 
 .dashboard .btn {
     min-width: 123px
+}
+
+.dashboard .btn {
+    min-width: 83px;
+    height: 40px;
 }
 
 .nav-dashboard {
