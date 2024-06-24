@@ -24,9 +24,8 @@
                  <td>
                      <img width="120px" src="{{ $getProductImage->checkImage() }}" alt="{{ $getProductSingle->title }}">
                  </td>
-                 {{-- <td>{{ Str::limit($getProductSingle->title, 70) }}</td> --}}
                  <td>
-                     {!! Str::substrReplace($getProductSingle->title, '<br>', 60, 0) !!}
+                     {{ Str::limit($getProductSingle->title, 60) }}
                  </td>
                  <td>{{ $item->color_name }} - {{ $item->size_name }}</td>
                  <td>

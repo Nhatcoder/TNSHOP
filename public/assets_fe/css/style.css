@@ -20028,3 +20028,8 @@ button:focus {
 .btn_address {
     cursor: pointer;
 }
+
+
+.custom-width-alert {
+    width: 400px !important;
+}

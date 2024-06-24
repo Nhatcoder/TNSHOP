@@ -170,35 +170,112 @@
                                                         thành</a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a class="nav-link" id="tab-21-tab" data-toggle="tab" href="#tab-21"
-                                                        role="tab" aria-controls="tab-21" aria-selected="false">Đã hủy</a>
+                                                    <a class="nav-link list_order_cancel" id="tab-21-tab" data-toggle="tab" href="#tab-21"
+                                                        role="tab" aria-controls="tab-21" aria-selected="false"
+                                                        >Đã
+                                                        hủy</a>
                                                 </li>
                                                 <li class="nav-item">
                                                     <a class="nav-link" id="tab-22-tab" data-toggle="tab" href="#tab-22"
-                                                        role="tab" aria-controls="tab-22" aria-selected="false">Trả hàng và hoàn tiền</a>
+                                                        role="tab" aria-controls="tab-22" aria-selected="false">Trả
+                                                        hàng và hoàn tiền</a>
                                                 </li>
                                             </ul>
                                             <div class="tab-content" id="tab-content-5">
-                                                <div class="tab-pane fade" id="tab-16" role="tabpanel"
+                                                <div class="tab-pane fade show active" id="tab-16" role="tabpanel"
                                                     aria-labelledby="tab-16-tab">
-                                                    <p>Tab 16 Tấ cả</p>
-                                                </div>
-
-                                                <div class="tab-pane fade show active" id="tab-17" role="tabpanel"
-                                                    aria-labelledby="tab-17-tab">
-                                                    <form action="#">
+                                                    <form action="#" id="search-orders-form">
                                                         <div class="input-group">
-                                                            <input type="email" class="form-control"
-                                                                placeholder="Bạn có thể tìm kiếm theo Mã đơn hàng hoặc Tên sản phẩm "
-                                                                aria-label="Email Adress" required>
+                                                            <input type="text" class="form-control"
+                                                                placeholder="Bạn có thể tìm kiếm theo mã đơn hàng "
+                                                                aria-label="Search for..." required id="keyword_order">
                                                             <div class="input-group-append">
                                                                 <button class="btn btn-primary btn-rounded"
                                                                     type="submit"><span>Tìm kiếm</span><i
                                                                         class="icon-long-arrow-right"></i></button>
-                                                            </div><!-- .End .input-group-append -->
-                                                        </div><!-- .End .input-group -->
+                                                            </div>
+                                                        </div>
                                                     </form>
 
+                                                    <div id="render_order">
+                                                        @if (count($orders) > 0)
+                                                            <table
+                                                                class="table text-center table-mobile table-striped table-hover">
+                                                                <thead class="table-light">
+                                                                    <tr>
+                                                                        <th>Mã đơn hàng</th>
+                                                                        <th>Số điện thoại</th>
+                                                                        <th>Tổng giá</th>
+                                                                        <th>Trạng thái</th>
+                                                                        <th>Ngày mua</th>
+                                                                        <th>Thao tác</th>
+                                                                    </tr>
+                                                                </thead>
+
+                                                                <tbody id="render_order">
+                                                                    @foreach ($orders as $order)
+                                                                        <tr>
+                                                                            <td>{{ $order->code_order }}</td>
+                                                                            <td>{{ $order->phone }}</td>
+                                                                            <td>{{ number_format($order->total_price, 0, '', '.') }}₫
+                                                                            </td>
+                                                                            <td>
+                                                                                @if ($order->status == 1)
+                                                                                    <b class="badge badge-primary p-2">Chờ
+                                                                                        xác
+                                                                                        nhận</b>
+                                                                                @elseif($order->status == 2)
+                                                                                    <b class="badge badge-info p-2">Vận
+                                                                                        chuyển
+                                                                                    </b>
+                                                                                @elseif($order->status == 3)
+                                                                                    <b class="badge badge-secondary p-2">Chờ
+                                                                                        giao
+                                                                                        hàng
+                                                                                    </b>
+                                                                                @elseif($order->status == 4)
+                                                                                    <b class="badge badge-success p-2">Hoàn
+                                                                                        thành
+                                                                                    </b>
+                                                                                @elseif($order->status == 5)
+                                                                                    <b class="badge badge-danger p-2">Đã
+                                                                                        hủy
+                                                                                    </b>
+                                                                                @else
+                                                                                    <b class="badge badge-warning p-2">Trả
+                                                                                        hàng/Hoàn
+                                                                                        tiền
+                                                                                    </b>
+                                                                                @endif
+                                                                            </td>
+                                                                            <td>{{ $order->created_at }}</td>
+
+                                                                            <td>
+                                                                                <a href="#order-detail-modal"
+                                                                                    data-toggle="modal"
+                                                                                    data-id="{{ $order->id }}"
+                                                                                    class="btn btn-primary btn-order-detail">Xem
+                                                                                    thêm</a>
+                                                                                @if ($order->status == 1)
+                                                                                    <button
+                                                                                        class="btn btn-danger btn_cancel_order"
+                                                                                        data-id="{{ $order->id }}">Hủy
+                                                                                        đơn</button>
+                                                                                @endif
+                                                                            </td>
+                                                                        </tr>
+                                                                    @endforeach
+
+                                                                </tbody>
+                                                            </table>
+                                                        @endif
+                                                    </div>
+
+
+                                                </div>
+
+                                                <div class="tab-pane fade " id="tab-17" role="tabpanel"
+                                                    aria-labelledby="tab-17-tab">
                                                     <div class="render_confirmation">
                                                         <table
                                                             class="table text-center table-mobile table-striped table-hover">
@@ -214,7 +291,7 @@
                                                             </thead>
 
                                                             <tbody>
-                                                                @foreach ($orders as $order)
+                                                                @foreach ($ordersConfirm as $order)
                                                                     <tr>
                                                                         <td>{{ $order->code_order }}</td>
                                                                         <td>{{ $order->phone }}</td>
@@ -222,11 +299,28 @@
                                                                         </td>
                                                                         <td>
                                                                             @if ($order->status == 1)
-                                                                                <b class="badge badge-success p-2">Chờ xác
+                                                                                <b class="badge badge-primary p-2">Chờ xác
                                                                                     nhận</b>
+                                                                            @elseif($order->status == 2)
+                                                                                <b class="badge badge-info p-2">Vận chuyển
+                                                                                </b>
+                                                                            @elseif($order->status == 3)
+                                                                                <b class="badge badge-secondary p-2">Chờ
+                                                                                    giao
+                                                                                    hàng
+                                                                                </b>
+                                                                            @elseif($order->status == 4)
+                                                                                <b class="badge badge-success p-2">Hoàn
+                                                                                    thành
+                                                                                </b>
+                                                                            @elseif($order->status == 5)
+                                                                                <b class="badge badge-danger p-2">Đã hủy
+                                                                                </b>
                                                                             @else
-                                                                                <b class="badge badge-danger">Đã thanh
-                                                                                    toán</b>
+                                                                                <b class="badge badge-warning p-2">Trả
+                                                                                    hàng/Hoàn
+                                                                                    tiền
+                                                                                </b>
                                                                             @endif
                                                                         </td>
                                                                         <td>{{ $order->created_at }}</td>
@@ -249,26 +343,253 @@
 
 
                                                 </div><!-- .End .tab-pane -->
+
                                                 <div class="tab-pane fade" id="tab-18" role="tabpanel"
                                                     aria-labelledby="tab-18-tab">
-                                                    <p>Nobis perspiciatis natus cum, sint dolore earum rerum tempora
-                                                        aspernatur numquam velit tempore omnis, delectus repellat facere
-                                                        voluptatibus nemo non fugiat consequatur repellendus! Enim, commodi,
-                                                        veniam ipsa voluptates quis amet.</p>
-                                                </div><!-- .End .tab-pane -->
+                                                    <table
+                                                        class="table text-center table-mobile table-striped table-hover">
+                                                        <thead class="table-light">
+                                                            <tr>
+                                                                <th>Mã đơn hàng</th>
+                                                                <th>Số điện thoại</th>
+                                                                <th>Tổng giá</th>
+                                                                <th>Trạng thái</th>
+                                                                <th>Ngày mua</th>
+                                                                <th>Thao tác</th>
+                                                            </tr>
+                                                        </thead>
+
+                                                        <tbody>
+                                                            @foreach ($orderTransport as $order)
+                                                                <tr>
+                                                                    <td>{{ $order->code_order }}</td>
+                                                                    <td>{{ $order->phone }}</td>
+                                                                    <td>{{ number_format($order->total_price, 0, '', '.') }}₫
+                                                                    </td>
+                                                                    <td>
+                                                                        @if ($order->status == 1)
+                                                                            <b class="badge badge-primary p-2">Chờ xác
+                                                                                nhận</b>
+                                                                        @elseif($order->status == 2)
+                                                                            <b class="badge badge-info p-2">Vận chuyển
+                                                                            </b>
+                                                                        @elseif($order->status == 3)
+                                                                            <b class="badge badge-secondary p-2">Chờ giao
+                                                                                hàng
+                                                                            </b>
+                                                                        @elseif($order->status == 4)
+                                                                            <b class="badge badge-success p-2">Hoàn thành
+                                                                            </b>
+                                                                        @elseif($order->status == 5)
+                                                                            <b class="badge badge-danger p-2">Đã hủy
+                                                                            </b>
+                                                                        @else
+                                                                            <b class="badge badge-warning p-2">Trả
+                                                                                hàng/Hoàn
+                                                                                tiền
+                                                                            </b>
+                                                                        @endif
+                                                                    </td>
+                                                                    <td>{{ $order->created_at }}</td>
+
+                                                                    <td>
+                                                                        <a href="#order-detail-modal" data-toggle="modal"
+                                                                            data-id="{{ $order->id }}"
+                                                                            class="btn btn-primary btn-order-detail">Xem
+                                                                            thêm</a>
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <!-- .End .tab-pane -->
+
                                                 <div class="tab-pane fade" id="tab-19" role="tabpanel"
                                                     aria-labelledby="tab-19-tab">
-                                                    <p>Perspiciatis quis nobis, adipisci quae aspernatur, nulla suscipit
-                                                        eum. Dolorum, earum. Consectetur pariatur repellat distinctio atque
-                                                        alias excepturi aspernatur nisi accusamus sed molestias ipsa numquam
-                                                        eius, iusto, aliquid, quis aut.</p>
+                                                    <table
+                                                        class="table text-center table-mobile table-striped table-hover">
+                                                        <thead class="table-light">
+                                                            <tr>
+                                                                <th>Mã đơn hàng</th>
+                                                                <th>Số điện thoại</th>
+                                                                <th>Tổng giá</th>
+                                                                <th>Trạng thái</th>
+                                                                <th>Ngày mua</th>
+                                                                <th>Thao tác</th>
+                                                            </tr>
+                                                        </thead>
+
+                                                        <tbody>
+                                                            @foreach ($orderWaiting as $order)
+                                                                <tr>
+                                                                    <td>{{ $order->code_order }}</td>
+                                                                    <td>{{ $order->phone }}</td>
+                                                                    <td>{{ number_format($order->total_price, 0, '', '.') }}₫
+                                                                    </td>
+                                                                    <td>
+                                                                        @if ($order->status == 1)
+                                                                            <b class="badge badge-primary p-2">Chờ xác
+                                                                                nhận</b>
+                                                                        @elseif($order->status == 2)
+                                                                            <b class="badge badge-info p-2">Vận chuyển
+                                                                            </b>
+                                                                        @elseif($order->status == 3)
+                                                                            <b class="badge badge-secondary p-2">Chờ giao
+                                                                                hàng
+                                                                            </b>
+                                                                        @elseif($order->status == 4)
+                                                                            <b class="badge badge-success p-2">Hoàn thành
+                                                                            </b>
+                                                                        @elseif($order->status == 5)
+                                                                            <b class="badge badge-danger p-2">Đã hủy
+                                                                            </b>
+                                                                        @else
+                                                                            <b class="badge badge-warning p-2">Trả
+                                                                                hàng/Hoàn
+                                                                                tiền
+                                                                            </b>
+                                                                        @endif
+                                                                    </td>
+                                                                    <td>{{ $order->created_at }}</td>
+
+                                                                    <td>
+                                                                        <a href="#order-detail-modal" data-toggle="modal"
+                                                                            data-id="{{ $order->id }}"
+                                                                            class="btn btn-primary btn-order-detail">Xem
+                                                                            thêm</a>
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
                                                 </div><!-- .End .tab-pane -->
+
                                                 <div class="tab-pane fade" id="tab-20" role="tabpanel"
                                                     aria-labelledby="tab-20-tab">
-                                                    <p>Quis nobis, adipisci quae aspernatur, nulla suscipit eum. Dolorum,
-                                                        earum. Consectetur pariatur repellat distinctio atque alias
-                                                        excepturi aspernatur nisi accusamus sed molestias ipsa numquam eius,
-                                                        iusto, aliquid, quis aut.</p>
+                                                    <table
+                                                        class="table text-center table-mobile table-striped table-hover">
+                                                        <thead class="table-light">
+                                                            <tr>
+                                                                <th>Mã đơn hàng</th>
+                                                                <th>Số điện thoại</th>
+                                                                <th>Tổng giá</th>
+                                                                <th>Trạng thái</th>
+                                                                <th>Ngày mua</th>
+                                                                <th>Thao tác</th>
+                                                            </tr>
+                                                        </thead>
+
+                                                        <tbody>
+                                                            @foreach ($orderSuccess as $order)
+                                                                <tr>
+                                                                    <td>{{ $order->code_order }}</td>
+                                                                    <td>{{ $order->phone }}</td>
+                                                                    <td>{{ number_format($order->total_price, 0, '', '.') }}₫
+                                                                    </td>
+                                                                    <td>
+                                                                        @if ($order->status == 1)
+                                                                            <b class="badge badge-primary p-2">Chờ xác
+                                                                                nhận</b>
+                                                                        @elseif($order->status == 2)
+                                                                            <b class="badge badge-info p-2">Vận chuyển
+                                                                            </b>
+                                                                        @elseif($order->status == 3)
+                                                                            <b class="badge badge-secondary p-2">Chờ giao
+                                                                                hàng
+                                                                            </b>
+                                                                        @elseif($order->status == 4)
+                                                                            <b class="badge badge-success p-2">Hoàn thành
+                                                                            </b>
+                                                                        @elseif($order->status == 5)
+                                                                            <b class="badge badge-danger p-2">Đã hủy
+                                                                            </b>
+                                                                        @else
+                                                                            <b class="badge badge-warning p-2">Trả
+                                                                                hàng/Hoàn
+                                                                                tiền
+                                                                            </b>
+                                                                        @endif
+                                                                    </td>
+                                                                    <td>{{ $order->created_at }}</td>
+
+                                                                    <td>
+                                                                        <a href="#order-detail-modal" data-toggle="modal"
+                                                                            data-id="{{ $order->id }}"
+                                                                            class="btn btn-primary btn-order-detail">Xem
+                                                                            thêm</a>
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </div><!-- .End .tab-pane -->
+
+                                                <div class="tab-pane fade" id="tab-21" role="tabpanel"
+                                                    aria-labelledby="tab-21-tab">
+                                                   <div id="render_order_cancel">
+
+                                                   </div>
+                                                </div><!-- .End .tab-pane -->
+
+                                                <div class="tab-pane fade" id="tab-22" role="tabpanel"
+                                                    aria-labelledby="tab-22-tab">
+                                                    <table
+                                                        class="table text-center table-mobile table-striped table-hover">
+                                                        <thead class="table-light">
+                                                            <tr>
+                                                                <th>Mã đơn hàng</th>
+                                                                <th>Số điện thoại</th>
+                                                                <th>Tổng giá</th>
+                                                                <th>Trạng thái</th>
+                                                                <th>Ngày mua</th>
+                                                                <th>Thao tác</th>
+                                                            </tr>
+                                                        </thead>
+
+                                                        <tbody>
+                                                            @foreach ($orderRefunds as $order)
+                                                                <tr>
+                                                                    <td>{{ $order->code_order }}</td>
+                                                                    <td>{{ $order->phone }}</td>
+                                                                    <td>{{ number_format($order->total_price, 0, '', '.') }}₫
+                                                                    </td>
+                                                                    <td>
+                                                                        @if ($order->status == 1)
+                                                                            <b class="badge badge-primary p-2">Chờ xác
+                                                                                nhận</b>
+                                                                        @elseif($order->status == 2)
+                                                                            <b class="badge badge-info p-2">Vận chuyển
+                                                                            </b>
+                                                                        @elseif($order->status == 3)
+                                                                            <b class="badge badge-secondary p-2">Chờ giao
+                                                                                hàng
+                                                                            </b>
+                                                                        @elseif($order->status == 4)
+                                                                            <b class="badge badge-success p-2">Hoàn thành
+                                                                            </b>
+                                                                        @elseif($order->status == 5)
+                                                                            <b class="badge badge-danger p-2">Đã hủy
+                                                                            </b>
+                                                                        @else
+                                                                            <b class="badge badge-warning p-2">Trả
+                                                                                hàng/Hoàn
+                                                                                tiền
+                                                                            </b>
+                                                                        @endif
+                                                                    </td>
+                                                                    <td>{{ $order->created_at }}</td>
+
+                                                                    <td>
+                                                                        <a href="#order-detail-modal" data-toggle="modal"
+                                                                            data-id="{{ $order->id }}"
+                                                                            class="btn btn-primary btn-order-detail">Xem
+                                                                            thêm</a>
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
                                                 </div><!-- .End .tab-pane -->
                                             </div>
                                         </div><!-- End .col-md-6 -->
@@ -360,7 +681,7 @@
                         </button>
 
                         <div class="p-5" id="render_order_detail">
-                           
+
 
                         </div>
                     </div>
@@ -487,6 +808,89 @@
                     },
                     success: function(response) {
                         $('#render_order_detail').html(response.view);
+                    },
+                })
+            })
+
+            $(".list_order_cancel").click(function() {
+                $.ajax({
+                    url: "{{ route('listOrderCancel') }}",
+                    type: 'Post',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                    },
+                    success: function(response) {
+                        $('#render_order_cancel').html(response.view);
+                    },
+                })
+            })
+
+            // Cancel order
+            $(document).on('click', '.btn_cancel_order', function() {
+                var id = $(this).data('id');
+                var td = $(this).closest('td');
+                var tr = td.closest('tr');
+
+                const swalWithBootstrapButtons = Swal.mixin({
+                    customClass: {
+                        confirmButton: "btn btn-success",
+                        cancelButton: "btn btn-danger",
+                        popup: 'custom-width-alert'
+                    },
+                    buttonsStyling: false
+                });
+                swalWithBootstrapButtons.fire({
+                    title: "Bạn có muốn hủy đơn hàng này không ?",
+                    text: "Bạn sẽ không thể hoàn nguyên điều này!!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Vâng, Chắc chắn !",
+                    cancelButtonText: "Bỏ qua!",
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "{{ route('cancelOrder') }}",
+                            type: 'Post',
+                            data: {
+                                id: id,
+                                _token: '{{ csrf_token() }}',
+                            },
+                            success: function(response) {
+                                tr.remove();
+                                Swal.fire({
+                                    title: "Đã hủy đơn hàng thành công !",
+                                    icon: "success",
+                                    showConfirmButton: false,
+                                    timer: 1600
+                                });
+                            },
+
+                        })
+                    }
+                });
+
+
+            })
+
+
+            //Search order
+            $("#search-orders-form").on("submit", function(e) {
+                e.preventDefault();
+                var keyword = $("#keyword_order").val();
+                $.ajax({
+                    url: "{{ route('searchOrder') }}",
+                    type: 'Post',
+                    data: {
+                        keyword: keyword,
+                        _token: '{{ csrf_token() }}',
+                    },
+                    success: function(response) {
+                        if (response.status == "success") {
+                            $('#render_order').html(response.view);
+                        } else {
+                            $("#render_order").html(response.message);
+                        }
                     },
                 })
             })

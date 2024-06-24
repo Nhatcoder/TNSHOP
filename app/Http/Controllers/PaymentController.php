@@ -29,64 +29,6 @@ class PaymentController extends Controller
         return view('user.payment.cart');
     }
 
-    // public function addProductToCart(Request $request)
-    // {
-    //     $product = Product::where('id', $request->product_id)->where('status', 1)->first();
-    //     $total = $product->price;
-    //     $size_id = 0;
-    //     if (!empty($product)) {
-    //         $size_id = $request->size_id;
-    //         $getSize = ProductSize::find($size_id);
-
-    //         $size_price = !empty($getSize->price) ? $getSize->price : 0;
-    //         $total = $total + $size_price;
-    //     } else {
-    //         $size_id = 0;
-    //     }
-
-    //     $color_id = !empty($request->color_id) ? $request->color_id : 0;
-
-    //     $validator = Validator::make($request->all(), [
-    //         'qty' => 'required',
-    //         'color_id' => 'required',
-    //         'size_id' => 'required',
-    //     ], [
-    //         'required' => 'Vui lòng chọn phân loại hàng',
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         return redirect()->back()->withErrors($validator)->withInput();
-    //     }
-
-    //     $name_color = Color::where('id', $request->color_id)->first();
-    //     $name_size = ProductSize::where('id', $request->size_id)->first();
-
-    //     $unique_id = $product->id . '-' . $color_id . '-' . $size_id;
-
-    //     $cartItem = Cart::get($unique_id);
-    //     if ($cartItem) {
-    //         Cart::update($unique_id, ['quantity' => [
-    //             'relative' => false,
-    //             'value' => $cartItem->quantity + $request->qty
-    //         ]]);
-    //     } else {
-    //         Cart::add([
-    //             'id' => $unique_id, 
-    //             'name' => $product->title,
-    //             'price' => $total,
-    //             'quantity' => $request->qty,
-    //             'attributes' => [
-    //                 'product_id' => $product->id, 
-    //                 'color_id' => $color_id,
-    //                 'name_color' => $name_color->name,
-    //                 'name_size' => $name_size->name,
-    //                 'size_id' => $size_id
-    //             ],
-    //         ]);
-    //     }
-    //     return redirect()->back();
-    // }
-
 
     public function addProductToCart(Request $request)
     {
@@ -367,6 +309,7 @@ class PaymentController extends Controller
                 $newTotal = $total;
             }
 
+            // for ($i = 0; $i <= 2; $i++) {
             $order = new Order();
             $order->user_id = auth()->user()->id;
             $order->code_order = Str::upper(Str::random(10));
@@ -404,6 +347,7 @@ class PaymentController extends Controller
                 $order_item->total_price = $item->price;
                 $order_item->save();
             }
+            // }
 
             $user = auth()->user();
             $dataOrder = Cart::getContent();

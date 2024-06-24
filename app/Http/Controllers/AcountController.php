@@ -11,18 +11,66 @@ class AcountController extends Controller
 {
     public function acount()
     {
-        $orders = Order::getOrderConfirm();
+        $orders = Order::getOrder();
+        $ordersConfirm = Order::getOrderConfirm();
+        $orderTransport = Order::getOrderTransport();
+        $orderWaiting = Order::getOrderWaiting();
+        $orderSuccess = Order::getOrderSuccess();
+        $orderCancelled = Order::getOrderCancelled();
+        $orderRefunds = Order::getOrderRefunds();
+
         $address = Address::where('user_id', auth()->user()->id)->orderBy('type', 'desc')->orderBy('id', 'desc')->get();
-        return view('user.acount.acount', compact('address', 'orders'));
+        return view('user.acount.acount', compact('address', 'orders', 'ordersConfirm', 'orderTransport', 'orderWaiting', 'orderSuccess', 'orderCancelled', 'orderRefunds'));
     }
     public function acountProfile()
     {
         return view('user.acount.acount');
     }
 
+    public function searchOrder(Request $request)
+    {
+        if (!empty($request->keyword)) {
+            $keyword = trim($request->keyword);
+            $orders = Order::searchOrder($keyword);
+
+            if (!empty($orders)) {
+                $view = view("user.acount.order_search", [
+                    "order" => $orders
+                ])->render();
+                return response()->json([
+                    "status" => "success",
+                    "view" => $view
+                ], 200);
+            } else {
+                return response()->json([
+                    "status" => "error",
+                    "message" => "Không tìm thấy đơn hàng mã: " . $keyword,
+                ], 200);
+            }
+        }
+    }
+
+    public function cancelOrder(Request $request)
+    {
+        if (!empty($request->id)) {
+            $order = Order::find($request->id);
+            $order->status = 5;
+            $order->save();
+        }
+    }
+    public function listOrderCancel()
+    {
+        $orders = Order::getOrderCancelled();
+        return response()->json([
+            "view" => view('user.acount.order_cancel', compact('orders'))->render()
+        ], 200);
+
+    }
+
     public function orderDetail(Request $request)
     {
         if (!empty($request->id)) {
+
             $order_detail = Order::getOrderDetail($request->id);
             $singleOrder = Order::find($request->id);
 
@@ -31,9 +79,12 @@ class AcountController extends Controller
                 "order_detail" => $singleOrder
             ])->render();
 
+
             return response()->json([
+                "status" => $order_detail,
+                "order_detail" => $singleOrder,
                 "view" => $view
-            ]);
+            ], 200);
         }
     }
 

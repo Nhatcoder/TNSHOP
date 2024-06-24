@@ -18,6 +18,56 @@ class Order extends Model
             ->orderBy('id', 'desc')
             ->get();
     }
+    public static function getOrderTransport()
+    {
+        return self::where("status", "2")
+            ->where("user_id", auth()->user()->id)
+            ->orderBy('id', 'desc')
+            ->get();
+    }
+    public static function getOrderWaiting()
+    {
+        return self::where("status", "3")
+            ->where("user_id", auth()->user()->id)
+            ->orderBy('id', 'desc')
+            ->get();
+    }
+    public static function getOrderSuccess()
+    {
+        return self::where("status", "4")
+            ->where("user_id", auth()->user()->id)
+            ->orderBy('id', 'desc')
+            ->get();
+    }
+    public static function getOrderCancelled()
+    {
+        return self::where("status", "5")
+            ->where("user_id", auth()->user()->id)
+            ->orderBy('id', 'desc')
+            ->get();
+    }
+    public static function getOrderRefunds()
+    {
+        return self::where("status", "6")
+            ->where("user_id", auth()->user()->id)
+            ->orderBy('id', 'desc')
+            ->get();
+    }
+    public static function getOrder()
+    {
+        return self::where("user_id", auth()->user()->id)
+            ->orderBy('status', 'asc')
+            ->orderBy('id', 'desc')
+            ->get();
+    }
+    public static function searchOrder($kw)
+    {
+        return self::where("user_id", auth()->user()->id)
+            ->orderBy('status', 'asc')
+            ->orderBy('id', 'desc')
+            ->where('code_order', 'like', '%' . $kw . '%')
+            ->first();
+    }
 
 
     public static function getOrderDetail($order_id)
@@ -35,7 +85,6 @@ class Order extends Model
             'order_items.id AS order_items_id'
         )
             ->join('order_items', 'orders.id', '=', 'order_items.order_id')
-            ->where('orders.status', 1)
             ->where('order_items.order_id', $order_id)
             ->where('orders.user_id', auth()->user()->id)
             ->orderBy('orders.id', 'desc')

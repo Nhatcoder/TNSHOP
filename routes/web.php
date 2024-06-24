@@ -47,6 +47,8 @@ Route::group(['middleware' => 'admin'], function () {
 
     Route::resource('admin/discount_code',  DiscountCodeController::class);
 
+    
+
     Route::post('admin/product/delete-image/{id}',  [ProductController::class, 'deleteImage']);
     Route::post('admin/product/order-by-image',     [ProductController::class, 'oderByImage'])->name("oderByImage");
 });
@@ -79,6 +81,10 @@ Route::middleware('check.auth')->group(function () {
     Route::post('account/address_default',  [AcountController::class, 'acountAddressDefault'])->name("acountAddressDefault");
 
     Route::post('order/order_detail',        [AcountController::class, 'orderDetail'])->name("orderDetail");
+    Route::post('order/search',              [AcountController::class, 'searchOrder'])->name("searchOrder");
+    Route::post('order/list_cancel_order',   [AcountController::class, 'listOrderCancel'])->name("listOrderCancel");
+    Route::post('order/cancel_order',        [AcountController::class, 'cancelOrder'])->name("cancelOrder");
+
     Route::post('check-out/address_new',     [PaymentController::class, 'checkOutNewAddress'])->name("checkOutNewAddress");
     Route::post('check-out/address_default', [PaymentController::class, 'checkOutAddressDefault'])->name("checkOutAddressDefault");
     Route::post('check-out/address_edit',    [PaymentController::class, 'checkOutEditAddress'])->name("checkOutEditAddress");

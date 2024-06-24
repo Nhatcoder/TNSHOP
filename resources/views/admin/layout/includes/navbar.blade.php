@@ -52,6 +52,18 @@
                      <span class="nav-title">Mã giảm giá</span>
                  </a>
              </li>
+            
+             <li><a class="has-arrow" href="javascript:void(0)" aria-expanded="false"><i
+                         class="nav-icon ti ti-calendar"></i><span class="nav-title">Đơn hàng</span></a>
+                 <ul aria-expanded="false">
+                     <li> <a href=''>Chờ xác nhận</a> </li>
+                     <li> <a href=''>Vận chuyển</a></li>
+                     <li> <a href=''>Chờ giao hàng</a></li>
+                     <li> <a href=''>Hoàn thành</a></li>
+                     <li> <a href=''>Đã hủy</a></li>
+                     <li> <a href=''>Hoàn trả</a></li>
+                 </ul>
+             </li>
 
          </ul>
      </div>
