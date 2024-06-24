@@ -82,6 +82,8 @@
     {{-- sort table --}}
 
 
+    {{-- script --}}
+    @yield('script')
    
 
     <script>
@@ -148,6 +150,8 @@
             }
         }
     </script>
+
+
 </body>
 
 

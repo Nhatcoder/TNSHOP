@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\DiscountCodeController;
+use App\Http\Controllers\Admin\OrderController;
 
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\PaymentController;
@@ -47,7 +48,8 @@ Route::group(['middleware' => 'admin'], function () {
 
     Route::resource('admin/discount_code',  DiscountCodeController::class);
 
-    
+    Route::get('admin/order',           [OrderController::class, 'index'])->name("adminOrder");
+    Route::post('admin/order_detail',           [OrderController::class, 'adminOrderDetail'])->name("adminOrderDetail");
 
     Route::post('admin/product/delete-image/{id}',  [ProductController::class, 'deleteImage']);
     Route::post('admin/product/order-by-image',     [ProductController::class, 'oderByImage'])->name("oderByImage");

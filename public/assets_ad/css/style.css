@@ -5848,7 +5848,9 @@ input[type=submit].btn-block {
 }
 
 .breadcrumb-item+.breadcrumb-item {
-    padding-left: .5rem
+    padding-left: .5rem;
+    display: flex;
+    align-items: center;
 }
 
 .breadcrumb-item+.breadcrumb-item::before {
@@ -6700,6 +6702,11 @@ button.close {
 @media (min-width:992px) {
     .modal-lg {
         max-width: 800px
+    }
+}
+@media (min-width:1400px) {
+    .modal-xl {
+        max-width: 1400px
     }
 }
 

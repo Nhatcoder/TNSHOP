@@ -11,6 +11,13 @@ class Order extends Model
     protected $table = 'orders';
 
 
+    public static function getOrderAll()
+    {
+        return self::orderBy('status', 'asc')
+            ->orderBy('id', 'desc')
+            ->get();
+    }
+
     public static function getOrderConfirm()
     {
         return self::where("status", "1")

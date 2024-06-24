@@ -53,10 +53,14 @@
                  </a>
              </li>
             
-             <li><a class="has-arrow" href="javascript:void(0)" aria-expanded="false"><i
+             <li @if (request()->segment(2) == 'order' || request()->segment(2) == 'order_detail')
+                class="active"                 
+             @endif
+             ><a class="has-arrow" href="javascript:void(0)" aria-expanded="false"><i
                          class="nav-icon ti ti-calendar"></i><span class="nav-title">Đơn hàng</span></a>
                  <ul aria-expanded="false">
-                     <li> <a href=''>Chờ xác nhận</a> </li>
+                     <li class="{{ request()->segment(2) == 'order' ? 'active' : '' }}"> <a href="{{ route('adminOrder') }}">Tất cả đơn hàng</a> </li>
+                     <li> <a href="">Chờ xác nhận</a> </li>
                      <li> <a href=''>Vận chuyển</a></li>
                      <li> <a href=''>Chờ giao hàng</a></li>
                      <li> <a href=''>Hoàn thành</a></li>
