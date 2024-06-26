@@ -9,8 +9,7 @@
 </div>
 <div class="modal-body">
     <div class="btn-print-order float-end mb-2">
-        <a class="p-2 bg-warning text-white" href="">Print </a>
-        <a class="p-2 bg-warning text-white" href="">Xuất PDF</a>
+        <a class="p-2 bg-warning text-white" href="{{ route('orderPdf', ['id' => $order->id]) }}">Xuất PDF</a>
     </div>
     <table class="table text-center table-striped table-bordered">
         <thead class="table-dark">

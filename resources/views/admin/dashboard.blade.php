@@ -7,7 +7,7 @@
             <!-- begin page title -->
             <div class="d-block d-lg-flex flex-nowrap align-items-center">
                 <div class="page-title mr-4 pr-4 border-right">
-                    <h1>Dashboard</h1>
+                    <h1>Thống kế</h1>
                 </div>
                 <div class="breadcrumb-bar align-items-center">
                     <nav>
@@ -16,10 +16,10 @@
                                 <a href="{{ url('admin/dashboard') }}"><i class="ti ti-home"></i></a>
                             </li>
                             <li class="breadcrumb-item">
-                                Dashboard
+                                Thống kê
                             </li>
-                            <li class="breadcrumb-item active text-primary" aria-current="page">
-                                Default</li>
+                            {{-- <li class="breadcrumb-item active text-primary" aria-current="page">
+                                Default</li> --}}
                         </ol>
                     </nav>
                 </div>
@@ -49,20 +49,7 @@
             <!-- end page title -->
         </div>
     </div>
-    <!-- Notification -->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="alert border-0 alert-primary bg-gradient m-b-30 alert-dismissible fade show border-radius-none"
-                role="alert">
-                <strong>Holy guacamole!</strong> You should check in on some of those
-                fields below.
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <i class="ti ti-close"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-    <!-- end row -->
+  
     <!-- begin row -->
     <div class="row">
         <div class="col-sm-12">

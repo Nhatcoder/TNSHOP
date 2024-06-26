@@ -39,7 +39,6 @@
                                     <th>Mã đơn hàng</th>
                                     <th>Đặt lúc</th>
                                     <th>Địa chỉ</th>
-                                    <th>Số sản phẩm</th>
                                     <th>Tổng tiền</th>
                                     <th>Trạng thái</th>
                                     <th>Thao tác</th>
@@ -57,23 +56,59 @@
                                             {{ $item->city . '-' . $item->district . '-' . $item->ward }} <br>
                                             {{ $item->home_address }}
                                         </td>
-                                        <td>12</td>
                                         <td>{{ number_format($item->total_price, 0, '', '.') }}₫</td>
                                         <td>
-                                            <div class="form-group">
-                                                <select name="" class="form-select" id="">
-                                                    <option value="1">Chờ xác nhận</option>
-                                                    <option value="2">Vận chuyển</option>
-                                                    <option value="3">Chờ giao hàng</option>
-                                                    <option value="4">Hoàn thành</option>
-                                                    <option value="5">Đã hủy</option>
-                                                    <option value="6">Hoàn trả và hoàn tiền</option>
-                                                </select>
+                                            <div id="render_order_status-{{ $item->id }}">
+                                                @if ($item->status == 1)
+                                                    <b class="badge badge-info">Chờ xác nhận</b>
+                                                @elseif($item->status == 2)
+                                                    <b class="badge badge-secondary">Vận chuyển</b>
+                                                @elseif($item->status == 3)
+                                                    <b class="badge badge-primary">Chờ giao hàng</b>
+                                                @elseif($item->status == 4)
+                                                    <b class="badge badge-success">Hoàn thành</b>
+                                                @elseif($item->status == 5)
+                                                    <b class="badge badge-danger">Đã hủy</b>
+                                                @elseif($item->status == 6)
+                                                    <b class="badge badge-warning">Trả hàng và hoàn tiền</b>
+                                                @endif
                                             </div>
                                         </td>
-                                        <td><button data-toggle="modal" data-target="#modalDetailOrder"
-                                                class="btn btn-primary btn_see_more" data-id="{{ $item->id }}">Xem
-                                                thêm</button></td>
+                                        <td>
+                                            <div class="d-flex justify-content-center">
+                                                <div class="dropdown">
+                                                    <a class="btn btn-info text-white dropdown-toggle"
+                                                        href="javascript:void(0)" role="button" id="dropdownMenuLink"
+                                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        Cập nhật
+                                                    </a>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                        <a class="dropdown-item" data-id="{{ $item->id }}"
+                                                            data-status="1" id="btn_update_status"
+                                                            href="javascript:void(0)">Chờ xác nhận</a>
+                                                        <a class="dropdown-item" data-id="{{ $item->id }}"
+                                                            data-status="2" id="btn_update_status"
+                                                            href="javascript:void(0)">Vận chuyển</a>
+                                                        <a class="dropdown-item" data-id="{{ $item->id }}"
+                                                            data-status="3" id="btn_update_status"
+                                                            href="javascript:void(0)">Chờ giao hàng</a>
+                                                        <a class="dropdown-item" data-id="{{ $item->id }}"
+                                                            data-status="4" id="btn_update_status"
+                                                            href="javascript:void(0)">Hoàn thành</a>
+                                                        <a class="dropdown-item" data-id="{{ $item->id }}"
+                                                            data-status="5" id="btn_update_status"
+                                                            href="javascript:void(0)">Đã hủy</a>
+                                                        <a class="dropdown-item" data-id="{{ $item->id }}"
+                                                            data-status="6" id="btn_update_status"
+                                                            href="javascript:void(0)">Trả hàng và hoàn tiền</a>
+                                                    </div>
+                                                </div>
+
+                                                <button data-toggle="modal" data-target="#modalDetailOrder"
+                                                    class="btn btn-primary btn_see_more" data-id="{{ $item->id }}">Xem
+                                                    thêm</button>
+                                            </div>
+                                        </td>
                                     </tr>
                                 @endforeach
 
@@ -95,26 +130,90 @@
         </div>
     </div>
 
-    
+
 @endsection
 
 @section('script')
     <script>
-        $(document).on('click', '.btn_see_more', function() {
-            var id = $(this).data('id');
+        $(document).ready(function() {
 
-            $.ajax({
-                type: "Post",
-                url: "{{ route('adminOrderDetail') }}",
-                data: {
-                    id: id,
-                    _token: "{{ csrf_token() }}"
-                },
-                success: function(data) {
-                    console.log(data);
-                    $('#render_order_detail').html(data.view);
-                }
+            $(document).on('click', '#btn_update_status', function() {
+                var id = $(this).data('id');
+                var status = $(this).data('status');
+
+                $.ajax({
+                    type: "Post",
+                    url: "{{ route('orderUpdateStatus') }}",
+                    data: {
+                        id: id,
+                        status: status,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(data) {
+                        console.log(data);
+
+                        if (data.status == 1) {
+                            $element = `<b class="badge badge-info">Chờ xác nhận</b>`;
+                            $('#render_order_status-' + id).html($element);
+                        } else if (data.status == 2) {
+                            $element = `<b class="badge badge-secondary">Vận chuyển</b>`;
+                            $('#render_order_status-' + id).html($element);
+                        } else if (data.status == 3) {
+                            $element = `<b class="badge badge-primary">Chờ giao hàng</b>`;
+                            $('#render_order_status-' + id).html($element);
+                        } else if (data.status == 4) {
+                            $element = ` <b class="badge badge-success">Hoàn thành</b>`;
+                            $('#render_order_status-' + id).html($element);
+                        } else if (data.status == 5) {
+                            $element = `<b class="badge badge-danger">Đã hủy</b>`;
+                            $('#render_order_status-' + id).html($element);
+                        } else if (data.status == 6) {
+                            $element =
+                                ` <b class="badge badge-warning">Trả hàng và hoàn tiền</b>`;
+                            $('#render_order_status-' + id).html($element);
+                        }
+
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.onmouseenter = Swal.stopTimer;
+                                toast.onmouseleave = Swal.resumeTimer;
+                            }
+                        });
+                        Toast.fire({
+                            icon: "success",
+                            title: "Đã thay đổi trạng thái đơn hàng !"
+                        });
+
+                    }
+                })
             })
+
+            //  $("#showtoast").click();
+
+
+            $(document).on('click', '.btn_see_more', function() {
+                var id = $(this).data('id');
+
+                $.ajax({
+                    type: "Post",
+                    url: "{{ route('adminOrderDetail') }}",
+                    data: {
+                        id: id,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(data) {
+
+                        $('#render_order_detail').html(data.view);
+                    }
+                })
+
+            })
+
 
         })
     </script>
