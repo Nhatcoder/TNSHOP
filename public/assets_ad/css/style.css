@@ -39067,6 +39067,10 @@ input[readonly] {
     border-color: #8e54e9;
     box-shadow: none
 }
+.form-select:focus {
+    border-color: #8e54e9;
+    box-shadow: none
+}
 
 .form-control-lg {
     height: 50px

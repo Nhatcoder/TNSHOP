@@ -35,9 +35,12 @@ Route::post('admin', [AuthController::class, 'auth_login_admin']);
 Route::post('admin/logout', [AuthController::class, 'logout_admin'])->name('logout');
 
 Route::group(['middleware' => 'admin'], function () {
-    Route::get('admin/dashboard', [DashboardController::class, 'DashboardController'])->name('dashboard');
-    Route::post('admin/get_sub_category', [SubCategoryController::class, 'getSubCategory']);
+    Route::get('admin/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::post('admin/chart_selected', [DashboardController::class, 'chartSelected'])->name('chartSelected');
+    Route::post('admin/chart_from_date', [DashboardController::class, 'chartFromDate'])->name('chartFromDate');
 
+
+    Route::post('admin/get_sub_category', [SubCategoryController::class, 'getSubCategory']);
     Route::resource('admin/user', AdminController::class);
     Route::resource('admin/category', CategoryController::class);
     Route::resource('admin/sub_category', SubCategoryController::class);
@@ -95,6 +98,8 @@ Route::middleware('check.auth')->group(function () {
     Route::post('order/search', [AcountController::class, 'searchOrder'])->name("searchOrder");
     Route::post('order/list_cancel_order', [AcountController::class, 'listOrderCancel'])->name("listOrderCancel");
     Route::post('order/cancel_order', [AcountController::class, 'cancelOrder'])->name("cancelOrder");
+    Route::post('order/get_order_rating', [AcountController::class, 'getOrderReview'])->name("getOrderReview");
+    Route::post('order/order_rating', [AcountController::class, 'orderRating'])->name("orderRating");
 
     Route::post('check-out/address_new', [PaymentController::class, 'checkOutNewAddress'])->name("checkOutNewAddress");
     Route::post('check-out/address_default', [PaymentController::class, 'checkOutAddressDefault'])->name("checkOutAddressDefault");

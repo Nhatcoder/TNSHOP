@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class Order extends Model
 {
@@ -97,4 +99,65 @@ class Order extends Model
             ->orderBy('orders.id', 'desc')
             ->get();
     }
+
+    public static function getOrderRating($order_id)
+    {
+        return self::select(
+            'orders.id',
+            'orders.user_id',
+            'order_items.size_name',
+            'order_items.color_name',
+            'product.id AS product_id',
+            'product.title',
+        )
+            ->join('order_items', 'orders.id', '=', 'order_items.order_id')
+            ->join('product', 'product.id', '=', 'order_items.product_id')
+            ->where('orders.user_id', auth()->user()->id)
+            ->where('orders.status', '4')
+            ->where('orders.id', $order_id)
+            ->get();
+    }
+
+    public static function oderRevenue()
+    {
+        return self::select('orders.*', DB::raw('COUNT(order_items.id) as order_count'))
+            ->join('order_items', 'orders.id', '=', 'order_items.order_id')
+            ->where('orders.status', '4')
+            ->groupBy('orders.id')
+            ->get();
+    }
+    public static function chartSelected($day)
+    {
+        return self::select(DB::raw('DATE(orders.created_at) as orderNow'), DB::raw('COUNT(orders.id) as order_count'), DB::raw('SUM(order_items.quantity) as order_item_count'), DB::raw('SUM(orders.total_price) as total_price'))
+            ->join('order_items', 'orders.id', '=', 'order_items.order_id')
+            ->where('orders.status', '4')
+            ->whereBetween(DB::raw('DATE(orders.created_at)'), [now()->subDays($day)->toDateString(), now()->toDateString()])
+            ->groupBy(DB::raw('DATE(orders.created_at)'))
+            ->get();
+    }
+    public static function chartFromToDate($from_date, $to_date)
+    {
+        return self::select(DB::raw('DATE(orders.created_at) as orderNow'), DB::raw('COUNT(orders.id) as order_count'), DB::raw('SUM(order_items.quantity) as order_item_count'), DB::raw('SUM(orders.total_price) as total_price'))
+            ->join('order_items', 'orders.id', '=', 'order_items.order_id')
+            ->where('orders.status', '4')
+            ->whereBetween(DB::raw('DATE(orders.created_at)'), [$from_date, $to_date])
+            ->groupBy(DB::raw('DATE(orders.created_at)'))
+            ->get();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

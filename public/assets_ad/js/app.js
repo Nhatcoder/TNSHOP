@@ -196,89 +196,89 @@
         chart.render();
       }
 
-      var apexdemo4 = jQuery('#apexdemo4')
-      if (apexdemo4.length > 0) {
-        var options = {
-          chart: {
-            height: 350,
-            type: 'area',
-            stacked: true,
-            events: {
-              selection: function (chart, e) {
-                console.log(new Date(e.xaxis.min))
-              }
-            },
+      // var apexdemo4 = jQuery('#apexdemo4')
+      // if (apexdemo4.length > 0) {
+      //   var options = {
+      //     chart: {
+      //       height: 350,
+      //       type: 'area',
+      //       stacked: true,
+      //       events: {
+      //         selection: function (chart, e) {
+      //           console.log(new Date(e.xaxis.min))
+      //         }
+      //       },
 
-          },
-          colors: ['#8E54E9', '#2bcbba', '#eceef3'],
-          dataLabels: {
-            enabled: false
-          },
-          stroke: {
-            curve: 'smooth'
-          },
+      //     },
+      //     colors: ['#8E54E9', '#2bcbba', '#eceef3'],
+      //     dataLabels: {
+      //       enabled: false
+      //     },
+      //     stroke: {
+      //       curve: 'smooth'
+      //     },
 
-          series: [{
-            name: 'South',
-            data: generateDayWiseTimeSeries(new Date('11 Feb 2017 GMT').getTime(), 20, {
-              min: 10,
-              max: 60
-            })
-          },
-          {
-            name: 'North',
-            data: generateDayWiseTimeSeries(new Date('11 Feb 2017 GMT').getTime(), 20, {
-              min: 10,
-              max: 20
-            })
-          },
+      //     series: [{
+      //       name: 'South',
+      //       data: generateDayWiseTimeSeries(new Date('11 Feb 2017 GMT').getTime(), 20, {
+      //         min: 10,
+      //         max: 60
+      //       })
+      //     },
+      //     {
+      //       name: 'North',
+      //       data: generateDayWiseTimeSeries(new Date('11 Feb 2017 GMT').getTime(), 20, {
+      //         min: 10,
+      //         max: 20
+      //       })
+      //     },
 
-          {
-            name: 'Central',
-            data: generateDayWiseTimeSeries(new Date('11 Feb 2017 GMT').getTime(), 20, {
-              min: 10,
-              max: 15
-            })
-          }
-          ],
-          fill: {
-            type: 'gradient',
-            gradient: {
-              opacityFrom: 0.6,
-              opacityTo: 0.8,
-            }
-          },
-          legend: {
-            position: 'top',
-            horizontalAlign: 'left'
-          },
-          xaxis: {
-            type: 'datetime'
-          },
-        }
+      //     {
+      //       name: 'Central',
+      //       data: generateDayWiseTimeSeries(new Date('11 Feb 2017 GMT').getTime(), 20, {
+      //         min: 10,
+      //         max: 15
+      //       })
+      //     }
+      //     ],
+      //     fill: {
+      //       type: 'gradient',
+      //       gradient: {
+      //         opacityFrom: 0.6,
+      //         opacityTo: 0.8,
+      //       }
+      //     },
+      //     legend: {
+      //       position: 'top',
+      //       horizontalAlign: 'left'
+      //     },
+      //     xaxis: {
+      //       type: 'datetime'
+      //     },
+      //   }
 
-        var chart = new ApexCharts(
-          document.querySelector("#apexdemo4"),
-          options
-        );
+      //   var chart = new ApexCharts(
+      //     document.querySelector("#apexdemo4"),
+      //     options
+      //   );
 
-        chart.render();
+      //   chart.render();
 
-        function generateDayWiseTimeSeries(baseval, count, yrange) {
-          var i = 0;
-          var series = [];
-          while (i < count) {
-            var x = baseval;
-            var y = Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
+      //   function generateDayWiseTimeSeries(baseval, count, yrange) {
+      //     var i = 0;
+      //     var series = [];
+      //     while (i < count) {
+      //       var x = baseval;
+      //       var y = Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
 
-            series.push([x, y]);
-            baseval += 86400000;
-            i++;
-          }
-          return series;
-        }
+      //       series.push([x, y]);
+      //       baseval += 86400000;
+      //       i++;
+      //     }
+      //     return series;
+      //   }
 
-      }
+      // }
 
       var apexdemo5 = jQuery('#apexdemo5')
       if (apexdemo5.length > 0) {
