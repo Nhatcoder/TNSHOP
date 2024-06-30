@@ -11,7 +11,7 @@
 
         <div class="col-10">
             <p>{{ $getProductSingle->title }}</p>
-            <p>Phân loại: {{ $item->color_name }}, Size: {{ $item->size_name }}</p>
+            <p>Phân loại: {{ $item->color_name }}, Size {{ $item->size_name }}</p>
         </div>
     </div>
 @endforeach
@@ -36,6 +36,7 @@
     <input type="radio" id="rating5" name="rating" value="5">
     <label id="5" title="Awesome" class="fa fa-star" for="rating5"></label>
 
+    <input type="hidden" id="star" value="">
     <input type="hidden" id="user_id" value="{{ Auth::user()->id }}">
     <input type="hidden" id="product_id" value="{{ $getProductSingle->id }}">
     <input type="hidden" id="order_id" value="{{ $item->id }}">

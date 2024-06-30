@@ -204,7 +204,6 @@ class AcountController extends Controller
                 ]);
 
                 return response()->json([
-                    'order' => $order,
                     "view" => $view->render(),
                     "status" => "success"
                 ], 200);
@@ -215,25 +214,22 @@ class AcountController extends Controller
     public function seeReviewOrder(Request $request)
     {
         if (!empty($request->id)) {
-            $reviewDetail = Review::seeReviewDetailProduct($request->id);
-            return response()->json($reviewDetail);
+            $review = Review::seeReviewDetailProduct($request->id);
+            $reviewOrderDetail = Review::seeReviewDetailOrder($request->id);
 
-            // if (!empty($order)) {
-            //     $view = view("user.acount.order_review", [
-            //         "order" => $order
-            //     ]);
+            if (!empty($review) && !empty($reviewOrderDetail)) {
+                $view = view("user.acount.see_review_product", compact('review', 'reviewOrderDetail'))->render();
+                return response()->json([
+                    "view" => $view,
+                    'cc' => $reviewOrderDetail
+                ], 200);
 
-            //     return response()->json([
-            //         'order' => $order,
-            //         "view" => $view->render(),
-            //         "status" => "success"
-            //     ], 200);
-
-            // }
+            }
         }
     }
     public function orderRating(Request $request)
     {
+
         if (
             !empty($request->star) &&
             !empty($request->comment) &&

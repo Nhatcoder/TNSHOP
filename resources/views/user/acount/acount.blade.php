@@ -14,7 +14,7 @@
         <nav aria-label="breadcrumb" class="breadcrumb-nav mb-3">
             <div class="container">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url('/') }}">Trang chủ</a></li>
                     <li class="breadcrumb-item"><a href="#">Tài khoản</a></li>
                     {{-- <li class="breadcrumb-item active" aria-current="page"></li> --}}
                 </ol>
@@ -254,7 +254,7 @@
                                                                                 <a href="#order-detail-modal"
                                                                                     data-toggle="modal"
                                                                                     data-id="{{ $order->id }}"
-                                                                                    class="btn btn-primary mr-2 btn-order-detail">Xem
+                                                                                    class="btn bg-image btn-outline-primary mr-2 btn-order-detail">Xem
                                                                                     thêm</a>
                                                                                 @if ($order->status == 1)
                                                                                     <button
@@ -269,13 +269,13 @@
                                                                                             <a href="#modal-review-order"
                                                                                                 data-toggle="modal"
                                                                                                 data-id="{{ $order->id }}"
-                                                                                                class="btn btn-info btn_review_order">Đánh
+                                                                                                class="btn btn-primary btn_review_order">Đánh
                                                                                                 giá</a>
                                                                                         @else
                                                                                             <a href="#modal-see-review-order"
                                                                                                 data-toggle="modal"
                                                                                                 data-id="{{ $order->review_id }}"
-                                                                                                class="btn btn-success btn_see_review_order">Xem
+                                                                                                class="btn btn-outline-success btn_see_review_order">Xem
                                                                                                 đánh giá</a>
                                                                                         @endif
                                                                                     @endif
@@ -891,7 +891,7 @@
                     },
                     success: function(response) {
                         // console.log(response);
-                        // $('#render_review_order').html(response.view);
+                        $('#render_see_review_order').html(response.view);
                     }
                 });
             });
@@ -1000,7 +1000,7 @@
                                 <a href="#modal-see-review-order"
                                     data-toggle="modal"
                                     data-id="${response.id_review}"
-                                    class="btn btn-success btn_see_review_order">Xem
+                                    class="btn btn-outline-success btn_see_review_order">Xem
                                     đánh giá
                                 </a>    
                             `
