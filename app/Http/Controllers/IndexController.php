@@ -114,7 +114,6 @@ class IndexController extends Controller
         $data['getBrand'] = Brand::getbrand();
 
 
-
         // Sản phẩm chi tiết
         $productDetail = Product::productDetailBySlug($slug);
         if (!empty($productDetail)) {
@@ -123,6 +122,9 @@ class IndexController extends Controller
 
             $data['productDetail'] = $productDetail;
             $data['relatedProducts'] = Product::getRelatedProduct($productDetail->id, $productDetail->category_id);
+
+            $data['getReviewByProductSlug'] = Product::getReviewByProductSlug($slug);
+            // return response()->json(count($data['getReviewByProductSlug']));
 
             return view('user.product.detail', compact('category'), $data);
         }

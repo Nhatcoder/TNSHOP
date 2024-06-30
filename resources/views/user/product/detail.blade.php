@@ -84,134 +84,6 @@
                         </div>
                         <!-- End .col-md-6 -->
 
-                        {{-- <div class="col-md-6">
-                            <form action="{{ url('product/add-to-cart') }}" method="post">
-                                {{ csrf_field() }}
-                                <input type="text" name="product_id" value="{{ $productDetail->id }}">
-
-                                <div class="product-details">
-                                    <h1 class="product-title">{{ $productDetail->title }}</h1>
-                                    <!-- End .product-title -->
-
-                                    <div class="ratings-container">
-                                        <div class="ratings">
-                                            <div class="ratings-val" style="width: 80%;"></div>
-                                        </div>
-                                        <!-- End .ratings -->
-                                        <a class="ratings-text" href="#product-review-link" id="review-link">( 2 đánh giá
-                                            )</a>
-                                    </div>
-                                    <!-- End .rating-container -->
-
-                                    <div class="product-price" id="getChangePrice">
-                                        {{ number_format($productDetail->price, 0, ',', '.') }}₫
-                                    </div>
-                                    <!-- End .product-price -->
-
-                                    <div class="product-content">
-                                        <p>
-                                            {{ $productDetail->short_description }}
-                                        </p>
-                                    </div>
-                                    <!-- End .product-content -->
-
-                                    @empty(!$productDetail->color)
-                                        <div class="details-filter-row details-row-size">
-                                            <label for="color">Màu sắc:</label>
-                                            <div class="select-custom">
-                                                <select name="color_id" id="color" class="form-control ">
-                                                    <option value="#" selected="selected" disabled>Chọn màu</option>
-                                                    @foreach ($productDetail->color as $item)
-                                                        <option required value="{{ $item->getColor->id }}">
-                                                            {{ $item->getColor->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                    @endempty
-
-                                    @empty(!$productDetail->sizes)
-                                        <div class="details-filter-row details-row-size">
-                                            <label for="size">Kích thước:</label>
-                                            <div class="select-custom">
-                                                <select name="size_id" id="size" class="form-control getPrice">
-                                                    <option value="#" data-price="0" selected="selected" disabled>Chọn kích
-                                                        thước</option>
-                                                    @foreach ($productDetail->sizes as $size)
-                                                        <option value="{{ $size->id }}" required
-                                                            data-price="{{ $size->price }}">
-                                                            {{ $size->name }} -
-                                                            {{ number_format($size->price, 0, ',', '.') }}₫
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                    @endempty
-
-                                    <!-- End .details-filter-row -->
-                                    <div class="details-filter-row details-row-size">
-                                        <label for="qty">Số lượng:</label>
-                                        <div class="product-details-quantity">
-                                            <input type="number" id="qty" name="qty" class="form-control"
-                                                value="1" min="1" max="10" step="1"
-                                                data-decimals="0" required>
-                                        </div>
-                                        <!-- End .product-details-quantity -->
-                                    </div>
-                                    <!-- End .details-filter-row -->
-
-                                    @if ($errors->any())
-                                        <strong class="text-danger ">Vui lòng chọn phân loại hàng</strong>
-                                    @endif
-
-                                    <div class="product-details-action">
-                                        <button type="submit" class="btn btn-product btn-cart" id="addToCart">
-                                            <span>Thêm giỏ hàng</span>
-                                        </button>
-                                        <div class="details-action-wrapper">
-                                            <a href="#" class="btn-product btn-wishlist"
-                                                title="Wishlist"><span>Thêm
-                                                    danh sách yêu thích</span>
-                                            </a>
-                                        </div>
-                                        <!-- End .details-action-wrapper -->
-                                    </div>
-                                    <!-- End .product-details-action -->
-
-                                    <div class="product-details-footer">
-                                        <div class="product-cat">
-                                            <span>Danh mục:</span>
-                                            <a
-                                                href="{{ url($productDetail->category->slug) }}">{{ $productDetail->category->name }}</a>,
-
-                                            @empty(!$productDetail->subCategory)
-                                                <a
-                                                    href="{{ url($productDetail->subCategory->slug) }}">{{ $productDetail->subCategory->name }}</a>
-                                            @endempty
-                                        </div>
-                                        <!-- End .product-cat -->
-
-                                        <div class="social-icons social-icons-sm">
-                                            <span class="social-label">Chia sẻ:</span>
-                                            <a href="#" class="social-icon" title="Facebook" target="_blank"><i
-                                                    class="icon-facebook-f"></i></a>
-                                            <a href="#" class="social-icon" title="Twitter" target="_blank"><i
-                                                    class="icon-twitter"></i></a>
-                                            <a href="#" class="social-icon" title="Instagram" target="_blank"><i
-                                                    class="icon-instagram"></i></a>
-                                            <a href="#" class="social-icon" title="Pinterest" target="_blank"><i
-                                                    class="icon-pinterest"></i></a>
-                                        </div>
-                                    </div>
-                                    <!-- End .product-details-footer -->
-                                </div>
-                            </form>
-
-                            <!-- End .product-details -->
-                        </div> --}}
-
                         <div class="col-md-6">
                             <form id="form_add_to_cart" action="#" method="POST">
                                 @csrf
@@ -362,7 +234,8 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" id="product-review-link" data-toggle="tab" href="#product-review-tab"
-                                role="tab" aria-controls="product-review-tab" aria-selected="false">Đánh giá (2)</a>
+                                role="tab" aria-controls="product-review-tab" aria-selected="false">Đánh giá
+                                ({{ count($getReviewByProductSlug) }})</a>
                         </li>
                     </ul>
                     <div class="tab-content">
@@ -389,84 +262,48 @@
                         </div><!-- .End .tab-pane -->
                         <div class="tab-pane fade" id="product-review-tab" role="tabpanel"
                             aria-labelledby="product-review-link">
+
                             <div class="reviews">
-                                <h3>Reviews (2)</h3>
-                                <div class="review">
-                                    <div class="row no-gutters">
-                                        <div class="col-auto">
-                                            <h4><a href="#">Samanta J.</a></h4>
-                                            <div class="ratings-container">
-                                                <div class="ratings">
-                                                    <div class="ratings-val" style="width: 80%;"></div>
-
-                                                    <!-- End .ratings-val -->
+                                <h3>Đánh giá ({{ count($getReviewByProductSlug) }})</h3>
+                                @foreach ($getReviewByProductSlug as $review)
+                                    <div class="review">
+                                        <div class="row no-gutters">
+                                            <div class="col-auto">
+                                                <img class="mb-2 ml-2" style="border-radius: 50%; width: 60px"
+                                                    src="{{ $review->avatar }}" alt="">
+                                                <h4><a href="#">{{ $review->name }}</a></h4>
+                                                <div class="ratings-container">
+                                                    <div class="d-flex py-3">
+                                                        @for ($i = 1; $i <= 5; $i++)
+                                                            <i class="fa fa-star"
+                                                                style="color: {{ $i <= $review->rating ? 'orange' : '' }};"></i>
+                                                        @endfor
+                                                    </div>
+                                                    <!-- End .ratings -->
                                                 </div>
-                                                <!-- End .ratings -->
+                                                <!-- End .rating-container -->
                                             </div>
-                                            <!-- End .rating-container -->
-                                            <span class="review-date">6 days ago</span>
-                                        </div>
-                                        <!-- End .col -->
-                                        <div class="col">
-                                            <h4>Good, perfect size</h4>
-
-                                            <div class="review-content">
-                                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus cum
-                                                    dolores assumenda asperiores facilis porro reprehenderit animi culpa
-                                                    atque blanditiis commodi perspiciatis doloremque, possimus, explicabo,
-                                                    autem fugit beatae quae voluptas!</p>
-                                            </div>
-                                            <!-- End .review-content -->
-
-                                            <div class="review-action">
-                                                <a href="#"><i class="icon-thumbs-up"></i>Helpful (2)</a>
-                                                <a href="#"><i class="icon-thumbs-down"></i>Unhelpful (0)</a>
-                                            </div>
-                                            <!-- End .review-action -->
-                                        </div>
-                                        <!-- End .col-auto -->
-                                    </div>
-                                    <!-- End .row -->
-                                </div>
-                                <!-- End .review -->
-
-                                <div class="review">
-                                    <div class="row no-gutters">
-                                        <div class="col-auto">
-                                            <h4><a href="#">John Doe</a></h4>
-                                            <div class="ratings-container">
-                                                <div class="ratings">
-                                                    <div class="ratings-val" style="width: 100%;"></div>
-
-                                                    <!-- End .ratings-val -->
+                                            <!-- End .col -->
+                                            <div class="col">
+                                                <h6>Phân loại:
+                                                    {{ $review->color_name . ' Size ' . $review->size_name . '' }}</h6>
+                                                <div class="review-content">
+                                                    <p>{{ $review->comment }}</p>
                                                 </div>
-                                                <!-- End .ratings -->
-                                            </div>
-                                            <!-- End .rating-container -->
-                                            <span class="review-date">5 days ago</span>
-                                        </div>
-                                        <!-- End .col -->
-                                        <div class="col">
-                                            <h4>Very good</h4>
+                                                <span class="review-date">{{ $review->created_at }}</span>
 
-                                            <div class="review-content">
-                                                <p>Sed, molestias, tempore? Ex dolor esse iure hic veniam laborum blanditiis
-                                                    laudantium iste amet. Cum non voluptate eos enim, ab cumque nam, modi,
-                                                    quas iure illum repellendus, blanditiis perspiciatis beatae!</p>
-                                            </div>
-                                            <!-- End .review-content -->
+                                                <!-- End .review-content -->
 
-                                            <div class="review-action">
-                                                <a href="#"><i class="icon-thumbs-up"></i>Helpful (0)</a>
-                                                <a href="#"><i class="icon-thumbs-down"></i>Unhelpful (0)</a>
+                                                <div class="review-action">
+                                                    <a href="#"><i class="icon-thumbs-up"></i> (2)</a>
+                                                </div>
+                                                <!-- End .review-action -->
                                             </div>
-                                            <!-- End .review-action -->
+                                            <!-- End .col-auto -->
                                         </div>
-                                        <!-- End .col-auto -->
                                     </div>
-                                    <!-- End .row -->
-                                </div>
-                                <!-- End .review -->
+                                @endforeach
+
                             </div>
                             <!-- End .reviews -->
                         </div><!-- .End .tab-pane -->

@@ -43,7 +43,7 @@ class Product extends Model
             ->get();
     }
 
-    public static  function getProductSingle($id)
+    public static function getProductSingle($id)
     {
         return self::where('id', $id)->where("status", "1")->first();
     }
@@ -90,8 +90,6 @@ class Product extends Model
         }
         return $return;
     }
-
-
 
     static function getProductBySlug($category_id = "", $subcategory_id = "")
     {
@@ -152,6 +150,38 @@ class Product extends Model
             ->paginate(9);
         return $return;
     }
+
+    public static function getReviewByProductSlug($slug)
+    {
+        return Review::select(
+            'reviews.id',
+            'reviews.created_at',
+            'reviews.comment',
+            'reviews.rating',
+            'users.name',
+            'users.avatar',
+            'product.slug',
+            'order_items.size_name',
+            'order_items.color_name'
+        )
+            ->join('users', 'reviews.user_id', '=', 'users.id')
+            ->join('product', 'product.id', '=', 'reviews.product_id')
+            ->join('order_items', 'order_items.order_id', '=', 'reviews.order_id')
+            ->where('product.slug', $slug)
+            ->groupBy(
+                'reviews.id',
+                'reviews.created_at',
+                'reviews.comment',
+                'reviews.rating',
+                'users.name',
+                'users.avatar',
+                'product.slug',
+                'order_items.size_name',
+                'order_items.color_name'
+            )
+            ->get();
+    }
+
 
     static public function getRelatedProduct($product_id, $category_id)
     {

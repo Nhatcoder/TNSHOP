@@ -5,7 +5,7 @@
         <div class="intro-section bg-lighter pt-5 pb-6">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-8">
+                    <div class="col-lg-12">
                         <div class="intro-slider-container slider-container-ratio slider-container-1 mb-2 mb-lg-0">
                             <div class="intro-slider intro-slider-1 owl-carousel owl-simple owl-light owl-nav-inside"
                                 data-toggle="owl"
@@ -21,25 +21,14 @@
                                     <figure class="slide-image">
                                         <picture>
                                             <source media="(max-width: 480px)"
-                                                srcset="{{ asset('/') }}assets_fe/images/slider/slide-1-480w.jpg">
-                                            <img src="{{ asset('/') }}assets_fe/images/slider/slide-1.jpg"
+                                                srcset="{{ asset('/') }}assets_fe/images/slider/slide-3-480w.jpg">
+                                            <img class="img_slider" height="480" src="{{ asset('/') }}assets_fe/images/slider/slide-3-480w.jpg"
                                                 alt="Image Desc">
                                         </picture>
                                     </figure>
                                     <!-- End .slide-image -->
 
-                                    <div class="intro-content">
-                                        <h3 class="intro-subtitle">Topsale Collection</h3>
-                                        <!-- End .h3 intro-subtitle -->
-                                        <h1 class="intro-title">Living Room<br>Furniture</h1>
-                                        <!-- End .intro-title -->
-
-                                        <a href="category.html" class="btn btn-outline-white">
-                                            <span>SHOP NOW</span>
-                                            <i class="icon-long-arrow-right"></i>
-                                        </a>
-                                    </div>
-                                    <!-- End .intro-content -->
+                                   
                                 </div>
                                 <!-- End .intro-slide -->
 
@@ -48,24 +37,12 @@
                                         <picture>
                                             <source media="(max-width: 480px)"
                                                 srcset="{{ asset('/') }}assets_fe/images/slider/slide-2-480w.jpg">
-                                            <img src="{{ asset('/') }}assets_fe/images/slider/slide-2.jpg"
+                                            <img class="img_slider" src="{{ asset('/') }}assets_fe/images/slider/slide-2.jpg"
                                                 alt="Image Desc">
                                         </picture>
                                     </figure>
                                     <!-- End .slide-image -->
-
-                                    <div class="intro-content">
-                                        <h3 class="intro-subtitle">News and Inspiration</h3>
-                                        <!-- End .h3 intro-subtitle -->
-                                        <h1 class="intro-title">New Arrivals</h1>
-                                        <!-- End .intro-title -->
-
-                                        <a href="category.html" class="btn btn-outline-white">
-                                            <span>SHOP NOW</span>
-                                            <i class="icon-long-arrow-right"></i>
-                                        </a>
-                                    </div>
-                                    <!-- End .intro-content -->
+                                  
                                 </div>
                                 <!-- End .intro-slide -->
 
@@ -73,25 +50,13 @@
                                     <figure class="slide-image">
                                         <picture>
                                             <source media="(max-width: 480px)"
-                                                srcset="{{ asset('/') }}assets_fe/images/slider/slide-3-480w.jpg">
-                                            <img src="{{ asset('/') }}assets_fe/images/slider/slide-3.jpg"
+                                                srcset="{{ asset('/') }}assets_fe/images/slider/slide-1-480w.jpg">
+                                            <img class="img_slider" src="{{ asset('/') }}assets_fe/images/slider/slide-1.jpg"
                                                 alt="Image Desc">
                                         </picture>
                                     </figure>
                                     <!-- End .slide-image -->
 
-                                    <div class="intro-content">
-                                        <h3 class="intro-subtitle">Outdoor Furniture</h3>
-                                        <!-- End .h3 intro-subtitle -->
-                                        <h1 class="intro-title">Outdoor Dining <br>Furniture</h1>
-                                        <!-- End .intro-title -->
-
-                                        <a href="category.html" class="btn btn-outline-white">
-                                            <span>SHOP NOW</span>
-                                            <i class="icon-long-arrow-right"></i>
-                                        </a>
-                                    </div>
-                                    <!-- End .intro-content -->
                                 </div>
                                 <!-- End .intro-slide -->
                             </div>
@@ -103,7 +68,7 @@
                         <!-- End .intro-slider-container -->
                     </div>
                     <!-- End .col-lg-8 -->
-                    <div class="col-lg-4">
+                    {{-- <div class="col-lg-4">
                         <div class="intro-banners">
                             <div class="row row-sm">
                                 <div class="col-md-6 col-lg-12">
@@ -153,7 +118,7 @@
                             <!-- End .row row-sm -->
                         </div>
                         <!-- End .intro-banners -->
-                    </div>
+                    </div> --}}
                     <!-- End .col-lg-4 -->
                 </div>
                 <!-- End .row -->
@@ -213,6 +178,9 @@
             </div>
             <!-- End .container -->
         </div>
+
+      
+
         <!-- End .bg-lighter -->
 
         <div class="mb-6"></div>
@@ -363,14 +331,14 @@
 
                 <ul class="nav nav-pills nav-border-anim justify-content-center" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="top-all-link" data-toggle="tab" href="#top-all-tab"
-                            role="tab" aria-controls="top-all-tab" aria-selected="true">Tất cả</a>
+                        <a class="nav-link active" id="top-all-link" data-toggle="tab" href="#top-all-tab" role="tab"
+                            aria-controls="top-all-tab" aria-selected="true">Tất cả</a>
                     </li>
                     @foreach ($category as $ct)
                         <li class="nav-item">
-                            <a class="nav-link list_product_category" data-category="{{ $ct->id }}"
-                                id="top-fur-link" data-toggle="tab" href="#top-fur-tab" role="tab"
-                                aria-controls="top-fur-tab" aria-selected="false">{{ $ct->name }}</a>
+                            <a class="nav-link list_product_category" data-category="{{ $ct->id }}" id="top-fur-link"
+                                data-toggle="tab" href="#top-fur-tab" role="tab" aria-controls="top-fur-tab"
+                                aria-selected="false">{{ $ct->name }}</a>
                         </li>
                     @endforeach
 
@@ -574,34 +542,7 @@
             </div>
             <!-- End .more-container -->
         </div>
-        <div class="cta cta-display bg-image pt-4 pb-4"
-            style="background-image: url({{ asset('/') }}assets_fe/images/backgrounds/cta/bg-6.jpg);">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-md-10 col-lg-9 col-xl-8">
-                        <div class="row no-gutters flex-column flex-sm-row align-items-sm-center">
-                            <div class="col">
-                                <h3 class="cta-title text-white">Sign Up & Get 10% Off</h3>
-                                <!-- End .cta-title -->
-                                <p class="cta-desc text-white">Molla presents the best in interior design</p>
-                                <!-- End .cta-desc -->
-                            </div>
-                            <!-- End .col -->
-
-                            <div class="col-auto">
-                                <a href="login.html" class="btn btn-outline-white"><span>SIGN UP</span><i
-                                        class="icon-long-arrow-right"></i></a>
-                            </div>
-                            <!-- End .col-auto -->
-                        </div>
-                        <!-- End .row no-gutters -->
-                    </div>
-                    <!-- End .col-md-10 col-lg-9 -->
-                </div>
-                <!-- End .row -->
-            </div>
-            <!-- End .container -->
-        </div>
+       
         <!-- End .cta -->
     </main>
 @endsection
