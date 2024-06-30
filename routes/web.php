@@ -100,6 +100,7 @@ Route::middleware('check.auth')->group(function () {
     Route::post('order/cancel_order', [AcountController::class, 'cancelOrder'])->name("cancelOrder");
     Route::post('order/get_order_rating', [AcountController::class, 'getOrderReview'])->name("getOrderReview");
     Route::post('order/order_rating', [AcountController::class, 'orderRating'])->name("orderRating");
+    Route::post('order/see_order_rating', [AcountController::class, 'seeReviewOrder'])->name("seeReviewOrder");
 
     Route::post('check-out/address_new', [PaymentController::class, 'checkOutNewAddress'])->name("checkOutNewAddress");
     Route::post('check-out/address_default', [PaymentController::class, 'checkOutAddressDefault'])->name("checkOutAddressDefault");

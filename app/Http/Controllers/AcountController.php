@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Order;
-use App\Models\Address;
 use App\Models\Review;
+use App\Models\Address;
+use App\Models\order_id;
 
 
 class AcountController extends Controller
@@ -143,6 +144,7 @@ class AcountController extends Controller
             'view' => $view,
             'status' => 'success'
         ], 200);
+
     }
 
     public function acountDeleteAddress()
@@ -158,6 +160,7 @@ class AcountController extends Controller
             'view' => $view,
             'status' => 'success'
         ], 200);
+
     }
     public function acountAddressDefault(Request $request)
     {
@@ -192,9 +195,6 @@ class AcountController extends Controller
     // Review product
     public function getOrderReview(Request $request)
     {
-
-
-
         if (!empty($request->id)) {
             $order = Order::getOrderRating($request->id);
 
@@ -210,10 +210,26 @@ class AcountController extends Controller
                 ], 200);
 
             }
+        }
+    }
+    public function seeReviewOrder(Request $request)
+    {
+        if (!empty($request->id)) {
+            $reviewDetail = Review::seeReviewDetailProduct($request->id);
+            return response()->json($reviewDetail);
 
+            // if (!empty($order)) {
+            //     $view = view("user.acount.order_review", [
+            //         "order" => $order
+            //     ]);
 
-            // return response()->json($order);
+            //     return response()->json([
+            //         'order' => $order,
+            //         "view" => $view->render(),
+            //         "status" => "success"
+            //     ], 200);
 
+            // }
         }
     }
     public function orderRating(Request $request)
@@ -227,15 +243,19 @@ class AcountController extends Controller
         ) {
             $review = new Review();
             $review->user_id = $request->user_id;
+            $review->order_id = $request->order_id;
             $review->product_id = $request->product_id;
             $review->rating = $request->star;
             $review->comment = $request->comment;
-            // $review->save();
+            $review->save();
 
             $order = Order::find($request->order_id);
             $order->is_review = 1;
-            // $order->save();
+            $order->save();
 
+            return response()->json([
+                "id_review" => $review->id
+            ], 200);
         }
     }
 }

@@ -352,7 +352,7 @@
                 priceSlider.noUiSlider.on('set', function(values, handle) {
                     var price_start = values[0].replace(/\D/g, '');
                     var price_end = values[1].replace(/\D/g, '');
-                    console.log(price_start + "_" + price_end);
+                    // console.log(price_start + "_" + price_end);
 
                     $('#price_start').val(price_start);
                     $('#price_end').val(price_end);

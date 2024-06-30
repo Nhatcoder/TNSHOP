@@ -11,5 +11,17 @@ class Review extends Model
 
     protected $table = 'reviews';
 
-    
+    public static function seeReviewDetailProduct($id)
+    {
+        return self::seclect(
+            "reviews.*",
+            'users.avatar',
+            'users.name as user_name',
+        )
+            ->join('users', 'users.id', '=', 'reviews.user_id')
+            ->where("id", $id)
+            ->get();
+    }
+
+
 }

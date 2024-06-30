@@ -64,7 +64,12 @@ class Order extends Model
     }
     public static function getOrder()
     {
-        return self::where("user_id", auth()->user()->id)
+        return self::select(
+            'orders.*',
+            'reviews.id AS review_id',
+        )
+            ->where("orders.user_id", auth()->user()->id)
+            ->leftjoin('reviews', 'reviews.order_id', '=', 'orders.id')
             ->orderBy('status', 'asc')
             ->orderBy('id', 'desc')
             ->get();

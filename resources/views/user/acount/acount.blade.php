@@ -250,32 +250,36 @@
                                                                             </td>
                                                                             <td>{{ $order->created_at }}</td>
 
-                                                                            <td>
+                                                                            <td class="d-flex">
                                                                                 <a href="#order-detail-modal"
                                                                                     data-toggle="modal"
                                                                                     data-id="{{ $order->id }}"
-                                                                                    class="btn btn-primary btn-order-detail">Xem
+                                                                                    class="btn btn-primary mr-2 btn-order-detail">Xem
                                                                                     thêm</a>
                                                                                 @if ($order->status == 1)
                                                                                     <button
                                                                                         class="btn btn-danger btn_cancel_order"
                                                                                         data-id="{{ $order->id }}">Hủy
                                                                                         đơn</button>
-                                                                                @elseif($order->status == 4)
-                                                                                    @if ($order->is_review == 0)
-                                                                                        <a href="#modal-review-order"
-                                                                                            data-toggle="modal"
-                                                                                            data-id="{{ $order->id }}"
-                                                                                            class="btn btn-info btn_review_order">Đánh
-                                                                                            giá</a>
-                                                                                    @else
-                                                                                        <a href="#modal-review-order-detail"
-                                                                                            data-toggle="modal"
-                                                                                            data-id="{{ $order->id }}"
-                                                                                            class="btn btn-info btn_review_order_detail">Xem
-                                                                                            đánh giá</a>
-                                                                                    @endif
                                                                                 @endif
+                                                                                <div
+                                                                                    id="change_review_{{ $order->id }}">
+                                                                                    @if ($order->status == 4)
+                                                                                        @if ($order->is_review == 0)
+                                                                                            <a href="#modal-review-order"
+                                                                                                data-toggle="modal"
+                                                                                                data-id="{{ $order->id }}"
+                                                                                                class="btn btn-info btn_review_order">Đánh
+                                                                                                giá</a>
+                                                                                        @else
+                                                                                            <a href="#modal-see-review-order"
+                                                                                                data-toggle="modal"
+                                                                                                data-id="{{ $order->review_id }}"
+                                                                                                class="btn btn-success btn_see_review_order">Xem
+                                                                                                đánh giá</a>
+                                                                                        @endif
+                                                                                    @endif
+                                                                                </div>
                                                                             </td>
                                                                         </tr>
                                                                     @endforeach
@@ -719,6 +723,38 @@
             </div>
         </div>
 
+        {{-- modal see review  --}}
+        <div class="modal fade" id="modal-see-review-order" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="dialog">
+                <div class="modal-content">
+                    <div class="modal-body ">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true"><i class="icon-close"></i></span>
+                        </button>
+
+                        <div class="form-box">
+                            <div class="modal-header">
+                                <h4>Đánh giá</h4>
+                            </div>
+
+                            <div id="render_see_review_order">
+
+                            </div>
+
+
+                            {{-- <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-info" class="close" data-dismiss="modal"
+                                    aria-label="Close">Trở về</button>
+                                <button type="button" class="btn btn-primary" id="save_review">Hoàn thành</button>
+                            </div> --}}
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
         {{-- modal order detail --}}
         <div class="modal fade" id="order-detail-modal" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-open-width modal-dialog-centered" role="document">
@@ -842,9 +878,23 @@
 @section('script')
     <script>
         $(document).ready(function() {
-            // Rating
-
-
+            // see review order
+            $(document).on('click', '.btn_see_review_order', function() {
+                let id = $(this).data('id');
+                console.log(id);
+                $.ajax({
+                    url: "{{ route('seeReviewOrder') }}",
+                    type: 'Post',
+                    data: {
+                        id: id,
+                        _token: '{{ csrf_token() }}',
+                    },
+                    success: function(response) {
+                        // console.log(response);
+                        // $('#render_review_order').html(response.view);
+                    }
+                });
+            });
 
 
             // get product review
@@ -859,128 +909,108 @@
                         _token: '{{ csrf_token() }}',
                     },
                     success: function(response) {
-                        console.log(response);
+                        // console.log(response);
                         $('#render_review_order').html(response.view);
 
-
-                        function rate5() {
-                            document.getElementById("5").style.color = "orange";
-                            document.getElementById("4").style.color = "orange";
-                            document.getElementById("3").style.color = "orange";
-                            document.getElementById("2").style.color = "orange";
-                            document.getElementById("1").style.color = "orange";
+                        function rateStars(star) {
+                            for (let i = 1; i <= 5; i++) {
+                                document.getElementById(i.toString()).style.color = (i <=
+                                    star) ? "orange" : "#9e9e9e";
+                            }
                         }
 
-                        function rate4() {
-                            document.getElementById("5").style.color = "#9e9e9e";
-                            document.getElementById("4").style.color = "orange";
-                            document.getElementById("3").style.color = "orange";
-                            document.getElementById("2").style.color = "orange";
-                            document.getElementById("1").style.color = "orange";
-                        }
+                        const ratings = [{
+                                star: 5,
+                                text: "Tuyệt vời"
+                            },
+                            {
+                                star: 4,
+                                text: "Hài lòng"
+                            },
+                            {
+                                star: 3,
+                                text: "Bình thường"
+                            },
+                            {
+                                star: 2,
+                                text: "Không hài lòng"
+                            },
+                            {
+                                star: 1,
+                                text: "Tệ"
+                            },
+                        ];
 
-                        function rate3() {
-                            document.getElementById("5").style.color = "#9e9e9e";
-                            document.getElementById("4").style.color = "#9e9e9e";
-                            document.getElementById("3").style.color = "orange";
-                            document.getElementById("2").style.color = "orange";
-                            document.getElementById("1").style.color = "orange";
-                        }
-
-                        function rate2() {
-                            document.getElementById("5").style.color = "#9e9e9e";
-                            document.getElementById("4").style.color = "#9e9e9e";
-                            document.getElementById("3").style.color = "#9e9e9e";
-                            document.getElementById("2").style.color = "orange";
-                            document.getElementById("1").style.color = "orange";
-                        }
-
-                        function rate1() {
-                            document.getElementById("5").style.color = "#9e9e9e";
-                            document.getElementById("4").style.color = "#9e9e9e";
-                            document.getElementById("3").style.color = "#9e9e9e";
-                            document.getElementById("2").style.color = "#9e9e9e";
-                            document.getElementById("1").style.color = "orange";
-                        }
-
-                        document.getElementById("5").onclick = function() {
-                            rate5();
-                            $(".display_rating").text("Tuyệt vời")
-                        }
-
-                        document.getElementById("4").onclick = function() {
-                            rate4();
-                            $(".display_rating").text("Hài lòng")
-                        }
-                        document.getElementById("3").onclick = function() {
-                            rate3();
-                            $(".display_rating").text("Bình thường")
-                        }
-                        document.getElementById("2").onclick = function() {
-                            rate2();
-                            $(".display_rating").text("Không hài lòng")
-                        }
-                        document.getElementById("1").onclick = function() {
-                            rate1();
-                            $(".display_rating").text("Tệ")
-                        }
-
-                        $('input[name="rating"]').change(function() {
-                            var star = $('input[name="rating"]:checked').val();
-                            stateRating(star);
-
+                        ratings.forEach(rating => {
+                            document.getElementById(rating.star.toString()).onclick =
+                                function() {
+                                    rateStars(rating.star);
+                                    $(".display_rating").text(rating.text);
+                                };
                         });
 
+                         $('input[name="rating"]').on('change', function() {
+                            var rating = $(this).val();
+                            $("#star").val(rating);
+                            console.log($("#star"));
+                        });
 
                     },
-                })
-            })
+                });
+            });
+
+            $("#save_review").click(function() {
+                $("#error_comment").text("");
+                var comment = $("#comment").val();
+
+                if (comment == "") {
+                    $("#error_comment").text("Vui lòng nhập đánh giá !");
+                    $("#comment").focus();
+                    return false;
+                }
+
+                var user_id = $("#user_id").val();
+                var order_id = $("#order_id").val();
+                var product_id = $("#product_id").val();
+                var star = $("#star").val();
+
+                $.ajax({
+                    url: "{{ route('orderRating') }}",
+                    type: 'Post',
+                    data: {
+                        star,
+                        comment,
+                        user_id,
+                        order_id,
+                        product_id,
+                        _token: '{{ csrf_token() }}',
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Đánh giá thành công!",
+                            icon: "success",
+                            showConfirmButton: false,
+                            timer: 1600
+                        });
+
+                        $(".close").click();
+
+                        var changeReview = $("#change_review_" + order_id);
+                        var elementBtnSeeReview = `
+                                <a href="#modal-see-review-order"
+                                    data-toggle="modal"
+                                    data-id="${response.id_review}"
+                                    class="btn btn-success btn_see_review_order">Xem
+                                    đánh giá
+                                </a>    
+                            `
+                        changeReview.html(elementBtnSeeReview);
+                    },
+                });
+
+            });
 
 
-
-            function stateRating(star) {
-                $("#save_review").click(function() {
-                    $("#error_comment").text("");
-                    var comment = $("#comment").val();
-
-                    if (comment == "") {
-                        $("#error_comment").text("Vui lòng nhập đánh giá !");
-                        $("#comment").focus();
-                        return false;
-                    }
-
-                    var user_id = $("#user_id").val();
-                    var order_id = $("#order_id").val();
-                    var product_id = $("#product_id").val();
-
-
-                    $.ajax({
-                        url: "{{ route('orderRating') }}",
-                        type: 'Post',
-                        data: {
-                            star,
-                            comment,
-                            user_id,
-                            order_id,
-                            product_id,
-                            _token: '{{ csrf_token() }}',
-                        },
-                        success: function(response) {
-                            Swal.fire({
-                                title: "Đánh giá thành công!",
-                                icon: "success",
-                                showConfirmButton: false,
-                                timer: 1600
-                            });
-
-                            $(".close").click();
-
-                        },
-                    })
-
-
-                })
-            }
 
 
 
