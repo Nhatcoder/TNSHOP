@@ -1,14 +1,3 @@
-{{-- <div class="row mt-2">
-    <div class="col-2">
-        <img src="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lw6vo4pl3kd532" alt="">
-    </div>
-
-    <div class="col-10">
-        <p>Áo blabla bala bala bala bala bala bala bala okokkokokkokokokkokkokokokkokok</p>
-        <p>Phân loại: Xanh, Size m</p>
-    </div>
-</div> --}}
-
 @foreach ($reviewOrderDetail as $key => $item)
     @php
         $getProductSingle = App\Models\Product::getProductSingle($item->product_id);

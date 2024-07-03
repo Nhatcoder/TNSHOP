@@ -131,15 +131,24 @@ class Order extends Model
             ->groupBy('orders.id')
             ->get();
     }
+
     public static function chartSelected($day)
     {
-        return self::select(DB::raw('DATE(orders.created_at) as orderNow'), DB::raw('COUNT(orders.id) as order_count'), DB::raw('SUM(order_items.quantity) as order_item_count'), DB::raw('SUM(orders.total_price) as total_price'))
+        return self::select(
+            DB::raw('DATE(orders.created_at) as orderNow'),
+            DB::raw('COUNT(orders.id) as order_count'),
+            DB::raw('SUM(order_items.quantity) as order_item_count'),
+            DB::raw('SUM(order_items.quantity * order_items.price) as total_price')
+        )
             ->join('order_items', 'orders.id', '=', 'order_items.order_id')
             ->where('orders.status', '4')
             ->whereBetween(DB::raw('DATE(orders.created_at)'), [now()->subDays($day)->toDateString(), now()->toDateString()])
             ->groupBy(DB::raw('DATE(orders.created_at)'))
             ->get();
     }
+
+
+
     public static function chartFromToDate($from_date, $to_date)
     {
         return self::select(DB::raw('DATE(orders.created_at) as orderNow'), DB::raw('COUNT(orders.id) as order_count'), DB::raw('SUM(order_items.quantity) as order_item_count'), DB::raw('SUM(orders.total_price) as total_price'))

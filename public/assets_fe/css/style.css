@@ -12916,7 +12916,7 @@ button:focus {
 
 .details-filter-row label {
     display: inline-block;
-    width: 67px;
+    width: 76px;
     font-weight: 400;
     font-size: 1.4rem;
     margin-bottom: 0
@@ -20060,4 +20060,22 @@ button:focus {
 
 .rating>label:hover {
     color: orange;
+}
+
+/* product detail */
+.color_item {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.color_item img {
+    width: 35px;
+    padding: 5px;
+}
+
+.color_item.active {
+    border: 1px solid #c96;
 }

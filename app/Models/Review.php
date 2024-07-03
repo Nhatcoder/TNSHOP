@@ -39,5 +39,32 @@ class Review extends Model
             ->get();
     }
 
+    public static function reviewAll()
+    {
+        $statistics = DB::table('reviews')
+            ->select(
+                DB::raw('DATE(created_at) as date'),
+                DB::raw('SUM(CASE WHEN rating >= 3 THEN 1 ELSE 0 END) as positive_reviews'),
+                DB::raw('SUM(CASE WHEN rating < 3 THEN 1 ELSE 0 END) as negative_reviews')
+            )
+            ->groupBy(DB::raw('DATE(created_at)'))
+            ->get();
+
+        return $statistics;
+    }
+
+    public static function reviewPositive()
+    {
+        return self::select(DB::raw('DATE(reviews.created_at) as reviewNow'), DB::raw('COUNT(reviews.id) as review_count'))
+            ->where('rating', '>=', '3')
+            ->groupBy(DB::raw('DATE(reviews.created_at)'))
+            ->get();
+    }
+    public static function reviewNegative()
+    {
+        return self::select(DB::raw('DATE(reviews.created_at) as reviewNow'), DB::raw('COUNT(reviews.id) as review_count'))
+            ->where('rating', '<', '3')
+            ->get();
+    }
 
 }

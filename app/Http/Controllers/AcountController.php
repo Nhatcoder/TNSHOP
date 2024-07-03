@@ -221,7 +221,6 @@ class AcountController extends Controller
                 $view = view("user.acount.see_review_product", compact('review', 'reviewOrderDetail'))->render();
                 return response()->json([
                     "view" => $view,
-                    'cc' => $reviewOrderDetail
                 ], 200);
 
             }

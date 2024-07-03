@@ -25,7 +25,7 @@ class IndexController extends Controller
     {
         $category = Category::with('sub_category')->get();
 
-        $data['getColor'] = Color::getColorActive();
+        // $data['getColor'] = Color::getColorActive();
         $data['getBrand'] = Brand::getbrand();
 
         $data['product'] = Product::getProductBySlug();
@@ -96,7 +96,7 @@ class IndexController extends Controller
     {
         $category = Category::with('sub_category')->get();
 
-        $data['getColor'] = Color::getColorActive();
+        // $data['getColor'] = Color::getColorActive();
         $data['getBrand'] = Brand::getbrand();
 
         $data['product'] = Product::getProductBySlug();
@@ -110,7 +110,7 @@ class IndexController extends Controller
         $category = Category::with('sub_category')->get();
         $category_slug = Category::where('slug', $slug)->where('status', 1)->first();
         $category_subslug = Subcategory::where('slug', $subslug)->where('status', 1)->first();
-        $data['getColor'] = Color::getColorActive();
+        // $data['getColor'] = Color::getColorActive();
         $data['getBrand'] = Brand::getbrand();
 
 
@@ -124,7 +124,7 @@ class IndexController extends Controller
             $data['relatedProducts'] = Product::getRelatedProduct($productDetail->id, $productDetail->category_id);
 
             $data['getReviewByProductSlug'] = Product::getReviewByProductSlug($slug);
-            // return response()->json(count($data['getReviewByProductSlug']));
+            // return response()->json($data['productDetail']);
 
             return view('user.product.detail', compact('category'), $data);
         }

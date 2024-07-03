@@ -119,24 +119,24 @@
                                 <!-- End .product-content -->
 
                                 @empty(!$productDetail->color)
-                                    <div class="details-filter-row details-row-size">
-                                        <label for="color">Màu sắc:</label>
-                                        <div class="select-custom">
-                                            <select name="color_id" id="color" class="form-control">
-                                                <option value="#" selected="selected" disabled>Chọn màu</option>
-                                                @foreach ($productDetail->color as $item)
-                                                    <option required value="{{ $item->getColor->id }}">
-                                                        {{ $item->getColor->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+                                    <div class="d-flex flex-wrap">
+                                        <label style="width: 76px;">Màu sắc</label>
+                                        @foreach ($productDetail->color as $key => $item)
+                                            <div class="color_list ">
+                                                <input type="radio" name="color" class="color d-none"
+                                                    id="color_{{ $key + 1 }}" value="{{ $item->id }}">
+                                                <label for="color_{{ $key + 1 }}" class="color_item d-flex">
+                                                    <img src="{{ $item->checkImage() }}" alt="product desc">
+                                                    <span class="pr-2">{{ $item->color_name }}</span>
+                                                </label>
+                                            </div>
+                                        @endforeach
                                     </div>
                                 @endempty
 
                                 @empty(!$productDetail->sizes)
                                     <div class="details-filter-row details-row-size">
-                                        <label for="size">Kích thước:</label>
+                                        <label for="size">Kích thước</label>
                                         <div class="select-custom">
                                             <select name="size_id" id="size" class="form-control getPrice">
                                                 <option value="#" data-price="0" selected="selected" disabled>Chọn kích
@@ -155,7 +155,7 @@
 
                                 <!-- End .details-filter-row -->
                                 <div class="details-filter-row details-row-size">
-                                    <label for="qty">Số lượng:</label>
+                                    <label for="qty">Số lượng</label>
                                     <div class="product-details-quantity">
                                         <input type="number" id="qty" name="qty" class="form-control"
                                             value="1" min="1" max="10" step="1"
@@ -422,14 +422,19 @@
 
     <script>
         $(document).ready(function() {
-            $('#color').on('change', function() {
+            $('.color').on('change', function() {
                 var color_id = $(this).val();
                 $('#color_id').val(color_id);
             });
+            $(document).on('click', '.color_item', function() {
+                $(".color_item").removeClass("active d-flex");
+                $(this).addClass("active d-flex");
+            })
             $('#size').on('change', function() {
                 var size_id = $(this).val();
                 $('#size_id').val(size_id);
             });
+            
             $('#qty').on('change', function() {
                 var quantity_cart = $(this).val();
                 $('#quantity_cart').val(quantity_cart);

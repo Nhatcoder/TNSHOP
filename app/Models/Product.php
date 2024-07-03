@@ -11,6 +11,16 @@ class Product extends Model
     use HasFactory;
     protected $table = 'product';
 
+    public static function getProductAdmin()
+    {
+        return self::select('product.*', 'category.name as category_name', 'brand.name as brand_name', 'sub_category.name as sub_category_name')
+            ->join('category', 'product.category_id', '=', 'category.id')
+            ->join('brand', 'product.brand_id', '=', 'brand.id')
+            ->leftJoin('sub_category', 'product.sub_category_id', '=', 'sub_category.id')
+            ->where('product.status', 1)
+            ->orDerBy('id', 'desc')
+            ->get();
+    }
     public static function getProduct()
     {
         return self::select('product.*', 'category.name as category_name', 'brand.name as brand_name', 'sub_category.name as sub_category_name')
@@ -20,7 +30,20 @@ class Product extends Model
             ->where('product.status', 1)
             ->orDerBy('id', 'desc')
             ->paginate(8);
+            // ->get();
     }
+    public static function getProductSeeDetail($id)
+    {
+        return self::select('product.*', 'category.name as category_name', 'brand.name as brand_name', 'sub_category.name as sub_category_name')
+            ->join('category', 'product.category_id', '=', 'category.id')
+            ->join('brand', 'product.brand_id', '=', 'brand.id')
+            ->leftJoin('sub_category', 'product.sub_category_id', '=', 'sub_category.id')
+            ->where('product.status', 1)
+            ->orDerBy('id', 'desc')
+            ->where('product.id', $id)
+            ->first();
+        }
+
     public static function productAll()
     {
         return self::select('product.*', 'category.name as category_name', 'brand.name as brand_name', 'sub_category.name as sub_category_name')
@@ -229,7 +252,7 @@ class Product extends Model
 
     public function color()
     {
-        return $this->hasMany(ProductColor::class, 'product_id');
+        return $this->hasMany(ColorImage::class, 'product_id');
     }
 
     public function sizes()

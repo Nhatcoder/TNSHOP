@@ -34,12 +34,7 @@
                      <span class="nav-title">Thương hiệu</span>
                  </a>
              </li>
-             <li class="{{ request()->segment(2) == 'color' ? 'active' : '' }}">
-                 <a href="{{ route('color.index') }}" aria-expanded="false">
-                     <i class="nav-icon fa fa-eyedropper"></i>
-                     <span class="nav-title">Màu</span>
-                 </a>
-             </li>
+             
              <li class="{{ request()->segment(2) == 'product' ? 'active' : '' }}">
                  <a href="{{ route('product.index') }}" aria-expanded="false">
                      <i class="nav-icon fa fa-product-hunt"></i>

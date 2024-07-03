@@ -70,14 +70,15 @@
 
       {{-- {{ $product->links() }} --}}
       {{-- Phân trang --}}
-      @if (count($product) > 9)
+      
+      @if ( $product->total() > 9)
           <nav aria-label="Page navigation">
               <ul class="pagination justify-content-center">
                   @if ($product->onFirstPage())
                       <li class="page-item disabled">
                           <a class="page-link page-link-prev" href="#" aria-label="Previous" tabindex="-1"
                               aria-disabled="true">
-                              <span aria-hidden="true"><i class="icon-long-arrow-left"></i></span>Prev
+                              <span aria-hidden="true"><i class="icon-long-arrow-left"></i></span>Lùi
                           </a>
                       </li>
                   @else
@@ -138,17 +139,19 @@
                   @if ($product->hasMorePages())
                       <li class="page-item">
                           <a class="page-link page-link-next" href="{{ $product->nextPageUrl() }}" aria-label="Next">
-                              Next <span aria-hidden="true"><i class="icon-long-arrow-right"></i></span>
+                              Tiến <span aria-hidden="true"><i class="icon-long-arrow-right"></i></span>
                           </a>
                       </li>
                   @else
                       <li class="page-item disabled">
                           <a class="page-link page-link-next" href="#" aria-label="Next" tabindex="-1"
                               aria-disabled="true">
-                              Next <span aria-hidden="true"><i class="icon-long-arrow-right"></i></span>
+                              Tiến <span aria-hidden="true"><i class="icon-long-arrow-right"></i></span>
                           </a>
                       </li>
                   @endif
               </ul>
           </nav>
       @endif
+
+      

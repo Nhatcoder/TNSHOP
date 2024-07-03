@@ -38,7 +38,6 @@
                 $totalRevene += $value->total_price;
                 $totalSucces += 1;
             }
-
             if ($value->status == 5) {
                 $totalCanceled += 1;
             }
@@ -93,8 +92,6 @@
                 <div class="card-header ">
                     <div class="card-heading mb-2">
                         <h4 class="card-title">Thống kê doanh thu : <span class="text-date">365 ngày</span></h4>
-
-
                     </div>
                     <div class="d-flex justify-content-between">
                         <select style='width:380px' class="form-select" id="select_date_renvere">
@@ -125,222 +122,281 @@
         </div>
 
         <div class="col-xxl-4 m-b-30">
-            <div class="card card-statistics h-100 mb-0 o-hidden">
+            <div class="card card-statistics h-100 mb-0">
                 <div class="card-header">
-                    <h4 class="card-title">Thống kê đánh giá</h4>
+                    <h4 class="card-title">Đánh giá</h4>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-6 col-xxs-4 col-md-4 mb-3 mb-sm-0">
-                            <h3 class="mb-1 mb-xxs-0">25,456</h3>
-                            <span class="d-block"> <i class="fa fa-arrow-up text-success"></i>
-                                <b class="text-success">+23%</b> Views </span>
+                    <?php
+                    $totalReviews = $totalPositive + $totalNegative;
+                    $positivePercent = $totalReviews > 0 ? ($totalPositive / $totalReviews) * 100 : 0;
+                    $negativePercent = $totalReviews > 0 ? ($totalNegative / $totalReviews) * 100 : 0;
+                    ?>
+
+                    <div class="mb-1">
+                        <div class="d-flex">
+                            <p>Tích cực</p>
+                            <h5 class="text-muted ml-auto mb-0">{{ $totalPositive }}</h5>
                         </div>
-                        <div class="col-6 col-xxs-4 col-md-4 mb-3 mb-sm-0">
-                            <h3 class="mb-1 mb-xxs-0">45,541</h3>
-                            <span class="d-block"> <i class="fa fa-arrow-up text-success"></i>
-                                <b class="text-success">+15%</b> Likes </span>
-                        </div>
-                        <div class="col-12 col-xxs-4 col-md-4 mb-3 mb-sm-0">
-                            <h3 class="mb-1 mb-xxs-0">78,462</h3>
-                            <span class="d-block"> <i class="fa fa-arrow-up text-success"></i>
-                                <b class="text-success">+32%</b> Comments </span>
+                        <div class="progress progress-sm m-b-10" style="height: 5px;">
+                            <div class="progress-bar bg-primary" role="progressbar" aria-valuenow="{{ $positivePercent }}"
+                                aria-valuemin="0" aria-valuemax="100" style="width: {{ $positivePercent }}%;">
+                            </div>
                         </div>
                     </div>
-                    <div class="mt-2 mt-xxs-4">
-                        <p>You're scheduled earn <span class="badge  badge-success-inverse">$2,350
-                                today</span></p>
-                    </div>
-                </div>
-                <div class="mt-3">
-                    <div class="tab nav-border-bottom">
-                        <ul class="nav nav-tabs" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link py-2 active show" id="home-02-tab" data-toggle="tab" href="#home-02"
-                                    role="tab" aria-controls="home-02" aria-selected="true">Views</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link py-2" id="profile-02-tab" data-toggle="tab" href="#profile-02"
-                                    role="tab" aria-controls="profile-02" aria-selected="false">Likes </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link py-2" id="portfolio-02-tab" data-toggle="tab" href="#portfolio-02"
-                                    role="tab" aria-controls="portfolio-02" aria-selected="false">Comments
-                                </a>
-                            </li>
-                        </ul>
-                        <div class="tab-content mt-5">
-                            <div class="tab-pane fade active show" id="home-02" role="tabpanel"
-                                aria-labelledby="home-02-tab">
-                                <div class="apexchart-wrapper">
-                                    <div id="analytics4" class="chart-fit mb-minus"></div>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="profile-02" role="tabpanel" aria-labelledby="profile-02-tab">
-                                <div class="apexchart-wrapper">
-                                    <div id="analytics5" class="chart-fit mb-minus"></div>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="portfolio-02" role="tabpanel"
-                                aria-labelledby="portfolio-02-tab">
-                                <div class="apexchart-wrapper">
-                                    <div id="analytics6" class="chart-fit mb-minus"></div>
-                                </div>
+                    <div class="mb-1">
+                        <div class="d-flex">
+                            <p>Tiêu cực</p>
+                            <h5 class="text-muted ml-auto mb-0">{{ $totalNegative }}</h5>
+                        </div>
+                        <div class="progress progress-sm m-b-10" style="height: 5px;">
+                            <div class="progress-bar bg-info" role="progressbar" aria-valuenow="{{ $negativePercent }}"
+                                aria-valuemin="0" aria-valuemax="100" style="width: {{ $negativePercent }}%;">
                             </div>
                         </div>
+                    </div>
+
+                    <div class="apexchart-wrapper">
+                        <div id="feedback"></div>
                     </div>
                 </div>
             </div>
+
         </div>
 
-    </div>
+        @php
+
+            $total = 0;
+            foreach ($orderRevenue as $key => $value) {
+                $total += $value->total_price;
+            }
+        @endphp
 
 
-    @php
-        $total = 0;
-        foreach ($orderRevenue as $key => $value) {
-            $total += $value->total_price;
-        }
-    @endphp
+        <!-- end row -->
 
 
-    <!-- end row -->
+    @endsection
 
+    @section('script')
+        <script>
+            // Biểu đồ doanh thu
+            $(document).ready(function() {
+                var $day = $("#select_date_renvere").val();
+                sendAjaxRequest($day);
 
-@endsection
+                $("#select_date_renvere").change(function() {
+                    var $text = $(this).find("option:selected").text();
+                    var $date = $(this).val();
+                    $(".text-date").text($text);
+                    // console.log($text + "-" + $date);
 
-@section('script')
-    <script>
-        // select date 
-        $(document).ready(function() {
-            var $day = $("#select_date_renvere").val();
-            sendAjaxRequest($day);
+                    sendAjaxRequest($date);
+                });
 
-            $("#select_date_renvere").change(function() {
-                var $text = $(this).find("option:selected").text();
-                var $date = $(this).val();
-                $(".text-date").text($text);
-                // console.log($text + "-" + $date);
+                function sendAjaxRequest(date) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('chartSelected') }}",
+                        data: {
+                            day: date,
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(data) {
+                            chartRenverse(data.doanhThu, data.soDonHang, data.soLuongBanRa, data.ngayMua);
+                        }
+                    });
+                }
 
-                sendAjaxRequest($date);
+                // chart review
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('chartReview') }}",
+                    data: {
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(res) {
+                        renderChartReview(res.positive, res.negative, res.category, res.totalReview);
+                    }
+                })
             });
 
-            function sendAjaxRequest(date) {
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('chartSelected') }}",
-                    data: {
-                        day: date,
-                        _token: "{{ csrf_token() }}"
-                    },
-                    success: function(data) {
-                        chartRenverse(data.doanhThu, data.soDonHang, data.soLuongBanRa, data.ngayMua);
-                    }
-                });
-            }
-        });
+            $('#to_date').on('input', function() {
+                var from_date = $('#from_date').val();
+                var to_date = $('#to_date').val();
 
-        $('#to_date').on('input', function() {
-            var from_date = $('#from_date').val();
-            var to_date = $('#to_date').val();
+                var text = from_date + ' đến ' + to_date;
 
-            var text = from_date + ' đến ' + to_date;
+                if (from_date != null && to_date != null) {
+                    $(".text-date").text(text);
+                    // $("#select_date_renvere").append('<option selected>' + text + '</option>');
 
-            if (from_date != null && to_date != null) {
-                $(".text-date").text(text);
-
-                $("#select_date_renvere").append('<option selected>' + text + '</option>');
-
-                $.ajax({
-                    type: "POST",
-                    url: "{{ route('chartFromDate') }}",
-                    data: {
-                        from_date,
-                        to_date,
-                        _token: "{{ csrf_token() }}"
-                    },
-                    success: function(data) {
-                        chartRenverse(data.doanhThu, data.soDonHang, data.soLuongBanRa, data.ngayMua);
-                    }
-                });
-            }
-
-
-        });
-
-
-
-        function chartRenverse(data1, data2, data3, data4) {
-            var renderChartRevene = jQuery('#renderChartRevene')
-            if (renderChartRevene.length > 0) {
-                var options = {
-                    chart: {
-                        height: 350,
-                        type: 'area',
-                        stacked: true,
-                    },
-                    colors: ['#8E54E9', '#2bcbba', '#eceef3'],
-                    dataLabels: {
-                        enabled: false
-                    },
-                    stroke: {
-                        curve: 'smooth'
-                    },
-
-
-                    series: [{
-                        name: 'Doanh thu',
-                        data: data1
-                    }, {
-                        name: 'Đơn hàng',
-                        data: data2
-
-                    }, {
-                        name: 'Số lượng bán ra',
-                        data: data3
-                    }],
-
-
-                    fill: {
-                        type: 'gradient',
-                        gradient: {
-                            opacityFrom: 0.6,
-                            opacityTo: 0.8,
-                        }
-                    },
-                    legend: {
-                        position: 'top',
-                        horizontalAlign: 'left'
-                    },
-                    xaxis: {
-                        type: 'datetime',
-                        categories: data4,
-                    },
-
-                    tooltip: {
-                        x: {
-                            formatter: function(val) {
-                                return new Date(val).toLocaleDateString('vi-VN', {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric'
-                                });
-                            }
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('chartFromDate') }}",
+                        data: {
+                            from_date,
+                            to_date,
+                            _token: "{{ csrf_token() }}"
                         },
-                        y: {
-                            formatter: function(val) {
-                                return val.toLocaleString('vi-VN');
-                            }
+                        success: function(data) {
+                            chartRenverse(data.doanhThu, data.soDonHang, data.soLuongBanRa, data.ngayMua);
                         }
-                    }
+                    });
                 }
 
 
-                $("#renderChartRevene").empty();
-                var chart = new ApexCharts(document.querySelector("#renderChartRevene"), options);
+            });
 
-                chart.render();
+            function chartRenverse(data1, data2, data3, data4) {
+                var renderChartRevene = jQuery('#renderChartRevene')
+                if (renderChartRevene.length > 0) {
+                    var options = {
+                        chart: {
+                            height: 350,
+                            type: 'area',
+                            stacked: true,
+                        },
+                        colors: ['#8E54E9', '#2bcbba', '#eceef3'],
+                        dataLabels: {
+                            enabled: false
+                        },
+                        stroke: {
+                            curve: 'smooth'
+                        },
+
+
+                        series: [{
+                            name: 'Doanh thu',
+                            data: data1
+                        }, {
+                            name: 'Đơn hàng',
+                            data: data2
+
+                        }, {
+                            name: 'Số lượng bán ra',
+                            data: data3
+                        }],
+
+
+                        fill: {
+                            type: 'gradient',
+                            gradient: {
+                                opacityFrom: 0.6,
+                                opacityTo: 0.8,
+                            }
+                        },
+                        legend: {
+                            position: 'top',
+                            horizontalAlign: 'left'
+                        },
+                        xaxis: {
+                            type: 'datetime',
+                            categories: data4,
+                        },
+
+                        tooltip: {
+                            x: {
+                                formatter: function(val) {
+                                    return new Date(val).toLocaleDateString('vi-VN', {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric'
+                                    });
+                                }
+                            },
+                            y: {
+                                formatter: function(val) {
+                                    return val.toLocaleString('vi-VN');
+                                }
+                            }
+                        }
+                    }
+
+
+                    $("#renderChartRevene").empty();
+                    var chart = new ApexCharts(document.querySelector("#renderChartRevene"), options);
+
+                    chart.render();
+                }
             }
-        }
-    </script>
-@endsection
+
+
+
+
+            // Biểu đồ đánh giá
+            function renderChartReview(positive, negative, category, totalReview) {
+                var feedback = jQuery('#feedback')
+                if (feedback.length > 0) {
+                    var options = {
+                        chart: {
+                            height: 350,
+                            type: 'line',
+                            shadow: {
+                                enabled: true,
+                                color: '#000',
+                                top: 18,
+                                left: 7,
+                                blur: 10,
+                                opacity: 1
+                            },
+                            toolbar: {
+                                show: false
+                            }
+                        },
+                        colors: ['#8E54E9', '#2bcbba'],
+                        dataLabels: {
+                            enabled: true,
+                        },
+                        stroke: {
+                            curve: 'smooth'
+                        },
+                        series: [{
+                                name: "Tích cực",
+                                data: positive
+                            },
+                            {
+                                name: "Tiêu cực",
+                                data: negative
+                            }
+                        ],
+                        grid: {
+                            borderColor: '#e7e7e7',
+                            row: {
+                                colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+                                opacity: 0.5
+                            },
+                        },
+                        markers: {
+
+                            size: 6
+                        },
+                        xaxis: {
+                            categories: category,
+                        },
+                        yaxis: {
+                            title: {
+                                text: 'Sao đánh giá'
+                            },
+                            min: 0,
+                            max: totalReview
+                        },
+                        legend: {
+                            position: 'top',
+                            horizontalAlign: 'right',
+                            floating: true,
+                            offsetY: -25,
+                            offsetX: -5
+                        }
+                    }
+
+                    var chart = new ApexCharts(
+                        document.querySelector("#feedback"),
+                        options
+                    );
+
+                    chart.render();
+                }
+            }
+        </script>
+    @endsection

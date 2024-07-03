@@ -2799,6 +2799,7 @@ pre code {
     border-radius: .25rem;
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out
 }
+
 .form-select {
     display: block;
     width: 100%;
@@ -6548,10 +6549,10 @@ button.close {
     overflow: hidden
 }
 
-.modal-open .modal {
+/* .modal-open .modal {
     overflow-x: hidden;
     overflow-y: auto
-}
+} */
 
 .modal {
     position: fixed;
@@ -6680,7 +6681,7 @@ button.close {
     overflow: scroll
 }
 
-@media (min-width:667px) {
+/* @media (min-width:667px) {
     .modal-dialog {
         max-width: 500px;
         margin: 1.75rem auto
@@ -6704,11 +6705,13 @@ button.close {
         max-width: 800px
     }
 }
+
 @media (min-width:1400px) {
     .modal-xl {
-        max-width: 1400px
+        max-width: 1500px
     }
-}
+} */
+
 
 .tooltip {
     position: absolute;
@@ -21501,7 +21504,7 @@ code {
     content: " ";
     top: 0;
     position: relative;
-    left: 0;
+    left: -13px;
     -webkit-transition: all .3s ease;
     -moz-transition: all .3s ease;
     -ms-transition: all .3s ease;
@@ -21520,7 +21523,7 @@ code {
 }
 
 .checkbox.checbox-switch label>input:checked+span:before {
-    left: 26px
+    left: 13px
 }
 
 .checkbox.checbox-switch label>input:checked:disabled+span {
@@ -39067,6 +39070,7 @@ input[readonly] {
     border-color: #8e54e9;
     box-shadow: none
 }
+
 .form-select:focus {
     border-color: #8e54e9;
     box-shadow: none
@@ -41147,4 +41151,3 @@ table.dataTable thead .sorting_desc_disabled:before {
 }
 
 /* edit tý */
-

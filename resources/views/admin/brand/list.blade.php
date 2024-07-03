@@ -121,7 +121,7 @@
                                         </td>
                                         <td>
                                             <div class="d-flex">
-                                                <a href="{{ route('category.edit', ['category' => $item->id]) }}"
+                                                <a href="{{ route('brand.edit', ['brand' => $item->id]) }}"
                                                     class="btn btn-info  ">Sửa</a>
 
                                                 <form id="form_delete" method="post">

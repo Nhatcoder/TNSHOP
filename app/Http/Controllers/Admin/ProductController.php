@@ -8,37 +8,28 @@ use Illuminate\Support\Str;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Brand;
-use App\Models\Color;
-use App\Models\ProductColor;
 use App\Models\SubCategory;
 use App\Models\ProductSize;
 use App\Models\ProductImage;
+use App\Models\ColorImage;
 use App\Events\DeleteImageProduct;
+use Illuminate\Http\UploadedFile;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $product = Product::getProduct();
-        // dd($product);
-        // return response()->json($product);
+        $product = Product::getProductAdmin();
         return view('admin.product.list', compact('product'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+
     public function create()
     {
         $product = [];
         $category = Category::all();
         $brand = Brand::all();
-        $color = Color::all();
-        // return response()->json($category);
-        return view('admin.product.add', compact('product', 'category', 'brand', 'color'));
+        return view('admin.product.add', compact('product', 'category', 'brand'));
     }
 
     /**
@@ -52,7 +43,6 @@ class ProductController extends Controller
             'category_id' => 'required',
             'sub_category_id' => 'nullable',
             'brand_id' => 'required',
-            'color_id' => 'required',
             'old_price' => 'nullable',
             'price' => 'required',
             'image' => 'required',
@@ -67,8 +57,7 @@ class ProductController extends Controller
             'slug.unique' => 'Slug đã tồn tại',
             'category_id' => 'Vui lòng chọn danh mục',
             'brand_id' => 'Vui lòng nhà cung cấp',
-            'old_price' => 'Vui lòng nhập giá mới',
-            'price' => 'Vui lòng nhập giá cũ',
+            'price' => 'Vui lòng nhập giá mới',
             'image' => 'Vui lòng chọn ảnh',
         ]);
 
@@ -90,14 +79,26 @@ class ProductController extends Controller
         $product->save();
         $productFind = Product::find($product->id);
 
-        if (!empty($request->color_id)) {
-            foreach ($request->color_id as $color_id) {
-                $color = new ProductColor();
-                $color->color_id = $color_id;
+        if (!empty($request->color)) {
+            foreach ($request->color as $colorData) {
+                $color = new ColorImage();
+                $color->color_name = $colorData['color_name'];
+
+                if (isset($colorData['color_image']) && $colorData['color_image'] instanceof UploadedFile) {
+                    $image = $colorData['color_image'];
+                    $imageExtension = $image->getClientOriginalExtension();
+                    $imageName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+                    $uniqueImageName = 'img_color_' . rand(0, 999999999) . '_' . $imageName . '.' . $imageExtension;
+                    $image->move(public_path('uploads/product'), $uniqueImageName);
+
+                    $color->image_name = $uniqueImageName;
+                }
+
                 $color->product_id = $product->id;
                 $color->save();
             }
         }
+
         if (!empty($request->size)) {
             foreach ($request->size as $size) {
                 // dd($size['price']);
@@ -145,10 +146,9 @@ class ProductController extends Controller
         $category = Category::all();
         $sub_category = SubCategory::all();
         $brand = Brand::all();
-        $color = Color::all();
-        $product_color = ProductColor::all();
+        $imageColor = ColorImage::where('product_id', $id)->get();
         $product_size = ProductSize::where('product_id', $id)->get();
-        return view('admin.product.edit', compact('product', 'category', 'brand', 'color', 'product_color', 'sub_category', 'product_size'));
+        return view('admin.product.edit', compact('product', 'category', 'brand', 'imageColor', 'sub_category', 'product_size'));
     }
 
     /**
@@ -162,7 +162,6 @@ class ProductController extends Controller
             'category_id' => 'required',
             'sub_category_id' => 'nullable',
             'brand_id' => 'required',
-            'color_id' => 'nullable',
             'old_price' => 'required',
             'price' => 'required',
             'image' => 'nullable',
@@ -195,17 +194,62 @@ class ProductController extends Controller
 
         $product->save();
 
-        // $product->colors()->attach($request->color_id);
+        if (!empty($request->color)) {
+            $existingColorIds = ColorImage::where('product_id', $product->id)->pluck('id')->toArray();
 
+            $newColorIds = [];
 
-        ProductColor::DeleteRecord($product->id);
-        if (!empty($request->color_id)) {
-            foreach ($request->color_id as $color_id) {
-                $color = new ProductColor();
-                $color->color_id = $color_id;
-                $color->product_id = $product->id;
+            foreach ($request->color as $colorData) {
+                // Kiểm tra nếu một trong hai trường bị trống thì bỏ qua
+                if (empty($colorData['color_name']) || (isset($colorData['color_image']) && !$colorData['color_image'] instanceof UploadedFile)) {
+                    continue;
+                }
+
+                // Tìm hoặc tạo mới bản ghi ColorImage
+                $color = ColorImage::firstOrNew([
+                    'id' => $colorData['id'] ?? null,
+                    'product_id' => $product->id,
+                ]);
+
+                // Cập nhật các trường cần thiết
+                $color->color_name = $colorData['color_name'];
+
+                // Xử lý ảnh nếu có
+                if (isset($colorData['color_image']) && $colorData['color_image'] instanceof UploadedFile) {
+                    // Xóa ảnh cũ nếu có
+                    if (!empty($color->image_name) && file_exists(public_path('uploads/product/' . $color->image_name))) {
+                        unlink(public_path('uploads/product/' . $color->image_name));
+                    }
+
+                    // Xử lý ảnh mới
+                    $image = $colorData['color_image'];
+                    $imageExtension = $image->getClientOriginalExtension();
+                    $imageName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+                    $uniqueImageName = 'img_color_' . rand(0, 999999999) . '_' . $imageName . '.' . $imageExtension;
+                    $image->move(public_path('uploads/product'), $uniqueImageName);
+
+                    $color->image_name = $uniqueImageName;
+                }
+
+                // Lưu thông tin màu sắc
                 $color->save();
+
+                // Thêm ID vào mảng các ID mới
+                $newColorIds[] = $color->id;
             }
+
+            // Xóa các bản ghi không có trong mảng các ID mới
+            $idsToDelete = array_diff($existingColorIds, $newColorIds);
+            foreach ($idsToDelete as $image) {
+                $deleteImage = ColorImage::find($image);
+                if (!empty($deleteImage->image_name) && file_exists('uploads/product/' . $deleteImage->image_name)) {
+                    unlink('uploads/product/' . $deleteImage->image_name);
+                }
+            }
+            ColorImage::whereIn('id', $idsToDelete)->delete();
+
+
+
         }
 
         ProductSize::DeleteRecord($product->id);
@@ -243,13 +287,22 @@ class ProductController extends Controller
     public function destroy(string $id)
     {
         $product = Product::find($id);
-        $imageId =  ProductImage::where('product_id', $product->id)->get();
+        $imageId = ProductImage::where('product_id', $product->id)->get();
+        $imageColor = ColorImage::where('product_id', $product->id)->get();
 
         foreach ($imageId as $image) {
             if (!empty($image->image_name) && file_exists('uploads/product/' . $image->image_name)) {
                 unlink('uploads/product/' . $image->image_name);
             }
         }
+
+        foreach ($imageColor as $image) {
+            if (!empty($image->image_name) && file_exists('uploads/product/' . $image->image_name)) {
+                unlink('uploads/product/' . $image->image_name);
+            }
+        }
+
+
         ProductImage::deleteImage($product->id);
         $product->delete();
 
@@ -282,6 +335,53 @@ class ProductController extends Controller
                 $image->save();
                 $i++;
             }
+        }
+    }
+
+    // see product
+    public function seeProductDetail(Request $request)
+    {
+        if (!empty($request->id)) {
+            $seeProductDetail = Product::getProductSeeDetail($request->id);
+            $imageColor = ColorImage::where('product_id', $request->id)->get();
+            $product_size = ProductSize::where('product_id', $request->id)->get();
+
+            $view = view("admin.product.see_detail_product", compact('seeProductDetail', "imageColor", "product_size"))->render();
+            return response()->json(
+                [
+                    'view' => $view,
+                ],
+                200
+            );
+
+        }
+    }
+
+    // update hot
+    public function updateHotProduct(Request $request)
+    {
+        if (!empty($request->id)) {
+            $product = Product::find($request->id);
+
+            if ($product->hot == 1) {
+                $product->hot = 0;
+            } else {
+                $product->hot = 1;
+            }
+            $product->save();
+        }
+    }
+    public function updateStatusProduct(Request $request)
+    {
+        if (!empty($request->id)) {
+            $product = Product::find($request->id);
+
+            if ($product->status == 1) {
+                $product->status = 0;
+            } else {
+                $product->status = 1;
+            }
+            $product->save();
         }
     }
 }

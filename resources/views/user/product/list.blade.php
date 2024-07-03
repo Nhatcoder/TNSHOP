@@ -92,7 +92,6 @@
                                                             <label class="custom-control-label"
                                                                 for="cat-{{ $item->id }}">{{ $item->sub_name }}</label>
                                                         </div>
-                                                        <span class="item-count">3</span>
                                                     </div>
                                                 @endforeach
 
@@ -131,29 +130,7 @@
                                 </div>
                             @endif
 
-                            {{-- color --}}
-                            <div class="widget widget-collapsible">
-                                <h3 class="widget-title">
-                                    <a data-toggle="collapse" href="#widget-3" role="button" aria-expanded="true"
-                                        aria-controls="widget-3">
-                                        Màu sắc
-                                    </a>
-                                </h3>
-
-                                <div class="collapse show" id="widget-3">
-                                    <div class="widget-body">
-                                        <div class="filter-colors">
-                                            @foreach ($getColor as $color)
-                                                <a class="changeColor" data-id="{{ $color->id }}" data-status="0"
-                                                    style="background: {{ $color->code }};"><span
-                                                        class="sr-only">{{ $color->name }}</span>
-                                                </a>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
+                            
                             {{-- brand --}}
                             <div class="widget widget-collapsible">
                                 <h3 class="widget-title">

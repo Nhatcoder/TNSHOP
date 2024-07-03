@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Color;
+// use App\Models\Color;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\ProductSize;
@@ -16,6 +16,7 @@ use App\Models\DiscountCode;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Address;
+use App\Models\ColorImage;
 use App\Events\OrderUserSuccess;
 use App\Mail\OrderUser;
 
@@ -48,7 +49,7 @@ class PaymentController extends Controller
         $color_id = !empty($request->color_id) ? $request->color_id : 0;
 
 
-        $name_color = Color::where('id', $request->color_id)->first();
+        $name_color = ColorImage::where('id', $request->color_id)->first();
         $name_size  = ProductSize::where('id', $request->size_id)->first();
 
         $unique_id  = $product->id . '-' . $color_id . '-' . $size_id;
@@ -67,8 +68,9 @@ class PaymentController extends Controller
                 'quantity'      => $request->qty,
                 'attributes'    => [
                     'product_id'    => $product->id,
+                    'imgColor'    => $name_color->image_name,
                     'color_id'      => $color_id,
-                    'name_color'    => $name_color->name,
+                    'name_color'    => $name_color->color_name,
                     'name_size'     => $name_size->name,
                     'size_id'       => $size_id,
                     'create_at'     => time()

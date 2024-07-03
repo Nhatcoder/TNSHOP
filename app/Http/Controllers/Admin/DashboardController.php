@@ -5,14 +5,59 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\Review;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $orders = Order::getOrderAll();
+        $orders = Order::select("status", "total_price")->get();
         $orderRevenue = Order::oderRevenue();
-        return view('admin.dashboard', compact('orders', "orderRevenue"));
+        $reviewPositive = Review::reviewPositive();
+        $reviewNegative = Review::reviewNegative();
+
+        $reviewAll = Review::reviewAll();
+
+        $totalPositive = 0;
+        $totalNegative = 0;
+
+        foreach ($reviewAll as $value) {
+            $totalPositive += $value->positive_reviews;
+            $totalNegative += $value->negative_reviews;
+        }
+
+        return view('admin.dashboard', compact('orders', "orderRevenue", "totalPositive", "totalNegative"));
+    }
+
+    public function chartReview()
+    {
+
+        $reviewAll = Review::reviewAll();
+
+        $positive = [];
+        $negative = [];
+        $category = [];
+
+        $totalPositive = 0;
+        $totalNegative = 0;
+
+        foreach ($reviewAll as $value) {
+            $positive[] = $value->positive_reviews;
+            $negative[] = $value->negative_reviews;
+            $category[] = $value->date;
+
+            $totalPositive += $value->positive_reviews;
+            $totalNegative += $value->negative_reviews;
+        }
+
+        $totalReview = $totalPositive + $totalNegative;
+
+        return response()->json([
+            "positive" => array_map('intval', $positive),
+            "negative" => array_map('intval', $negative),
+            "category" => $category,
+            "totalReview" => $totalReview,
+        ]);
     }
 
     public function chartSelected(Request $request)

@@ -85,7 +85,7 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                {{-- <div class="form-group">
                     <label class="control-label" for="">Màu sắc</label>
                     <div class="d-flex">
                         @foreach ($color as $item)
@@ -103,12 +103,40 @@
                     @error('color_id')
                         <em class="text-danger" style="">{{ $message }}</em>
                     @enderror
-                </div>
+                </div> --}}
+
+                <label class="control-label" for="">Màu sắc</label>
+                <table class="table table-hover ">
+                    <thead>
+                        <tr>
+                            <th>Hình ảnh</th>
+                            <th>Tên màu sắc</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="AppendColor">
+                        <tr>
+                            <td>
+                                <input type="file" class="d-none" id="image_color_1" name="color[100][color_image]" value=""
+                                    accept="image/*">
+                                <label class="render_img_color" for="image_color_1">
+                                    <img id="preview_image_color_1" width="80px"
+                                        src="{{ asset('assets_ad/img/color_img.jpg') }}" alt="">
+                                </label>
+                            </td>
+                            <td><input type="text" class="form-control" name="color[100][color_name]" placeholder="Điền..."></td>
+                            <td>
+                                <button type="button" class="btn btn-success AddColor">Thêm</button>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
 
                 <div class="row">
                     <div class="col-6">
                         <div class="form-group">
-                            <label class="control-label" for="">Giá cũ</label>
+                            <label class="control-label" for="">Giá gốc</label>
                             <div class="mb-2">
                                 <input type="text" id=""
                                     class="form-control @error('old_price') is-invalid @enderror" name="old_price"
@@ -121,7 +149,7 @@
                     </div>
                     <div class="col-6">
                         <div class="form-group">
-                            <label class="control-label" for="">Giá</label>
+                            <label class="control-label" for="">Giá khuyến mại</label>
                             <div class="mb-2">
                                 <input type="text" id=""
                                     class="form-control @error('price') is-invalid @enderror" name="price"
@@ -162,7 +190,6 @@
                     <!-- Placeholder for preview images -->
                 </div>
 
-            
 
                 <label for="">Size</label>
                 <table class="table table-hover ">
@@ -175,8 +202,8 @@
                     </thead>
                     <tbody id="AppendSize">
                         <tr>
-                            <td> <input type="text" class="form-control" name="name"></td>
-                            <td> <input type="text" class="form-control" name="name"></td>
+                            <td> <input type="text" class="form-control"name="size[100][name]"></td>
+                            <td> <input type="text" class="form-control" name="size[100][price]"></td>
                             <td>
                                 <button type="button" class="btn btn-success AddSize">Thêm</button>
                             </td>
@@ -259,14 +286,68 @@
         });
 
 
+        $(document).ready(function() {
+            let colorIndex = 100;
+
+            // Function to handle file input change and preview image
+            function handleFileInputChange(input, preview) {
+                var file = input.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $(preview).attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(file);
+                }
+            }
+
+            // Initial file input change event
+            $('#image_color_1').on('change', function() {
+                handleFileInputChange(this, '#preview_image_color_1');
+            });
+
+            // Add new row event
+            $(document).on('click', '.AddColor', function() {
+                colorIndex++;
+                let newRow = `
+                    <tr>
+                        <td>
+                            <input type="file" class="d-none" id="image_color_${colorIndex}" name="color[${colorIndex}][color_image]" value="" accept="image/*">
+                            <label class="render_img_color" for="image_color_${colorIndex}">
+                                <img id="preview_image_color_${colorIndex}" width="80px" src="{{ asset('assets_ad/img/color_img.jpg') }}" alt="">
+                            </label>
+                        </td>
+                        <td><input type="text" class="form-control" name="color[${colorIndex}][color_name]" placeholder="Điền..."></td>
+                        <td>
+                            <button type="button" class="btn btn-danger RemoveColor">Xóa</button>
+                        </td>
+                    </tr>
+                `;
+                $('#AppendColor').append(newRow);
+
+                // Bind change event for the new file input
+                $(`#image_color_${colorIndex}`).on('change', function() {
+                    handleFileInputChange(this, `#preview_image_color_${colorIndex}`);
+                });
+            });
+
+            // Remove row event
+            $(document).on('click', '.RemoveColor', function() {
+                $(this).closest('tr').remove();
+            });
+        });
+
+
+
+
         // add size
         // $('.AddSize').on('click', function() {
-        var i = 1000;
+        var i = 100;
         $('body').delegate('.AddSize', 'click', function() {
             var html = `
              <tr id="DeleteSize${i}">
-                <td> <input type="text" placeholder="Điền..." class="form-control" name="name"></td>
-                <td> <input type="text" placeholder="Điền..." class="form-control" name="name"></td>
+                <td> <input type="text" placeholder="Điền..." class="form-control" name="size[${i}][name]"></td>
+                <td> <input type="text" placeholder="Điền..." class="form-control" name="size[${i}][price]"></td>
                 <td>
                     <button type="button" id="${i}" class="btn btn-danger DeleteSize">Xóa</button>
                 </td>

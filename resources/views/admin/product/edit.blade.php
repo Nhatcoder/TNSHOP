@@ -5,7 +5,7 @@
     <div class="card card-statistics">
         <div class="card-header">
             <div class="card-heading">
-                <h4 class="card-title">Thêm sản phẩm</h4>
+                <h4 class="card-title">Cập nhật sản phẩm</h4>
             </div>
         </div>
         <div class="card-body">
@@ -92,34 +92,55 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="control-label" for="">Màu sắc</label>
-                    <div class="d-flex">
-                        @foreach ($color as $item)
-                            @php
-                                $check = '';
-                                foreach ($product_color as $p_color) {
-                                    if ($p_color->product_id == $product->id && $p_color->color_id == $item->id) {
-                                        $check = 'checked';
-                                        // break;
-                                    }
-                                }
-                            @endphp
-                            <div class="form-check pr-3">
-                                <input {{ $check }}
-                                    class="@error('color_id') is-invalid @enderror form-check-input "
-                                    value="{{ $item->id }}" name="color_id[]" type="checkbox"
-                                    id="check-{{ $item->id }}">
-                                <label class="form-check-label" for="check-{{ $item->id }}">
-                                    {{ $item->name }}
-                                </label>
-                            </div>
+                <label class="control-label" for="">Màu sắc</label>
+                <table class="table table-hover" id="table_data_color" data-color="{{ count($imageColor) }}">
+                    <thead>
+                        <tr>
+                            <th>Hình ảnh</th>
+                            <th>Tên màu sắc</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="AppendColor">
+                        @foreach ($imageColor as $key => $color)
+                            <tr>
+                                <input type="hidden" name="color[{{ $key + 1 }}][id]" value="{{ $color->id }}">
+                                <td>
+                                    <input type="file" class="d-none" id="image_color_{{ $key + 1 }}"
+                                        name="color[{{ $key + 1 }}][color_image]" value="{{ $color->image_name }}"
+                                        accept="image/*">
+                                    <label class="render_img_color" for="image_color_{{ $key + 1 }}">
+                                        <img id="preview_image_color_{{ $key + 1 }}" width="80px"
+                                            src="{{ $color->checkImage() }}" alt="">
+                                    </label>
+                                </td>
+                                <td><input type="text" class="form-control"
+                                        name="color[{{ $key + 1 }}][color_name]" placeholder="Điền..."
+                                        value="{{ $color->color_name }}"></td>
+                                <td>
+                                    <button type="button" class="btn btn-danger RemoveColor">Xóa</button>
+                                </td>
+                            </tr>
                         @endforeach
-                    </div>
-                    @error('color_id')
-                        <em class="text-danger" style="">{{ $message }}</em>
-                    @enderror
-                </div>
+
+                        <tr>
+                            <td>
+                                <input type="file" class="d-none" id="image_color_01" name="color[100][color_image]"
+                                    value="" accept="image/*">
+                                <label class="render_img_color" for="image_color_01">
+                                    <img id="preview_image_color_01" width="80px"
+                                        src="{{ asset('assets_ad/img/color_img.jpg') }}" alt="">
+                                </label>
+                            </td>
+                            <td><input type="text" class="form-control" name="color[100][color_name]"
+                                    placeholder="Điền..."></td>
+                            <td>
+                                <button type="button" class="btn btn-success AddColor">Thêm</button>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
 
                 <div class="row">
                     <div class="col-6">
@@ -315,9 +336,70 @@
             height: 200
         });
 
+        // add color
+        $(document).ready(function() {
+            let colorIndex = 100;
+
+            // Function to handle file input change and preview image
+            function handleFileInputChange(input, preview) {
+                var file = input.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $(preview).attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(file);
+                }
+            }
+
+            // Initial file input change event
+            $('#image_color_01').on('change', function() {
+                handleFileInputChange(this, '#preview_image_color_01');
+            });
+
+
+            let dataColor = $("#table_data_color").data("color");
+
+            for (let index = 1; index <= dataColor; index++) {
+                $(`#image_color_${index}`).on('change', function() {
+                    handleFileInputChange(this, `#preview_image_color_${index}`);
+                });
+
+            }
+
+            // Add new row event
+            $(document).on('click', '.AddColor', function() {
+                colorIndex++;
+                let newRow = `
+                    <tr>
+                        <td>
+                            <input type="file" class="d-none" id="image_color_${colorIndex}" name="color[${colorIndex}][color_image]" value="" accept="image/*">
+                            <label class="render_img_color" for="image_color_${colorIndex}">
+                                <img id="preview_image_color_${colorIndex}" width="80px" src="{{ asset('assets_ad/img/color_img.jpg') }}" alt="">
+                            </label>
+                        </td>
+                        <td><input type="text" class="form-control" name="color[${colorIndex}][color_name]" placeholder="Điền..."></td>
+                        <td>
+                            <button type="button" class="btn btn-danger RemoveColor">Xóa</button>
+                        </td>
+                    </tr>
+                `;
+                $('#AppendColor').append(newRow);
+
+                // Bind change event for the new file input
+                $(`#image_color_${colorIndex}`).on('change', function() {
+                    handleFileInputChange(this, `#preview_image_color_${colorIndex}`);
+                });
+            });
+
+            // Remove row event
+            $(document).on('click', '.RemoveColor', function() {
+                $(this).closest('tr').remove();
+            });
+        });
+
 
         // add size
-        // $('.AddSize').on('click', function() {
         var i = 101;
         $('body').delegate('.AddSize', 'click', function() {
             var html = `

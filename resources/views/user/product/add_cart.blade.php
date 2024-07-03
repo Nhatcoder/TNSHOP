@@ -29,9 +29,12 @@
                      </div>
                      <!-- End .product-cart-details -->
 
+                     @php
+                         $imgColor = $header_cart->attributes->imgColor;
+                     @endphp
                      <figure class="product-image-container">
                          <a href="product.html" class="product-image">
-                             <img src="{{ $getProductImage->checkImage() }}" alt="product">
+                             <img src="{{ asset('/') }}uploads/product/{{ $imgColor}}" alt="product">
                          </a>
                      </figure>
                  </div>

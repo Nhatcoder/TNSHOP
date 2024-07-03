@@ -37,6 +37,7 @@ Route::post('admin/logout', [AuthController::class, 'logout_admin'])->name('logo
 Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('admin/chart_selected', [DashboardController::class, 'chartSelected'])->name('chartSelected');
+    Route::post('admin/chart_review', [DashboardController::class, 'chartReview'])->name('chartReview');
     Route::post('admin/chart_from_date', [DashboardController::class, 'chartFromDate'])->name('chartFromDate');
 
 
@@ -44,10 +45,14 @@ Route::group(['middleware' => 'admin'], function () {
     Route::resource('admin/user', AdminController::class);
     Route::resource('admin/category', CategoryController::class);
     Route::resource('admin/sub_category', SubCategoryController::class);
-    Route::resource('admin/color', ColorController::class);
 
     Route::resource('admin/brand', BrandController::class);
     Route::resource('admin/product', ProductController::class);
+    Route::post('admin/product/delete-image/{id}', [ProductController::class, 'deleteImage']);
+    Route::post('admin/product/order-by-image', [ProductController::class, 'oderByImage'])->name("oderByImage");
+    Route::post('admin/product/see-product-detail', [ProductController::class, 'seeProductDetail'])->name("seeProductDetail");
+    Route::post('admin/product/update-hot', [ProductController::class, 'updateHotProduct'])->name("updateHotProduct");
+    Route::post('admin/product/update-status', [ProductController::class, 'updateStatusProduct'])->name("updateStatusProduct");
 
     Route::resource('admin/discount_code', DiscountCodeController::class);
 
@@ -63,8 +68,7 @@ Route::group(['middleware' => 'admin'], function () {
     Route::post('admin/order_detail', [OrderController::class, 'adminOrderDetail'])->name("adminOrderDetail");
     Route::post('admin/order_update_status', [OrderController::class, 'orderUpdateStatus'])->name("orderUpdateStatus");
 
-    Route::post('admin/product/delete-image/{id}', [ProductController::class, 'deleteImage']);
-    Route::post('admin/product/order-by-image', [ProductController::class, 'oderByImage'])->name("oderByImage");
+
 });
 
 
@@ -129,7 +133,7 @@ Route::post('getSeeMoreProductCategoryById', [IndexController::class, 'getSeeMor
     ->name("getSeeMoreProductCategoryById");
 
 Route::get('tim-kiem', [IndexController::class, 'getProductBySearch']);
-Route::get('tat-ca-san-pham', [IndexController::class, 'getProducts'])->name("getProducts");
+Route::get('product', [IndexController::class, 'getProducts'])->name("getProducts");
 
 
 Route::get('{slug?}/{subslug?}', [IndexController::class, 'getCategory']);
