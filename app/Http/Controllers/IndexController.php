@@ -96,7 +96,6 @@ class IndexController extends Controller
     {
         $category = Category::with('sub_category')->get();
 
-        // $data['getColor'] = Color::getColorActive();
         $data['getBrand'] = Brand::getbrand();
 
         $data['product'] = Product::getProductBySlug();
