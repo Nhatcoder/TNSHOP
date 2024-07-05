@@ -4,12 +4,11 @@
               <div class="header-left">
                  
                   <div class="header-dropdown">
-                      <a href="#">Eng</a>
+                      <a href="#">VN</a>
                       <div class="header-menu">
                           <ul>
+                              <li><a href="#">Việt Nam</a></li>
                               <li><a href="#">English</a></li>
-                              <li><a href="#">French</a></li>
-                              <li><a href="#">Spanish</a></li>
                           </ul>
                       </div>
                       <!-- End .header-menu -->
@@ -23,10 +22,13 @@
                       <li>
                           <a href="#">Links</a>
                           <ul>
+                            @php
+                                $wishlists = \App\Models\Wishlist::wishlistAll();
+                            @endphp
                               <li><a href="tel:#"><i class="icon-phone"></i>Call: +0123 456 789</a></li>
-                              <li><a href="#" onclick="showSuccessToast('ok thành công')"><i
+                              <li><a href="{{ route('wishlist') }}"><i
                                           class="icon-heart-o"></i>Sản phẩm yêu thích
-                                      <span>(3)</span></a>
+                                      <span class="wishlist-count">({{ count($wishlists) }})</span></a>
                               </li>
                               <li><a href="about.html">Về chúng tôi</a></li>
                               <li><a href="contact.html">Liên hệ</a></li>

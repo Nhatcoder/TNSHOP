@@ -50,30 +50,32 @@ class PaymentController extends Controller
 
 
         $name_color = ColorImage::where('id', $request->color_id)->first();
-        $name_size  = ProductSize::where('id', $request->size_id)->first();
+        $name_size = ProductSize::where('id', $request->size_id)->first();
 
-        $unique_id  = $product->id . '-' . $color_id . '-' . $size_id;
+        $unique_id = $product->id . '-' . $color_id . '-' . $size_id;
 
-        $cartItem  = Cart::get($unique_id);
+        $cartItem = Cart::get($unique_id);
         if ($cartItem) {
-            Cart::update($unique_id, ['quantity' => [
-                'relative' => false,
-                'value' => $cartItem->quantity + $request->qty
-            ]]);
+            Cart::update($unique_id, [
+                'quantity' => [
+                    'relative' => false,
+                    'value' => $cartItem->quantity + $request->qty
+                ]
+            ]);
         } else {
             Cart::add([
-                'id'            => $unique_id,
-                'name'          => $product->title,
-                'price'         => $total,
-                'quantity'      => $request->qty,
-                'attributes'    => [
-                    'product_id'    => $product->id,
-                    'imgColor'    => $name_color->image_name,
-                    'color_id'      => $color_id,
-                    'name_color'    => $name_color->color_name,
-                    'name_size'     => $name_size->name,
-                    'size_id'       => $size_id,
-                    'create_at'     => time()
+                'id' => $unique_id,
+                'name' => $product->title,
+                'price' => $total,
+                'quantity' => $request->qty,
+                'attributes' => [
+                    'product_id' => $product->id,
+                    'imgColor' => $name_color->image_name,
+                    'color_id' => $color_id,
+                    'name_color' => $name_color->color_name,
+                    'name_size' => $name_size->name,
+                    'size_id' => $size_id,
+                    'create_at' => time()
                 ],
             ]);
         }
@@ -90,10 +92,12 @@ class PaymentController extends Controller
     public function updateCart(Request $request)
     {
         if (!empty($request->id && !empty($request->quantity))) {
-            Cart::update($request->id, ['quantity' => [
-                'relative' => false,
-                'value' => $request->quantity
-            ]]);
+            Cart::update($request->id, [
+                'quantity' => [
+                    'relative' => false,
+                    'value' => $request->quantity
+                ]
+            ]);
         }
     }
     public function deleteCart(Request $request)
@@ -112,7 +116,7 @@ class PaymentController extends Controller
     public function checkOutAddressDefault(Request $request)
     {
         if (!empty($request->id)) {
-            foreach (Address::all() as $address) {
+            foreach (Address::where('user_id', Auth::user()->id)->get() as $address) {
                 $address->type = 0;
                 $address->save();
             }
@@ -121,13 +125,14 @@ class PaymentController extends Controller
             $address->type = 1;
             $address->save();
 
-            $getAddress = Address::orderBy('type', 'desc')->get();
+            $getAddress = Address::where("user_id", auth()->user()->id)->OrderBy("type", "desc")->OrderBy('id', 'desc')->get();
+
 
             $view = view("user.payment.list_address_checkout", [
                 "address" => $getAddress
             ])->render();
 
-            $addressDefault     = Address::where('user_id', Auth::user()->id)->where('type', 1)->first();
+            $addressDefault = Address::where('user_id', Auth::user()->id)->where('type', 1)->first();
             $viewAddressDefault = view("user.payment.address_default", [
                 "addressDefault" => $addressDefault
             ])->render();
@@ -144,7 +149,7 @@ class PaymentController extends Controller
     {
         if (!empty($request->id)) {
             $address = Address::find($request->id);
-            $view    = view("user.acount.address.edit", [
+            $view = view("user.acount.address.edit", [
                 "address" => $address
             ])->render();
 
@@ -158,15 +163,15 @@ class PaymentController extends Controller
     public function checkOutUpdateAddress(Request $request)
     {
         $address = Address::find($request->id);
-        $address->name          = $request->name_address;
-        $address->phone         = $request->phone_address;
-        $address->city          = $request->city;
-        $address->district      = $request->district;
-        $address->ward          = $request->ward;
-        $address->home_address  = $request->home_address;
+        $address->name = $request->name_address;
+        $address->phone = $request->phone_address;
+        $address->city = $request->city;
+        $address->district = $request->district;
+        $address->ward = $request->ward;
+        $address->home_address = $request->home_address;
         $address->save();
 
-        $getAddress = Address::orderBy('type', 'desc')->orderBy('id', 'desc')->get();
+        $getAddress = Address::where('user_id', Auth::user()->id)->orderBy('type', 'desc')->orderBy('id', 'desc')->get();
         $view = view("user.payment.list_address_checkout", [
             "address" => $getAddress
         ])->render();
@@ -197,23 +202,23 @@ class PaymentController extends Controller
         if (count($addressCount) > 0) {
             $address = new Address();
             $address->user_id = auth()->user()->id;
-            $address->name          = $request->name_address;
-            $address->phone         = $request->phone_address;
-            $address->city          = $request->city;
-            $address->district      = $request->district;
-            $address->ward          = $request->ward;
-            $address->home_address  = $request->home_address;
+            $address->name = $request->name_address;
+            $address->phone = $request->phone_address;
+            $address->city = $request->city;
+            $address->district = $request->district;
+            $address->ward = $request->ward;
+            $address->home_address = $request->home_address;
             $address->save();
         } else {
             $address = new Address();
-            $address->user_id       = auth()->user()->id;
-            $address->name          = $request->name_address;
-            $address->phone         = $request->phone_address;
-            $address->city          = $request->city;
-            $address->district      = $request->district;
-            $address->ward          = $request->ward;
-            $address->home_address  = $request->home_address;
-            $address->type          = 1;
+            $address->user_id = auth()->user()->id;
+            $address->name = $request->name_address;
+            $address->phone = $request->phone_address;
+            $address->city = $request->city;
+            $address->district = $request->district;
+            $address->ward = $request->ward;
+            $address->home_address = $request->home_address;
+            $address->type = 1;
             $address->save();
         }
 
@@ -251,16 +256,16 @@ class PaymentController extends Controller
         if (!empty($discountCode)) {
             $json['status'] = true;
             if ($discountCode->type == 'percent') {
-                $json['deducted_amount']    = ($discountCode->percent_amount / 100) * $total;
-                $json['newTotal']           = $total - $json['deducted_amount'];
-                $json['message']            = "Đã sử dụng " . $discountCode->name;
+                $json['deducted_amount'] = ($discountCode->percent_amount / 100) * $total;
+                $json['newTotal'] = $total - $json['deducted_amount'];
+                $json['message'] = "Đã sử dụng " . $discountCode->name;
             } else {
-                $json['newTotal']           = $total - $discountCode->percent_amount;
-                $json['deducted_amount']    = $total - $json['newTotal'];
-                $json['message']            = "Đã sử dụng " . $discountCode->name;
+                $json['newTotal'] = $total - $discountCode->percent_amount;
+                $json['deducted_amount'] = $total - $json['newTotal'];
+                $json['message'] = "Đã sử dụng " . $discountCode->name;
             }
         } else {
-            $json['status']  = false;
+            $json['status'] = false;
             $json['message'] = "Mã giảm giá không hợp lệ";
         }
 
@@ -324,7 +329,8 @@ class PaymentController extends Controller
             $order->payment = $request->payment_method;
             $order->discount_code = $request->discount_code;
             $order->total_price = $newTotal;
-            $order->total_amount = $deducted_amount;;
+            $order->total_amount = $deducted_amount;
+            ;
             $order->note = $request->note;
 
             $order->save();
@@ -414,11 +420,13 @@ class PaymentController extends Controller
             $vnp_Url = $vnp_Url . "?" . $query;
 
             if (isset($vnp_HashSecret)) {
-                $vnpSecureHash =   hash_hmac('sha512', $hashdata, $vnp_HashSecret); //  
+                $vnpSecureHash = hash_hmac('sha512', $hashdata, $vnp_HashSecret); //  
                 $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
             }
             $returnData = array(
-                'code' => '00', 'message' => 'success', 'data' => $vnp_Url
+                'code' => '00',
+                'message' => 'success',
+                'data' => $vnp_Url
             );
             if (isset($_POST['redirect'])) {
                 header('Location: ' . $vnp_Url);
@@ -533,7 +541,8 @@ class PaymentController extends Controller
             $order->payment = $info_order['payment_method'];
             $order->discount_code = $info_order['discount_code'];
             $order->total_price = $newTotal;
-            $order->total_amount = $deducted_amount;;
+            $order->total_amount = $deducted_amount;
+            ;
             $order->note = $info_order['note'];
 
             $order->save();
@@ -573,7 +582,7 @@ class PaymentController extends Controller
 
     public function paymentMomoSuccess()
     {
-        if (isset($_GET["message"])  && $_GET['resultCode'] == '0') {
+        if (isset($_GET["message"]) && $_GET['resultCode'] == '0') {
             $info_order = Session::get('info_order');
             $total = Cart::getTotal();
 
@@ -607,7 +616,8 @@ class PaymentController extends Controller
             $order->payment = $info_order['payment_method'];
             $order->discount_code = $info_order['discount_code'];
             $order->total_price = $newTotal;
-            $order->total_amount = $deducted_amount;;
+            $order->total_amount = $deducted_amount;
+            ;
             $order->note = $info_order['note'];
 
             $order->save();

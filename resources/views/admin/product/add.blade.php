@@ -85,26 +85,6 @@
                     </div>
                 </div>
 
-                {{-- <div class="form-group">
-                    <label class="control-label" for="">Màu sắc</label>
-                    <div class="d-flex">
-                        @foreach ($color as $item)
-                            <div class="form-check pr-3">
-                                <input class="form-check-input"
-                                    {{ is_array(old('color_id')) && in_array($item->id, old('color_id')) ? 'checked' : '' }}
-                                    value="{{ $item->id }}" name="color_id[]" type="checkbox"
-                                    id="check-{{ $item->id }}">
-                                <label class="form-check-label" for="check-{{ $item->id }}">
-                                    {{ $item->name }}
-                                </label>
-                            </div>
-                        @endforeach
-                    </div>
-                    @error('color_id')
-                        <em class="text-danger" style="">{{ $message }}</em>
-                    @enderror
-                </div> --}}
-
                 <label class="control-label" for="">Màu sắc</label>
                 <table class="table table-hover ">
                     <thead>

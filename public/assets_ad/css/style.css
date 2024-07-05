@@ -6680,8 +6680,8 @@ button.close {
     height: 50px;
     overflow: scroll
 }
-
-/* @media (min-width:667px) {
+/* 
+@media (min-width:667px) {
     .modal-dialog {
         max-width: 500px;
         margin: 1.75rem auto

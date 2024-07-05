@@ -130,7 +130,7 @@
                                 </div>
                             @endif
 
-                            
+
                             {{-- brand --}}
                             <div class="widget widget-collapsible">
                                 <h3 class="widget-title">
@@ -338,8 +338,41 @@
 
             }
 
-            // Quickview
-        
+            // add Wishlist
+            $(document).on('click', '.btn-wishlist', function() {
+                var idProduct = $(this).data('id');
+                var user_id = $(this).data('user-id');
+
+                $.ajax({
+                    url: "{{ route('addProductWishList') }}",
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        product_id: idProduct,
+                        user_id: user_id
+                    },
+                    success: function(response) {
+                        if (response.status == "success") {
+                            $(".wishlist-count").text(response.count);
+
+                            Swal.fire({
+                                title: response.message,
+                                icon: "success",
+                                showConfirmButton: false,
+                                timer: 1800
+                            });
+
+                        } else {
+                            Swal.fire({
+                                title: response.message,
+                                icon: "error",
+                                showConfirmButton: false,
+                                timer: 1800
+                            });
+                        }
+                    },
+                })
+            })
 
         })
     </script>

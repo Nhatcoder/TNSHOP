@@ -1,23 +1,24 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\BrandController;
-use App\Http\Controllers\Admin\SubCategoryController;
-use App\Http\Controllers\Admin\ProductController;
-use App\Http\Controllers\Admin\ColorController;
-use App\Http\Controllers\Admin\DiscountCodeController;
-use App\Http\Controllers\Admin\OrderController;
-
-use App\Http\Controllers\IndexController;
-use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\AcountController;
-
-
 use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\IndexController;
+use App\Http\Controllers\AcountController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\WishListController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\BrandController;
+use App\Http\Controllers\Admin\ColorController;
+
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\DashboardController;
+
+
+use App\Http\Controllers\Admin\SubCategoryController;
+use App\Http\Controllers\Admin\DiscountCodeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -97,6 +98,9 @@ Route::middleware('check.auth')->group(function () {
     Route::post('account/edit_address', [AcountController::class, 'acountEditAddress'])->name("acountEditAddress");
     Route::post('account/update_address', [AcountController::class, 'acountUpdateAddress'])->name("acountUpdateAddress");
     Route::post('account/address_default', [AcountController::class, 'acountAddressDefault'])->name("acountAddressDefault");
+    Route::post('account/update_profile', [AcountController::class, 'updateProfileUser'])->name("updateProfileUser");
+    Route::post('account/update_avatar_profile', [AcountController::class, 'updateProfileAvatar'])->name("updateProfileAvatar");
+    Route::post('account/update_password', [AcountController::class, 'updatePassword'])->name("updatePassword");
 
     Route::post('order/order_detail', [AcountController::class, 'orderDetail'])->name("orderDetail");
     Route::post('order/search', [AcountController::class, 'searchOrder'])->name("searchOrder");
@@ -119,6 +123,13 @@ Route::middleware('check.auth')->group(function () {
 
     Route::get('payment-vnpay-success', [PaymentController::class, 'paymentVnpaySuccess'])->name("paymentVnpaySuccess");
     Route::get('payment-momo-success', [PaymentController::class, 'paymentMomoSuccess'])->name("paymentMomoSuccess");
+    
+    Route::get('wishlist', [WishListController::class, 'wishList'])->name("wishlist");
+    Route::post('remove-wishlist/{id}', [WishListController::class, 'removeWishlist'])->name("removeWishlist");
+    Route::post('add-product-wishlist', [WishListController::class, 'addProductWishList'])->name("addProductWishList");
+
+
+
 });
 
 
@@ -128,7 +139,6 @@ Route::post('delete-cart', [PaymentController::class, 'deleteCart'])->name("dele
 
 Route::post('getProductCategoryById', [IndexController::class, 'getProductCategoryById'])->name("getProductCategoryById");
 Route::post('seeMoreProductHome', [IndexController::class, 'seeMoreProductHome'])->name("seeMoreProductHome");
-
 Route::post('getSeeMoreProductCategoryById', [IndexController::class, 'getSeeMoreProductCategoryById'])
     ->name("getSeeMoreProductCategoryById");
 

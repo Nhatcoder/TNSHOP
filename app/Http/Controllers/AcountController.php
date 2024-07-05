@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\User;
 use App\Models\Order;
 use App\Models\Review;
 use App\Models\Address;
-use App\Models\order_id;
+use App\Models\OrderItem;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+
 
 
 class AcountController extends Controller
 {
+
     public function acount()
     {
         $orders = Order::getOrder();
@@ -175,7 +180,7 @@ class AcountController extends Controller
             $address->type = 1;
             $address->save();
 
-            $getAddress = Address::where('user_id', auth()->user()->id)->orderBy('type', 'desc')->get();
+            $getAddress = Address::where("user_id", auth()->user()->id)->OrderBy("type", "desc")->OrderBy('id', 'desc')->get();
 
             $view = view("user.acount.address.list", [
                 "address" => $getAddress
@@ -251,6 +256,90 @@ class AcountController extends Controller
             return response()->json([
                 "id_review" => $review->id
             ], 200);
+        }
+    }
+
+    public function updateProfileUser(Request $request)
+    {
+        if (!empty($request->id) && !empty($request->name) && !empty($request->phone) && !empty($request->email) && !empty($request->sex)) {
+            $user = User::find($request->id);
+            if (!empty($user)) {
+                $user->name = $request->name;
+                $user->phone = $request->phone;
+                $user->email = $request->email;
+                $user->sex = $request->sex;
+                $user->save();
+            }
+        }
+    }
+
+    public function updateProfileAvatar(Request $request)
+    {
+        $user = User::find($request->id);
+        if ($request->hasFile('avatar')) {
+            $avatarPath = $request->file('avatar');
+            $imageExtension = $avatarPath->getClientOriginalExtension();
+            $imageName = pathinfo($avatarPath->getClientOriginalName(), PATHINFO_FILENAME);
+            $uniqueImageName = 'avt_' . rand(0, 999999999) . '_' . $imageName . '.' . $imageExtension;
+
+            if (!empty($user->avatar) && file_exists(public_path('uploads/product/' . $user->avatar))) {
+                unlink(public_path('uploads/product/' . $user->avatar));
+            }
+
+
+            $avatarPath->move(public_path('uploads/product'), $uniqueImageName);
+
+            $user->avatar = $uniqueImageName;
+            $user->save();
+        }
+    }
+
+
+    public function updatePassword(Request $request)
+    {
+        $data = Validator::make(
+            $request->all(),
+            [
+                'password' => 'required',
+                'new_password' => [
+                    'required',
+                    'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/'
+                ],
+                'confirm_password' => 'required|same:new_password',
+
+            ],
+            [
+                'password.required' => 'Vui lòng nhập mật khẩu hiện tại',
+                'new_password.required' => 'Vui lòng nhập mật khẩu mới',
+                'new_password.regex' => 'Mật khẩu phải chứa kiểu bằng có chữ viết thường, hoa, số và ký tự đặc biệt',
+                'confirm_password.required' => 'Vui lòng xác nhận lại mật khẩu',
+                'confirm_password.same' => 'Mật khẩu chưa trùng khớp mật khẩu mới',
+
+            ]
+        );
+        if ($data->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $data->errors()
+            ], 200);
+        } else {
+            $user = User::find($request->id);
+
+            if (!empty($user)) {
+                if (Hash::check($request->password, $user->password)) {
+                    $user->password = Hash::make($request->new_password);
+                    $user->save();
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'Đổi mật khẩu thành công'
+                    ], 200);
+                }else{
+                    return response()->json([
+                        'status' => 'error',
+                        'error' => 'Mật khẩu hiện tại không đúng'
+                    ], 200);
+                }
+            }
         }
     }
 }

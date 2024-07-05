@@ -33,7 +33,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script type="text/css'" src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"></script>
-    
+
     @yield('style')
 </head>
 
@@ -89,7 +89,42 @@
 
     {{-- script --}}
     @yield('script')
-   
+
+
+    @if (request()->segment(2) != 'product')
+        <style>
+            @media (min-width:667px) {
+                .modal-dialog {
+                    max-width: 500px;
+                    margin: 1.75rem auto
+                }
+
+                .modal-dialog-centered {
+                    min-height: calc(100% - (1.75rem * 2))
+                }
+
+                .modal-dialog-centered::before {
+                    height: calc(100vh - (1.75rem * 2))
+                }
+
+                .modal-sm {
+                    max-width: 300px
+                }
+            }
+
+            @media (min-width:992px) {
+                .modal-lg {
+                    max-width: 800px
+                }
+            }
+
+            @media (min-width:1400px) {
+                .modal-xl {
+                    max-width: 1500px
+                }
+            }
+        </style>
+    @endif
 
     <script>
         $(function() {

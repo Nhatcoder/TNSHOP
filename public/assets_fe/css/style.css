@@ -20079,3 +20079,8 @@ button:focus {
 .color_item.active {
     border: 1px solid #c96;
 }
+
+#preview_image_account {
+    border-radius: 50%;
+    cursor: pointer;
+}

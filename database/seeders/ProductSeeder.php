@@ -7,7 +7,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductSize;
-use App\Models\ProductColor;
+
 
 class ProductSeeder extends Seeder
 {

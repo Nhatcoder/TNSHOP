@@ -183,8 +183,7 @@
  </div>
 
 
- <script src='https://raw.githack.com/SochavaAG/example-mycode/master/pens/slick-slider/plugins/slick/slick.min.js'>
- </script>
+
  <script>
      $(document).ready(function() {
          (function($) {

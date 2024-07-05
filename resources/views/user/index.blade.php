@@ -22,13 +22,14 @@
                                         <picture>
                                             <source media="(max-width: 480px)"
                                                 srcset="{{ asset('/') }}assets_fe/images/slider/slide-3-480w.jpg">
-                                            <img class="img_slider" height="480" src="{{ asset('/') }}assets_fe/images/slider/slide-3-480w.jpg"
+                                            <img class="img_slider" height="480"
+                                                src="{{ asset('/') }}assets_fe/images/slider/slide-3-480w.jpg"
                                                 alt="Image Desc">
                                         </picture>
                                     </figure>
                                     <!-- End .slide-image -->
 
-                                   
+
                                 </div>
                                 <!-- End .intro-slide -->
 
@@ -37,12 +38,13 @@
                                         <picture>
                                             <source media="(max-width: 480px)"
                                                 srcset="{{ asset('/') }}assets_fe/images/slider/slide-2-480w.jpg">
-                                            <img class="img_slider" src="{{ asset('/') }}assets_fe/images/slider/slide-2.jpg"
+                                            <img class="img_slider"
+                                                src="{{ asset('/') }}assets_fe/images/slider/slide-2.jpg"
                                                 alt="Image Desc">
                                         </picture>
                                     </figure>
                                     <!-- End .slide-image -->
-                                  
+
                                 </div>
                                 <!-- End .intro-slide -->
 
@@ -51,7 +53,8 @@
                                         <picture>
                                             <source media="(max-width: 480px)"
                                                 srcset="{{ asset('/') }}assets_fe/images/slider/slide-1-480w.jpg">
-                                            <img class="img_slider" src="{{ asset('/') }}assets_fe/images/slider/slide-1.jpg"
+                                            <img class="img_slider"
+                                                src="{{ asset('/') }}assets_fe/images/slider/slide-1.jpg"
                                                 alt="Image Desc">
                                         </picture>
                                     </figure>
@@ -179,7 +182,7 @@
             <!-- End .container -->
         </div>
 
-      
+
 
         <!-- End .bg-lighter -->
 
@@ -235,8 +238,12 @@
                                     </a>
 
                                     <div class="product-action-vertical">
-                                        <a href="#" class="btn-product-icon btn-wishlist"><span>add to
-                                                wishlist</span></a>
+                                        @if (Auth::check())
+                                            <div data-id="{{ $item->id }}" data-user-id="{{ Auth::id() }}"
+                                                style="cursor: pointer;" class="btn-product-icon btn-wishlist"><span>Thêm
+                                                    danh sách yêu thích</span>
+                                            </div>
+                                        @endif
                                     </div>
                                 </figure>
                                 <!-- End .product-media -->
@@ -331,14 +338,14 @@
 
                 <ul class="nav nav-pills nav-border-anim justify-content-center" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="top-all-link" data-toggle="tab" href="#top-all-tab" role="tab"
-                            aria-controls="top-all-tab" aria-selected="true">Tất cả</a>
+                        <a class="nav-link active" id="top-all-link" data-toggle="tab" href="#top-all-tab"
+                            role="tab" aria-controls="top-all-tab" aria-selected="true">Tất cả</a>
                     </li>
                     @foreach ($category as $ct)
                         <li class="nav-item">
-                            <a class="nav-link list_product_category" data-category="{{ $ct->id }}" id="top-fur-link"
-                                data-toggle="tab" href="#top-fur-tab" role="tab" aria-controls="top-fur-tab"
-                                aria-selected="false">{{ $ct->name }}</a>
+                            <a class="nav-link list_product_category" data-category="{{ $ct->id }}"
+                                id="top-fur-link" data-toggle="tab" href="#top-fur-tab" role="tab"
+                                aria-controls="top-fur-tab" aria-selected="false">{{ $ct->name }}</a>
                         </li>
                     @endforeach
 
@@ -366,8 +373,13 @@
                                             </a>
 
                                             <div class="product-action-vertical">
-                                                <a href="#" class="btn-product-icon btn-wishlist "><span>add to
-                                                        wishlist</span></a>
+                                                @if (Auth::check())
+                                                    <div data-id="{{ $item->id }}"
+                                                        data-user-id="{{ Auth::id() }}" style="cursor: pointer;"
+                                                        class="btn-product-icon btn-wishlist"><span>Thêm
+                                                            danh sách yêu thích</span>
+                                                    </div>
+                                                @endif
                                             </div>
                                             <!-- End .product-action-vertical -->
                                         </figure>
@@ -542,7 +554,7 @@
             </div>
             <!-- End .more-container -->
         </div>
-       
+
         <!-- End .cta -->
     </main>
 @endsection
@@ -550,6 +562,42 @@
 @section('script')
     <script>
         $(document).ready(function() {
+
+            $(document).on('click', '.btn-wishlist', function() {
+                var idProduct = $(this).data('id');
+                var user_id = $(this).data('user-id');
+
+                $.ajax({
+                    url: "{{ route('addProductWishList') }}",
+                    method: 'POST',
+                    data: {
+                        user_id: user_id,
+                        _token: '{{ csrf_token() }}',
+                        product_id: idProduct,
+                    },
+                    success: function(response) {
+                        if (response.status == "success") {
+                            $(".wishlist-count").text(response.count);
+                            Swal.fire({
+                                title: response.message,
+                                icon: "success",
+                                showConfirmButton: false,
+                                timer: 1800
+                            });
+
+                        } else {
+                            Swal.fire({
+                                title: response.message,
+                                icon: "error",
+                                showConfirmButton: false,
+                                timer: 1800
+                            });
+                        }
+
+                    },
+                })
+            })
+
             $(document).on('click', '.list_product_category', function() {
                 var id = $(this).attr('data-category');
 

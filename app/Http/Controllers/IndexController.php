@@ -7,7 +7,7 @@ use App\Models\Category;
 use App\Models\Subcategory;
 use App\Models\Product;
 use App\Models\Brand;
-use App\Models\Color;
+use App\Models\WishList;
 
 class IndexController extends Controller
 {
@@ -20,6 +20,8 @@ class IndexController extends Controller
         $productAll = Product::productAll();
         return view('user.index', compact('category', 'productHot', 'product', 'productAll'));
     }
+
+   
 
     public function getProductBySearch(Request $request)
     {

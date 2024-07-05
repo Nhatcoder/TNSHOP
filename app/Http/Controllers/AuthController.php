@@ -283,10 +283,8 @@ class AuthController extends Controller
             // dd($previousUrl);
 
             $finduser = User::where('google_id', $user->id)->orWhere('email', $user->email)->first();
-            // Tìm kiếm tài khoản đăng nhập dựa trên google_id hoặc email
 
             if ($finduser) { // Nếu đã có tài khoản
-                // Cập nhật thông tin người dùng nếu cần thiết
                 $finduser->name = $user->name;
                 $finduser->email = $user->email;
                 $finduser->avatar = $user->avatar;

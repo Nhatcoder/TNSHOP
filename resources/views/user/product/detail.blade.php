@@ -356,8 +356,8 @@
                                 </a>
 
                                 <div class="product-action-vertical">
-                                    <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>Thêm danh
-                                            sách yêu thích</span></a>
+                                    <div data-id="{{ $item->id }}" style="cursor: pointer;"
+                                        class="btn-product-icon btn-wishlist"><span>Thêm danh sách yêu thích</span></div>
                                     <a href="popup/quickView.html" class="btn-product-icon btn-quickview"
                                         title="Quick view"><span>Xem nhanh</span></a>
                                     <a href="#" class="btn-product-icon btn-compare" title="Compare"><span>So
@@ -434,7 +434,7 @@
                 var size_id = $(this).val();
                 $('#size_id').val(size_id);
             });
-            
+
             $('#qty').on('change', function() {
                 var quantity_cart = $(this).val();
                 $('#quantity_cart').val(quantity_cart);

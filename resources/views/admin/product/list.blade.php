@@ -282,13 +282,14 @@
             </div>
         </div>
     </div>
-
     <!-- end row -->
 
 
 @endsection
 
 @section('script')
+    <script src='https://raw.githack.com/SochavaAG/example-mycode/master/pens/slick-slider/plugins/slick/slick.min.js'>
+    </script>
     <script>
         (function() {
             const container = document.querySelector('.list-products');

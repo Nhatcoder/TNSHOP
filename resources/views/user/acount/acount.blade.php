@@ -37,17 +37,11 @@
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" id="tab-downloads-link" data-toggle="tab" href="#tab-downloads"
-                                        role="tab" aria-controls="tab-downloads" aria-selected="false">Sản phẩm vừa
-                                        xem</a>
+                                        role="tab" aria-controls="tab-downloads" aria-selected="false">Đổi mật khẩu</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link " id="tab-address-link" data-toggle="tab" href="#tab-address"
                                         role="tab" aria-controls="tab-address" aria-selected="false">Địa chỉ</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#tab-account"
-                                        role="tab" aria-controls="tab-account" aria-selected="false">Cập nhật tài
-                                        khoản</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('user_logout') }}">Đăng xuất</a>
@@ -57,86 +51,95 @@
 
                         <div class="col-md-8 col-lg-10">
                             <div class="tab-content">
-                                <div class="tab-pane fade " id="tab-dashboard" role="tabpanel"
+                                <div class="tab-pane fade" id="tab-dashboard" role="tabpanel"
                                     aria-labelledby="tab-dashboard-link">
                                     <h3>Hồ sơ của tôi</h3>
                                     <p>Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
-                                    <form action="">
-                                        <div class="row">
-                                            <div class="col-8">
-                                                <div class="form-group">
-                                                    <label for="account-fn">Tên</label>
-                                                    <input type="text" class="form-control" id="account-fn"
-                                                        value="{{ Auth::user()->name }}" name="name" required>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="account-fn">Email</label>
-                                                    <input type="text" class="form-control" id="account-fn"
-                                                        value="{{ Auth::user()->email }}" name="name" required>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="account-fn">Số điện thoại @if (Auth::user()->phone == null)
-                                                            <b class="text-primary">(Thêm mới)</b>
-                                                        @endif
-                                                    </label>
-                                                    <input type="text" class="form-control" id="account-fn"
-                                                        value="{{ Auth::user()->phone }}" name="name" required>
-                                                </div>
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <div class="form-group">
+                                                <label for="account-fn">Tên</label>
+                                                <input type="text" class="form-control mb-0" id="account-name"
+                                                    value="{{ Auth::user()->name }}" name="name" required>
+                                                <b class="text-danger" id="error_name_profile"></b>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="account-fn">Email</label>
+                                                <input type="text" readonly class="form-control mb-0" id="account-email"
+                                                    value="{{ Auth::user()->email }}" name="email" required>
+                                                <b class="text-danger" id="error_email_profile"></b>
 
-                                                <label for="">Giới tính @if (Auth::user()->sex == null)
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="account-fn">Số điện thoại @if (Auth::user()->phone == null)
+                                                        <b class="text-primary">(Thêm mới)</b>
                                                     @endif
-                                                    <b class="text-primary">(Thêm mới)</b></label>
-                                                <div class="d-flex">
-                                                    <div class="payment_item">
-                                                        <input type="radio" name="sex" value="nam"
-                                                            class="type_payment" id="payment_cash">
-                                                        <label class="custome-control-label label_payment"
-                                                            for="payment_cash">Nam</label>
-                                                    </div>
-                                                    <div class="payment_item">
-                                                        <input type="radio" name="sex" value="nu"
-                                                            class="type_payment" id="payment_vnpay">
-                                                        <label class="custome-control-label label_payment"
-                                                            for="payment_vnpay">Nữ</label>
-                                                    </div>
-                                                    <div class="payment_item">
-                                                        <input type="radio" name="sex" class="type_payment"
-                                                            id="payment_momo" value="khac">
-                                                        <label class="custome-control-label label_payment"
-                                                            for="payment_momo">Khác</label>
-                                                    </div>
+                                                </label>
+                                                <input type="text" class="form-control mb-0" id="account-phone"
+                                                    value="{{ Auth::user()->phone }}" name="phone" required>
+                                                <b class="text-danger" id="error_phone_profile"></b>
+
+                                            </div>
+
+                                            <label for="">Giới tính
+                                            </label>
+                                            <div class="d-flex">
+                                                <input type="hidden" id="sex">
+                                                <div class="payment_item">
+                                                    <input type="radio" {{ Auth::user()->sex == 'nam' ? 'checked' : '' }}
+                                                        name="sex" value="nam" class="type_payment"
+                                                        id="payment_cash">
+                                                    <label class="custome-control-label label_payment"
+                                                        for="payment_cash">Nam</label>
+                                                </div>
+                                                <div class="payment_item">
+                                                    <input type="radio" name="sex" value="nu"
+                                                        {{ Auth::user()->sex == 'nu' ? 'checked' : '' }}
+                                                        class="type_payment" id="payment_vnpay">
+                                                    <label class="custome-control-label label_payment"
+                                                        for="payment_vnpay">Nữ</label>
+                                                </div>
+                                                <div class="payment_item">
+                                                    <input type="radio" name="sex" class="type_payment"
+                                                        {{ Auth::user()->sex == 'khac' ? 'checked' : '' }}
+                                                        id="payment_momo" value="khac">
+                                                    <label class="custome-control-label label_payment"
+                                                        for="payment_momo">Khác</label>
                                                 </div>
                                             </div>
-                                            <div class="col-4">
-                                                <article class="entry entry-grid">
-                                                    <figure class="entry-media">
-                                                        <a href="single.html">
-                                                            {{-- <img src="{{ asset('') }}assets_fe/images/blog/3cols/post-1.jpg"
-                                                                alt="image desc"> --}}
-                                                            <img src="{{ Auth::user()->avatar }}" alt="">
-                                                        </a>
-                                                    </figure>
+                                            <b class="text-danger" id="error_sex_profile"></b>
 
-                                                    <div class="entry-body text-center">
-                                                        <h2 class="entry-title">
-                                                            <button class="btn btn-primary">Đổi ảnh</button>
-                                                        </h2>
+                                        </div>
+                                        <div class="col-4">
+                                            <article class="entry entry-grid">
+                                                <input type="file" class="d-none" id="avatar" name="avatar"
+                                                    value="" accept="image/*">
+                                                <label class="render_img_acount w-100 h-100" for="avatar">
+                                                    @if (Auth::user()->avatar && filter_var(Auth::user()->avatar, FILTER_VALIDATE_URL))
+                                                        <img id="preview_image_account" class="d-block w-100 h-100"
+                                                            src="{{ Auth::user()->avatar }}" alt="">
+                                                    @else
+                                                        <img id="preview_image_account" class="d-block w-100 h-100"
+                                                            src="{{ asset('uploads/product/' . Auth::user()->avatar) }}"
+                                                            alt="">
+                                                    @endif
 
-                                                        <div class="entry-content">
-                                                            <p>Dụng lượng file tối đa 5 MB</p>
-                                                        </div>
+
+                                                </label>
+
+                                                <div class="entry-body text-center">
+                                                    <div class="entry-content">
+                                                        <p>Dụng lượng file tối đa 5 MB</p>
                                                     </div>
-                                                </article>
-                                            </div>
-
-
-
+                                                </div>
+                                            </article>
                                         </div>
-                                        <div class="mt-3">
-                                            <button class="btn btn-outline-primary-2"><span>Cập nhật</span><i
-                                                    class="icon-long-arrow-right"></i></button>
-                                        </div>
-                                    </form>
+
+                                    </div>
+                                    <div class="mt-3">
+                                        <button class="btn btn-outline-primary-2 btn_update_acount"><span>Cập
+                                                nhật</span><i class="icon-long-arrow-right"></i></button>
+                                    </div>
                                 </div><!-- .End .tab-pane -->
 
                                 <div class="tab-pane fade active show" id="tab-orders" role="tabpanel"
@@ -611,23 +614,41 @@
                                                 </div><!-- .End .tab-pane -->
                                             </div>
                                         </div><!-- End .col-md-6 -->
-
-
                                     </div>
-
-
-
-
-
-
-
                                 </div>
 
-                                <div class="tab-pane fade" id="tab-downloads" role="tabpanel"
+                                <div class="tab-pane fade " id="tab-downloads" role="tabpanel"
                                     aria-labelledby="tab-downloads-link">
-                                    <p>No downloads available yet.</p>
-                                    <a href="category.html" class="btn btn-outline-primary-2"><span>GO SHOP</span><i
-                                            class="icon-long-arrow-right"></i></a>
+                                    <div class="d-flex justify-content-between">
+                                        <h3>Đổi mật khẩu.</h3>
+                                    </div>
+
+                                    <form method="post" id="form_change_password">
+                                        @csrf
+                                        <input type="hidden" name="id" value="{{ Auth::user()->id }}">
+                                        <div class="form-group">
+                                            <label for="">Mật khẩu cũ</label>
+                                            <input type="password" name="password" id="password"
+                                                class="form-control mb-0">
+                                            <b class="text-danger" id="password_error"></b>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">Mật khẩu mới</label>
+                                            <input type="password" name="new_password" id="new_password"
+                                                class="form-control  mb-0">
+                                            <b class="text-danger" id="new_password_error"></b>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">Xác nhận mật khẩu </label>
+                                            <input type="password" name="confirm_password" id="confirm_password"
+                                                class="form-control  mb-0">
+                                            <b class="text-danger" id="confirm_password_error"></b>
+
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary">Cập nhật</>
+                                    </form>
+
                                 </div><!-- .End .tab-pane -->
 
                                 <div class="tab-pane fade" id="tab-address" role="tabpanel"
@@ -643,45 +664,6 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div><!-- .End .tab-pane -->
-
-                            <div class="tab-pane fade" id="tab-account" role="tabpanel"
-                                aria-labelledby="tab-account-link">
-                                {{-- <form action="#">
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <label>First Name *</label>
-                                            <input type="text" class="form-control" required>
-                                        </div>
-
-                                        <div class="col-sm-6">
-                                            <label>Last Name *</label>
-                                            <input type="text" class="form-control" required>
-                                        </div>
-                                    </div>
-
-                                    <label>Display Name *</label>
-                                    <input type="text" class="form-control" required>
-                                    <small class="form-text">This will be how your name will be displayed in the
-                                        account section and in reviews</small>
-
-                                    <label>Email address *</label>
-                                    <input type="email" class="form-control" required>
-
-                                    <label>Current password (leave blank to leave unchanged)</label>
-                                    <input type="password" class="form-control">
-
-                                    <label>New password (leave blank to leave unchanged)</label>
-                                    <input type="password" class="form-control">
-
-                                    <label>Confirm new password</label>
-                                    <input type="password" class="form-control mb-2">
-
-                                    <button type="submit" class="btn btn-outline-primary-2">
-                                        <span>SAVE CHANGES</span>
-                                        <i class="icon-long-arrow-right"></i>
-                                    </button>
-                                </form> --}}
                             </div><!-- .End .tab-pane -->
                         </div>
                     </div>
@@ -741,12 +723,6 @@
 
                             </div>
 
-
-                            {{-- <div class="modal-footer">
-                                <button type="button" class="btn btn-outline-info" class="close" data-dismiss="modal"
-                                    aria-label="Close">Trở về</button>
-                                <button type="button" class="btn btn-primary" id="save_review">Hoàn thành</button>
-                            </div> --}}
 
                         </div>
                     </div>
@@ -878,6 +854,228 @@
 @section('script')
     <script>
         $(document).ready(function() {
+
+            // update password
+            $("#form_change_password").on("submit", function(e) {
+                e.preventDefault();
+
+                var password_error = $("#password_error");
+                var new_password_error = $("#new_password_error");
+                var confirm_password_error = $("#confirm_password_error");
+
+
+                $.ajax({
+                    method: 'POST',
+                    url: "{{ route('updatePassword') }}",
+                    dataType: "JSON",
+                    data: $("#form_change_password").serialize(),
+                    success: function(response) {
+
+                        if (response.status == "success") {
+                            Swal.fire({
+                                title: response.message,
+                                icon: "success",
+                                showConfirmButton: false,
+                                timer: 1800
+                            });
+
+                            $("#password").val("");
+                            $("#new_password").val("");
+                            $("#confirm_password").val("");
+                            $("#password").removeClass("is-invalid");
+                            $("#new_password").removeClass("is-invalid");
+                            $("#confirm_password").removeClass("is-invalid");
+
+
+                        } else {
+                            if (response.error) {
+                                $("#password").addClass("is-invalid");
+                                password_error.text(response.error);
+                            }
+
+                            if (response.message.password) {
+                                $("#password").addClass("is-invalid");
+                                password_error.text(response.message.password);
+                            } else {
+                                $("#password").removeClass("is-invalid");
+                                password_error.text("");
+                            }
+
+                            if (response.message.new_password) {
+                                $("#new_password").addClass("is-invalid");
+                                new_password_error.text(response.message.new_password);
+                            } else {
+                                $("#new_password").removeClass("is-invalid");
+                                new_password_error.text("")
+                            }
+
+                            if (response.message.confirm_password) {
+                                $("#confirm_password").addClass("is-invalid");
+                                confirm_password_error.text(response.message.confirm_password);
+                            } else {
+                                $("#confirm_password").removeClass("is-invalid");
+                                confirm_password_error.text("");
+                            }
+
+
+                        }
+
+
+                    },
+                })
+
+            })
+
+            // update avatar and profile
+            $("#avatar").change(function() {
+                if (this.files && this.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $("#preview_image_account").attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(this.files[0]);
+
+
+                    var formData = new FormData();
+                    formData.append('id', '{{ Auth::user()->id }}');
+                    formData.append('avatar', this.files[0]);
+                    formData.append('_token', '{{ csrf_token() }}');
+
+                    // Gửi tệp ảnh qua AJAX
+                    $.ajax({
+                        url: "{{ route('updateProfileAvatar') }}",
+                        type: 'POST',
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function(response) {
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: "top-end",
+                                showConfirmButton: false,
+                                timer: 1500,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.onmouseenter = Swal.stopTimer;
+                                    toast.onmouseleave = Swal.resumeTimer;
+                                }
+                            });
+                            Toast.fire({
+                                icon: "success",
+                                title: "cập nhật avatar thành công"
+                            });
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(xhr.responseText); // Xử lý lỗi
+                        }
+
+
+                    })
+                }
+            })
+
+            $('input[name="sex"]').change(function() {
+                var selectedValue = $('input[name="sex"]:checked').val();
+                $("#sex").val(selectedValue);
+            });
+
+            $(".btn_update_acount").on('click', function(e) {
+                e.preventDefault();
+
+                var name = $('#account-name').val();
+                var email = $('#account-email').val();
+                var phone = $('#account-phone').val();
+                var sex = $('input[name="sex"]:checked').val();
+                var token = '{{ csrf_token() }}';
+
+                var isValid = true;
+                var errorMessage = '';
+
+                if (!name) {
+                    isValid = false;
+                    $('#account-name').addClass('is-invalid');
+                    $('#account-name').focus();
+                    $("#error_name_profile").text('Tên không được để trống.');
+                } else {
+                    $('#account-name').removeClass('is-invalid');
+                    $("#error_name_profile").text('');
+                }
+
+                if (!email) {
+                    isValid = false;
+                    $('#account-email').addClass('is-invalid');
+                    if (isValid) $('#account-email').focus();
+                    $("#error_email_profile").text('Email không được để trống.');
+                } else if (!validateEmail(email)) {
+                    isValid = false;
+                    $('#account-email').addClass('is-invalid');
+                    if (isValid) $('#account-email').focus();
+                    $("#error_email_profile").text('Email không hợp lệ.');
+                } else {
+                    $('#account-email').removeClass('is-invalid');
+                    $("#error_email_profile").text('');
+                }
+
+                if (!phone) {
+                    isValid = false;
+                    $('#account-phone').addClass('is-invalid');
+                    if (isValid) $('#account-phone').focus();
+                    $("#error_phone_profile").text('Số điện thoại không được để trống.');
+                } else if (!validatePhone(phone)) {
+                    isValid = false;
+                    $('#account-phone').addClass('is-invalid');
+                    if (isValid) $('#account-phone').focus();
+                    $("#error_phone_profile").text('Số điện thoại không hợp lệ.');
+                } else {
+                    $('#account-phone').removeClass('is-invalid');
+                    $("#error_phone_profile").text('');
+                }
+
+                if (!sex) {
+                    isValid = false;
+                    $("#error_sex_profile").text('Vui lòng chọn giới tính.');
+                } else {
+                    $("#error_sex_profile").text('');
+                }
+
+                if (!isValid) {
+                    return;
+                }
+
+
+                $.ajax({
+                    url: "{{ route('updateProfileUser') }}",
+                    type: 'POST',
+                    data: {
+                        id: "{{ Auth::user()->id }}",
+                        avatar: $("#avatar").val(),
+                        name: name,
+                        email: email,
+                        phone: phone,
+                        sex: sex,
+                        _token: token,
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            title: "Đánh giá thành công!",
+                            icon: "success",
+                            showConfirmButton: false,
+                            timer: 1600
+                        });
+                    }
+                });
+            });
+
+            function validateEmail(email) {
+                var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+
+            function validatePhone(phone) {
+                var re = /^\d{10,11}$/;
+                return re.test(phone);
+            }
+
             // see review order
             $(document).on('click', '.btn_see_review_order', function() {
                 let id = $(this).data('id');
@@ -914,8 +1112,9 @@
 
                         function rateStars(star) {
                             for (let i = 1; i <= 5; i++) {
-                                document.getElementById(i.toString()).style.color = (i <=
-                                    star) ? "orange" : "#9e9e9e";
+                                document.getElementById(i.toString()).style.color =
+                                    (i <=
+                                        star) ? "orange" : "#9e9e9e";
                             }
                         }
 
@@ -942,14 +1141,15 @@
                         ];
 
                         ratings.forEach(rating => {
-                            document.getElementById(rating.star.toString()).onclick =
+                            document.getElementById(rating.star.toString())
+                                .onclick =
                                 function() {
                                     rateStars(rating.star);
                                     $(".display_rating").text(rating.text);
                                 };
                         });
 
-                         $('input[name="rating"]').on('change', function() {
+                        $('input[name="rating"]').on('change', function() {
                             var rating = $(this).val();
                             $("#star").val(rating);
                             console.log($("#star"));
@@ -1009,10 +1209,6 @@
                 });
 
             });
-
-
-
-
 
 
             // Load modal order detail
@@ -1128,7 +1324,8 @@
                     populateCities();
                 },
                 error: function(xhr, status, error) {
-                    console.error('There was a problem with the AJAX request:', status, error);
+                    console.error('There was a problem with the AJAX request:', status,
+                        error);
                 }
             });
 
@@ -1149,7 +1346,8 @@
                 const cityId = $('#city option:selected').data('id');
                 // console.log(cityId);
                 populateDistricts(cityId);
-                $('#ward').empty().append('<option value="" selected disabled>Chọn phường xã</option>');
+                $('#ward').empty().append(
+                    '<option value="" selected disabled>Chọn phường xã</option>');
             });
 
             // Populate districts select
@@ -1187,7 +1385,8 @@
                     const district = city.Districts.find(district => district.Id == districtId);
                     if (district) {
                         $.each(district.Wards, function(index, ward) {
-                            wardSelect.append(`<option value="${ward.Name}">${ward.Name}</option>`);
+                            wardSelect.append(
+                                `<option value="${ward.Name}">${ward.Name}</option>`);
                         });
                     }
                 }
@@ -1290,7 +1489,9 @@
                             $(".render_list_address").html(response.view);
                         },
                         error: function(xhr, status, error) {
-                            console.error('There was a problem with the AJAX request:', status,
+                            console.error(
+                                'There was a problem with the AJAX request:',
+                                status,
                                 error);
                         }
                     })
@@ -1319,7 +1520,8 @@
                         $(".render_list_address").html(response.view);
                     },
                     error: function(xhr, status, error) {
-                        console.error('There was a problem with the AJAX request:', status,
+                        console.error('There was a problem with the AJAX request:',
+                            status,
                             error);
                     }
                 });
@@ -1369,7 +1571,8 @@
 
                         // Event listener for city select change
                         $('#city_edit').on('change', function() {
-                            const cityIdEdit = $('#city_edit option:selected').data(
+                            const cityIdEdit = $(
+                                '#city_edit option:selected').data(
                                 'id');
                             populateDistrictsEdit(cityIdEdit);
                             $('#ward_edit').empty().append(
@@ -1385,9 +1588,11 @@
                                 '<option value="" selected disabled>Chọn quận huyện</option>'
                             );
 
-                            const cityEdit = dataEdit.find(city => city.Id == cityId);
+                            const cityEdit = dataEdit.find(city => city.Id ==
+                                cityId);
                             if (cityEdit) {
-                                $.each(cityEdit.Districts, function(index, district) {
+                                $.each(cityEdit.Districts, function(index,
+                                    district) {
                                     districtSelectEdit.append(
                                         `<option data-id="${district.Id}" value="${district.Name}">${district.Name}</option>`
                                     );
@@ -1397,8 +1602,10 @@
 
                         // Event listener for district select change
                         $('#district_edit').on('change', function() {
-                            const cityId = $('#city_edit option:selected').data('id');
-                            const districtId = $('#district_edit option:selected').data(
+                            const cityId = $('#city_edit option:selected')
+                                .data('id');
+                            const districtId = $(
+                                '#district_edit option:selected').data(
                                 'id');
                             populateWardsEdit(cityId, districtId);
                         });
@@ -1408,11 +1615,13 @@
                             const wardSelect = $('#ward_edit');
                             wardSelect.empty();
                             wardSelect.append(
-                                '<option value="" selected>Chọn phường xã</option>');
+                                '<option value="" selected>Chọn phường xã</option>'
+                            );
 
                             const city = dataEdit.find(city => city.Id == cityId);
                             if (city) {
-                                const district = city.Districts.find(district => district.Id ==
+                                const district = city.Districts.find(district =>
+                                    district.Id ==
                                     districtId);
                                 if (district) {
                                     $.each(district.Wards, function(index, ward) {
@@ -1427,58 +1636,70 @@
                         // update address
                         $("#update_address").on('click', function() {
                             var id = $(this).data('id');
-                            var edit_name_address = $("#name_address_edit").val();
-                            var edit_phone_address = $("#phone_address_edit").val();
+                            var edit_name_address = $("#name_address_edit")
+                                .val();
+                            var edit_phone_address = $(
+                                "#phone_address_edit").val();
                             var edit_city = $("#city_edit").val();
                             var edit_district = $("#district_edit").val();
                             var edit_ward = $("#ward_edit").val();
-                            var edit_home_address = $("#home_address_edit").val();
+                            var edit_home_address = $("#home_address_edit")
+                                .val();
 
                             var isValidEdit = true;
 
                             if (edit_name_address == "") {
                                 $("#error_edit_name_address").text(
-                                    "Vui lòng điền đầy đủ họ tên!");
+                                    "Vui lòng điền đầy đủ họ tên!"
+                                );
                                 $("#name_address_edit").focus();
-                                $("#name_address_edit").addClass("is-invalid");
+                                $("#name_address_edit").addClass(
+                                    "is-invalid");
                                 isValidEdit = false;
                             } else if (edit_name_address.length < 5) {
                                 $("#error_edit_name_address").text(
                                     "Nhập đầy đủ họ và tên !");
                                 $("#name_address_edit").focus();
-                                $("#name_address_edit").addClass("is-invalid");
+                                $("#name_address_edit").addClass(
+                                    "is-invalid");
                                 isValidEdit = false;
                             } else {
                                 $("#error_edit_name_address").text("");
-                                $("#edit_name_address").removeClass("is-invalid");
+                                $("#edit_name_address").removeClass(
+                                    "is-invalid");
                             }
 
                             if (edit_phone_address == "") {
                                 $("#error_edit_phone_address").text(
                                     "Vui lòng nhập số điện thoại!");
                                 $("#edit_phone_address").focus();
-                                $("#edit_phone_address").addClass("is-invalid");
+                                $("#edit_phone_address").addClass(
+                                    "is-invalid");
                                 isValidEdit = false;
                             } else if (!/^\d{10}$/.test(
                                     edit_phone_address)) {
                                 $("#error_edit_phone_address").text(
                                     "Số điện thoại không hợp lệ!");
                                 $("#edit_phone_address").focus();
-                                $("#edit_phone_address").addClass("is-invalid");
+                                $("#edit_phone_address").addClass(
+                                    "is-invalid");
                                 isValidEdit = false;
                             } else {
                                 $("#error_edit_phone_address").text("");
-                                $("#edit_phone_address").removeClass("is-invalid");
+                                $("#edit_phone_address").removeClass(
+                                    "is-invalid");
                             }
                             if (edit_home_address == "") {
                                 $("#error_edit_home_address").text(
                                     "Vui lòng nhập địa chỉ cụ thể !");
                                 $("#edit_home_address").focus();
-                                $("#edit_home_address").addClass("is-invalid");
+                                $("#edit_home_address").addClass(
+                                    "is-invalid");
                                 isValidEdit = false;
                             } else {
                                 $("#error_edit_home_address").text("");
-                                $("#edit_home_address").removeClass("is-invalid");
+                                $("#edit_home_address").removeClass(
+                                    "is-invalid");
                             }
 
 
@@ -1505,13 +1726,16 @@
                                         });
 
                                         setTimeout(() => {
-                                            $(".close").click();
+                                            $(".close")
+                                                .click();
                                         }, 1800);
 
-                                        $(".render_list_address").html(
-                                            response.view);
+                                        $(".render_list_address")
+                                            .html(
+                                                response.view);
                                     },
-                                    error: function(xhr, status, error) {
+                                    error: function(xhr, status,
+                                        error) {
                                         console.error(
                                             'There was a problem with the AJAX request:',
                                             status, error);

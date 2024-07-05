@@ -36,8 +36,12 @@
                               </a>
 
                               <div class="product-action-vertical">
-                                  <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>Thêm
-                                          danh sách yêu thích</span></a>
+                                  @if (Auth::check())
+                                      <div data-id="{{ $item->id }}" data-user-id="{{ Auth::id() }}"
+                                          style="cursor: pointer;" class="btn-product-icon btn-wishlist"><span>Thêm
+                                              danh sách yêu thích</span>
+                                      </div>
+                                  @endif
                               </div>
                           </figure>
 
@@ -70,8 +74,8 @@
 
       {{-- {{ $product->links() }} --}}
       {{-- Phân trang --}}
-      
-      @if ( $product->total() > 9)
+
+      @if ($product->total() > 9)
           <nav aria-label="Page navigation">
               <ul class="pagination justify-content-center">
                   @if ($product->onFirstPage())
@@ -153,5 +157,3 @@
               </ul>
           </nav>
       @endif
-
-      
