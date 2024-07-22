@@ -31,9 +31,12 @@ use App\Http\Controllers\Admin\DiscountCodeController;
 |
 */
 
-Route::get('admin', [AuthController::class, 'login_admin']);
-Route::post('admin', [AuthController::class, 'auth_login_admin']);
-Route::post('admin/logout', [AuthController::class, 'logout_admin'])->name('logout');
+Route::group(['middleware' => 'guest'], function () {
+    Route::get('admin', [AuthController::class, 'login_admin']);
+    Route::post('admin', [AuthController::class, 'auth_login_admin']);
+    Route::post('admin/logout', [AuthController::class, 'logout_admin'])->name('logout');
+});
+
 
 Route::group(['middleware' => 'admin'], function () {
     Route::get('admin/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -123,7 +126,7 @@ Route::middleware('check.auth')->group(function () {
 
     Route::get('payment-vnpay-success', [PaymentController::class, 'paymentVnpaySuccess'])->name("paymentVnpaySuccess");
     Route::get('payment-momo-success', [PaymentController::class, 'paymentMomoSuccess'])->name("paymentMomoSuccess");
-    
+
     Route::get('wishlist', [WishListController::class, 'wishList'])->name("wishlist");
     Route::post('remove-wishlist/{id}', [WishListController::class, 'removeWishlist'])->name("removeWishlist");
     Route::post('add-product-wishlist', [WishListController::class, 'addProductWishList'])->name("addProductWishList");
@@ -149,3 +152,5 @@ Route::get('product', [IndexController::class, 'getProducts'])->name("getProduct
 Route::get('{slug?}/{subslug?}', [IndexController::class, 'getCategory']);
 Route::post('product/add-to-cart', [PaymentController::class, 'addProductToCart'])->name('addProductToCart');
 Route::post('get_filter_product_ajax', [IndexController::class, 'getFilterProductAjax']);
+
+

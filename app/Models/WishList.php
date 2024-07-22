@@ -17,8 +17,10 @@ class WishList extends Model
     }
 
     public static function wishlistAll(){
-
-        return self::where('user_id', Auth::user()->id)->orderBy('created_at', 'desc')->get();
+        if (Auth::check()) {
+            return self::where('user_id', Auth::user()->id)->orderBy('created_at', 'desc')->get();
+        }
+        return [];
     }
 
     public function product()

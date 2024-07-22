@@ -15,6 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('avatar', 500)->nullable();
+            $table->string('phone', 10)->nullable();
+            $table->string('sex', 10)->nullable();
+            $table->string('google_id', 255)->nullable();
+            $table->string('facebook_id', 255)->nullable();
+            $table->tinyInteger('is_admin')->default(0);
+            $table->tinyInteger('status')->default(1);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

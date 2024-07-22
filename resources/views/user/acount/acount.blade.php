@@ -1057,7 +1057,7 @@
                     },
                     success: function(response) {
                         Swal.fire({
-                            title: "Đánh giá thành công!",
+                            title: "Cập nhật profile thành công",
                             icon: "success",
                             showConfirmButton: false,
                             timer: 1600

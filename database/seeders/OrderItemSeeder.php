@@ -4,13 +4,14 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Product;
 
-
-class ProductSeeder extends Seeder
+class OrderItemSeeder extends Seeder
 {
+    /**
+     * Run the database seeds.
+     */
     public function run(): void
     {
-        Product::factory(10)->create();
+        \App\Models\OrderItem::factory(10)->create();
     }
 }

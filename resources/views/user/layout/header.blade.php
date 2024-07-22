@@ -2,7 +2,7 @@
       <div class="header-top">
           <div class="container">
               <div class="header-left">
-                 
+
                   <div class="header-dropdown">
                       <a href="#">VN</a>
                       <div class="header-menu">
@@ -21,21 +21,24 @@
                   <ul class="top-menu">
                       <li>
                           <a href="#">Links</a>
+
                           <ul>
-                            @php
-                                $wishlists = \App\Models\Wishlist::wishlistAll();
-                            @endphp
-                              <li><a href="tel:#"><i class="icon-phone"></i>Call: +0123 456 789</a></li>
-                              <li><a href="{{ route('wishlist') }}"><i
-                                          class="icon-heart-o"></i>Sản phẩm yêu thích
-                                      <span class="wishlist-count">({{ count($wishlists) }})</span></a>
-                              </li>
+                              @if (Auth::check())
+                                  @php
+                                      $wishlists = \App\Models\Wishlist::wishlistAll();
+                                  @endphp
+                                  <li><a href="tel:#"><i class="icon-phone"></i>Call: +0123 456 789</a></li>
+                                  <li><a href="{{ route('wishlist') }}"><i class="icon-heart-o"></i>Sản phẩm yêu thích
+                                          <span class="wishlist-count">({{ count($wishlists) }})</span>
+                                      </a>
+                                  </li>
+                              @endif
+
                               <li><a href="about.html">Về chúng tôi</a></li>
                               <li><a href="contact.html">Liên hệ</a></li>
                               @if (Auth::check())
                                   <li>
-                                      <a href="{{ route('acount') }}"><i
-                                              class="icon-user"></i>{{ Auth::user()->name }}
+                                      <a href="{{ route('acount') }}"><i class="icon-user"></i>{{ Auth::user()->name }}
                                       </a>
                                   </li>
                               @else
@@ -146,9 +149,9 @@
                   </div>
                   <!-- End .header-search -->
 
-                      <div id="cart_render">
-                          @include('user.product.add_cart')
-                      </div>
+                  <div id="cart_render">
+                      @include('user.product.add_cart')
+                  </div>
 
                   <!-- End .cart-dropdown -->
               </div>
